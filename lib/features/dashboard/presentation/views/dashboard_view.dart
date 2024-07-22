@@ -7,7 +7,9 @@ import 'package:v_ranger/features/dashboard/presentation/controllers/bottom_nav_
 import 'package:v_ranger/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:v_ranger/features/dashboard/presentation/widgets/bottom_nav_bar.dart';
 import 'package:v_ranger/features/home/presentation/views/home_view.dart';
+import 'package:v_ranger/features/profile/presentation/views/profile_view.dart';
 import 'package:v_ranger/features/leaderboard/presentation/views/leaderboard_view.dart';
+import 'package:v_ranger/features/settings/presentation/views/settings_view.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
@@ -27,8 +29,14 @@ class DashboardView extends StatelessWidget {
             color: Colors.white,
             child: const LeaderboardView(),
           ),
-          Container(color: Colors.greenAccent.shade700),
-          Container(color: Colors.orange),
+          Container(
+            color: Colors.white,
+            child: const ProfileView(),
+          ),
+          Container(
+            color: Colors.white,
+            child: const SettingsView(),
+          ),
         ],
         onPageChanged: (index) {
           controller.changePage(index);
@@ -54,7 +62,7 @@ class DashboardView extends StatelessWidget {
             ),
             BottomBarItem(
                 icon: Icon(Icons.person),
-                title: Text('Account'),
+                title: Text('Profile'),
                 activeColor: AppColors.gradientEndColor),
             BottomBarItem(
               icon: Icon(Icons.settings),

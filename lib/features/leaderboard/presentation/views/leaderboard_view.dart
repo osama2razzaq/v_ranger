@@ -90,7 +90,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       children: [
         Text(
           "David",
-          style: PromptStyle.profileNameStyle,
+          style: PromptStyle.leaderboardProfileNameStyle,
         ),
         _buildPrgressbar(),
       ],

@@ -29,6 +29,11 @@ abstract class PromptStyle {
   static TextStyle profileNameStyle = defaultStyle.copyWith(
     fontSize: 18,
     fontWeight: FontWeight.w600,
+    color: AppColors.primaryColor,
+  );
+  static TextStyle leaderboardProfileNameStyle = defaultStyle.copyWith(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
     color: AppColors.gradientEndColor,
   );
   static TextStyle subLogoStyle1 = defaultStyle.copyWith(
@@ -100,5 +105,16 @@ abstract class PromptStyle {
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: AppColors.scoreHeader,
+  );
+
+  static TextStyle profileTitle = defaultStyle.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.scoreHeader,
+  );
+  static TextStyle profileSubTitle = defaultStyle.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
   );
 }
