@@ -38,7 +38,8 @@ abstract class AppColors {
   static const Color scoreBgColor1 = Color(0xFFC1E4D0);
   static const Color scoreBgColor2 = Color(0xFFFFF8E5);
   static const Color scoreBgColor3 = Color(0xFFFFE8EA);
-  static const Color boaderColor = Color(0xFFFE5E5E5);
+  static const Color boaderColor = Color(0xFFE5E5E5);
+  static const Color tabbarBg = Color(0xFFF2F4F7);
 
   static const grey200 = Color(0xFFD4D6DB);
 }

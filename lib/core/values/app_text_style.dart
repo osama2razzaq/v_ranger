@@ -117,4 +117,9 @@ abstract class PromptStyle {
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
+  static TextStyle tabbarTitile = defaultStyle.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
 }
