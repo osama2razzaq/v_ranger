@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v_ranger/core/values/values.dart';
-import 'package:v_ranger/features/batches/presentation/views/batchesView_view.dart';
+import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
