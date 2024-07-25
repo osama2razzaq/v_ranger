@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:v_ranger/core/values/app_assets.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 
 class ProfileView extends StatelessWidget {
@@ -23,7 +24,7 @@ class ProfileView extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(20, 20, 0, 20),
+                padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
                 color: Colors.transparent,
                 child: Align(
                   alignment: Alignment.center,
@@ -41,20 +42,7 @@ class ProfileView extends StatelessWidget {
                       ),
                       color: Colors.white, // Example background color
                     ),
-                    child: _userInfoForm(context)
-
-                    //  Container(
-                    //   height: 58,
-                    //   padding: const EdgeInsets.symmetric(
-                    //       horizontal: 0.0, vertical: 10.0),
-                    //   margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    //   decoration: BoxDecoration(
-                    //       color: AppColors.colorWhite,
-                    //       // Alternate row colors for better readability
-                    //       borderRadius: BorderRadius.circular(10.0),
-                    //       border: Border.all(color: Colors.red)),
-                    // )),
-                    ),
+                    child: _userInfoForm(context)),
               )
             ],
           ),
@@ -105,38 +93,61 @@ class ProfileView extends StatelessWidget {
       {'title': 'Phone No', 'subtitle': '01231414141'},
     ];
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(15.0),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 15.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: AppColors.boaderColor),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ListTile(
-              title: Text(
-                items[index]['title']!,
-                style: PromptStyle.profileTitle,
-              ),
-              subtitle: Text(
-                items[index]['subtitle']!,
-                style: PromptStyle.profileSubTitle,
-              ),
-            ),
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+          child: SizedBox(
+            child: Text('Your Information',
+                style: TextStyle(
+                  fontFamily: AppStrings.fontFamilyPrompt,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primaryColor,
+                )),
           ),
-        );
-      },
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(15.0),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: AppColors.boaderColor),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6.0,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            items[index]['title']!,
+                            style: PromptStyle.profileTitle,
+                          ),
+                          Text(
+                            items[index]['subtitle']!,
+                            style: PromptStyle.profileSubTitle,
+                          ),
+                        ],
+                      )),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

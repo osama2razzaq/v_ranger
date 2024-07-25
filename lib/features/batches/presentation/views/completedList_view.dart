@@ -73,10 +73,10 @@ class CompletedList extends StatelessWidget {
                       // Handle delete logic here
                       // For example, remove the item from the list
                     },
-                    backgroundColor: AppColors.red,
+                    backgroundColor: AppColors.green,
                     foregroundColor: Colors.white,
-                    icon: Icons.cancel,
-                    label: 'Abort',
+                    icon: Icons.edit,
+                    label: 'Edit',
                   ),
                 ),
               ),
