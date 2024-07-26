@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
@@ -122,6 +126,7 @@ Widget _buildMapsButtons(BuildContext context) {
           icon: Icons.directions,
           onTap: () {
             print('Direction tapped');
+            navigateTo(1.3333, 0.33);
           },
           colors: [
             AppColors.gradientStartColor, // Start color
@@ -147,6 +152,15 @@ Widget _buildNextButton(BuildContext context, {required String buttonName}) {
       ),
     ),
   );
+}
+
+void navigateTo(double lat, double lng) async {
+  var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
+  if (await canLaunch(uri.toString())) {
+    await launch(uri.toString());
+  } else {
+    throw 'Could not launch ${uri.toString()}';
+  }
 }
 
 Widget _detailItem(String label, String value) {
