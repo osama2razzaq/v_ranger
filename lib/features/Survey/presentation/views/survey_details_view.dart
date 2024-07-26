@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -114,13 +117,13 @@ Widget _buildMapsButtons(BuildContext context) {
           label: 'View In Maps',
           icon: Icons.map,
           onTap: () {
-            print('View In Maps tapped');
+            Get.to(MapScreen());
           },
           colors: [Colors.white, Colors.white!],
           borderColor: AppColors.primaryColor,
           textColor: Colors.blue[900]!,
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         CustomButton(
           label: 'Direction',
           icon: Icons.directions,
@@ -169,7 +172,7 @@ Widget _detailItem(String label, String value) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Text(
           label,
           style: PromptStyle.profileSubTitle,
@@ -178,7 +181,7 @@ Widget _detailItem(String label, String value) {
           value,
           style: PromptStyle.profileTitle,
         ),
-        Divider(),
+        const Divider(),
       ],
     ),
   );
@@ -206,7 +209,7 @@ class CustomButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: colors,
@@ -218,7 +221,7 @@ class CustomButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: textColor),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             Text(
               label,
               style: TextStyle(
@@ -228,6 +231,205 @@ class CustomButton extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MapScreen extends StatefulWidget {
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
+  late GoogleMapController mapController;
+  LocationData? currentLocation;
+  final Location location = Location();
+
+  final LatLng _center =
+      const LatLng(3.1390, 101.6869); // Kuala Lumpur coordinates
+  final LatLng _start =
+      const LatLng(3.2016, 101.6507); // Starting point coordinates
+  final LatLng _end =
+      const LatLng(3.140853, 101.693207); // Ending point coordinates
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    final LocationData locationResult = await location.getLocation();
+    setState(() {
+      currentLocation = locationResult;
+    });
+
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          zoom: 15,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        backgroundColor: AppColors.primaryColor,
+        centerTitle: true,
+        title: Text(
+          "MapView",
+          style: PromptStyle.appBarTitleStyle,
+        ),
+      ),
+      body: Stack(
+        children: <Widget>[
+          currentLocation == null
+              ? const Center(child: CircularProgressIndicator())
+              : GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(currentLocation!.latitude!,
+                        currentLocation!.longitude!),
+                    zoom: 11.0,
+                  ),
+                  markers: {
+                    Marker(
+                      markerId: MarkerId('currentLocation'),
+                      position: LatLng(currentLocation!.latitude!,
+                          currentLocation!.longitude!),
+                      infoWindow: InfoWindow(
+                        title: 'My Location',
+                      ),
+                    ),
+                    Marker(
+                      markerId: const MarkerId('end'),
+                      position: _end,
+                      infoWindow: const InfoWindow(
+                        title: 'Destination',
+                      ),
+                    ),
+                  },
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId('route'),
+                      points: [_start, _end],
+                      color: AppColors.green,
+                      width: 5,
+                    ),
+                  },
+                ),
+          Positioned(
+            bottom: 20,
+            left: 10,
+            right: 10,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Column(
+                          children: [
+                            const Icon(
+                              Icons.directions,
+                              color: AppColors.primaryColor,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(5, (index) {
+                                return Container(
+                                  width: 2,
+                                  height: 4,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 2),
+                                  color: AppColors.primaryColor,
+                                );
+                              }),
+                            ),
+                            const Icon(
+                              Icons.location_pin,
+                              color: AppColors.primaryColor,
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'My Location',
+                                style: PromptStyle.locationAddress,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'B-17-4, Level 17, Tower B (Plaza Pantai\nPersiaran Pantai Baru, Off, Jalan Pantai\nBaharu, 59200 Kuala Lumpur',
+                                style: PromptStyle.locationAddress,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              'TIME',
+                              style: PromptStyle.profileTitle,
+                            ),
+                            Text(
+                              '20 mins',
+                              style: PromptStyle.buttonTextColor,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              'DISTANCE',
+                              style: PromptStyle.profileTitle,
+                            ),
+                            Text(
+                              '14.1 km',
+                              style: PromptStyle.buttonTextColor,
+                            ),
+                          ],
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16),
+                          ),
+                          child: const Icon(
+                            Icons.directions,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
