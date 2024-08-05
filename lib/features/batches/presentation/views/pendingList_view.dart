@@ -76,7 +76,8 @@ class PendingList extends StatelessWidget {
                       // Handle delete logic here
                       // For example, remove the item from the list
                     },
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.red,
+                    foregroundColor: AppColors.colorWhite,
                     icon: Icons.cancel,
                     label: 'Abort',
                   ),

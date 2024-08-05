@@ -22,6 +22,7 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
   @override
   Widget build(BuildContext context) {
     controller.fetchBatchesData(widget.batchId.toString());
+
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       appBar: AppBar(
@@ -106,15 +107,15 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                             style: PromptStyle.tabbarTitile,
                           ),
                           const SizedBox(width: 4),
-                          const CircleAvatar(
-                            radius: 9,
-                            backgroundColor: Colors.orange,
-                            child: Text(
-                              '4',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
+                          Obx(() => CircleAvatar(
+                                radius: 9,
+                                backgroundColor: Colors.orange,
+                                child: Text(
+                                  '${controller.pendingCount}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              )),
                         ],
                       ),
                     ),
@@ -127,15 +128,15 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                             style: PromptStyle.tabbarTitile,
                           ),
                           const SizedBox(width: 4),
-                          const CircleAvatar(
-                            radius: 8,
-                            backgroundColor: Colors.green,
-                            child: Text(
-                              '5',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
-                            ),
-                          ),
+                          Obx(() => CircleAvatar(
+                                radius: 8,
+                                backgroundColor: Colors.green,
+                                child: Text(
+                                  '${controller.completedCount}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 10),
+                                ),
+                              )),
                         ],
                       ),
                     ),
@@ -148,15 +149,15 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                             style: PromptStyle.tabbarTitile,
                           ),
                           const SizedBox(width: 4),
-                          const CircleAvatar(
-                            radius: 9,
-                            backgroundColor: Colors.red,
-                            child: Text(
-                              '1',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
+                          Obx(() => CircleAvatar(
+                                radius: 9,
+                                backgroundColor: Colors.red,
+                                child: Text(
+                                  '${controller.abortCount}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              )),
                         ],
                       ),
                     ),

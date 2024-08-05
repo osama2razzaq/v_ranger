@@ -8,6 +8,10 @@ class BatchesListController extends GetxController with SnackBarHelper {
 
   final RxBool lifeCardUpdateController = false.obs;
   final ApiService apiService = ApiService();
+  // Observable variables for counts
+  var pendingCount = 0.obs;
+  var completedCount = 0.obs;
+  var abortCount = 0.obs;
 
   @override
   Future<void> onInit() async {
@@ -19,10 +23,18 @@ class BatchesListController extends GetxController with SnackBarHelper {
     try {
       final result = await apiService.fetchBatchesData(batchId!);
       data.value = result;
+      updateCounts();
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
     }
+  }
+
+  void updateCounts() {
+    // Assuming your BatchesModel has lists for pending, completed, and aborted batches
+    pendingCount.value = data.value?.data!.first.pendingCount! as int;
+    completedCount.value = data.value?.data!.first.completedCount! as int;
+    abortCount.value = data.value?.data!.first.abortedCount! as int;
   }
 
   var searchText = "".obs;
