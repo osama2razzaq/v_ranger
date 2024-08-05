@@ -1,108 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 
 class AbortList extends StatelessWidget {
-  @override
-  @override
-  final List<Map<String, String>> data = [
-    {
-      "id": "5",
-      "name": "YEO HAN",
-      "address":
-          "88866033: Jalan Bintang,Off jalan bukit Bintang Central kuala lumpur"
-    },
-    {
-      "id": "7",
-      "name": "ALIF",
-      "address":
-          "88866033: Jalan Bintang,Off jalan bukit Bintang  Central kuala lumpur jalan sultan"
-    },
-    {
-      "id": "8",
-      "name": "RAVI",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-    {
-      "id": "9",
-      "name": "FIRDAUS",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-    {
-      "id": "10",
-      "name": "IZZAT",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-  ];
+  final BatchesListController controller;
+
+  const AbortList({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.all(5),
-          margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-          // height: 58,
-          decoration: BoxDecoration(
-            color: AppColors.scoreBgColor3,
-            border: Border.all(width: 2, color: AppColors.boaderColor),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 4,
-                height: 50,
-                margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                decoration: BoxDecoration(
-                  color: AppColors.red,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+    return Obx(() {
+      if (controller.data.value == null) {
+        return const Center(child: CircularProgressIndicator());
+      } else {
+        var abortList = controller.data.value!.data!.first.abortedDetails;
+
+        if (abortList!.isEmpty) {
+          return const Center(child: Text('No aborted batches'));
+        }
+
+        return ListView.builder(
+          itemCount: abortList.length,
+          itemBuilder: (context, index) {
+            final batch = abortList[index];
+            return Container(
+              padding: const EdgeInsets.all(5),
+              margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+              decoration: BoxDecoration(
+                color: AppColors.scoreBgColor3,
+                border: Border.all(width: 2, color: AppColors.boaderColor),
+                borderRadius: BorderRadius.circular(10),
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data[index]['id']!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.scoreHeader,
-                      ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 50,
+                    margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    decoration: BoxDecoration(
+                      color: AppColors.red,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    Text(
-                      data[index]['name']!,
-                      softWrap: true,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.red,
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.3,
-                      child: Text(
-                        maxLines: 3,
-                        data[index]['address']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          batch.id.toString(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.scoreHeader,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        Text(
+                          batch.name,
+                          softWrap: true,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.red,
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.3,
+                          child: Text(
+                            maxLines: 3,
+                            batch.address,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  const Icon(Icons.arrow_forward_ios,
+                      size: 16, color: AppColors.scoreHeader),
+                ],
               ),
-              const Icon(Icons.arrow_forward_ios,
-                  size: 16, color: AppColors.scoreHeader),
-            ],
-          ),
+            );
+          },
         );
-      },
-    );
+      }
+    });
   }
 }

@@ -167,9 +167,9 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    PendingList(),
-                    CompletedList(),
-                    AbortList(),
+                    PendingList(controller: controller),
+                    CompletedList(controller: controller),
+                    AbortList(controller: controller),
                   ],
                 ),
               ),

@@ -1,151 +1,140 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 
 class CompletedList extends StatelessWidget {
-  @override
-  final List<Map<String, String>> data = [
-    {
-      "id": "5",
-      "name": "YEO HAN",
-      "address":
-          "88866033: Jalan Bintang,Off jalan bukit Bintang Central kuala lumpur"
-    },
-    {
-      "id": "7",
-      "name": "ALIF",
-      "address":
-          "88866033: Jalan Bintang,Off jalan bukit Bintang  Central kuala lumpur jalan sultan"
-    },
-    {
-      "id": "8",
-      "name": "RAVI",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-    {
-      "id": "9",
-      "name": "FIRDAUS",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-    {
-      "id": "10",
-      "name": "IZZAT",
-      "address": "88866033: Jalan Bintang,Off jalan bukit Bintang Central.."
-    },
-  ];
+  final BatchesListController controller;
+
+  const CompletedList({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        return Slidable(
-          key: Key(data[index]['id']!),
-          endActionPane: ActionPane(
-            motion: const ScrollMotion(),
-            children: [
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                  child: SlidableAction(
-                    borderRadius:
-                        BorderRadius.horizontal(left: Radius.circular(10)),
-                    onPressed: (context) {
-                      // Delete action
-                      // Handle delete logic here
-                      // For example, remove the item from the list
-                    },
-                    backgroundColor: AppColors.yellow,
-                    foregroundColor: Colors.white,
-                    icon: Icons.push_pin,
-                    label: 'Pin',
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
-                  child: SlidableAction(
-                    borderRadius:
-                        BorderRadius.horizontal(right: Radius.circular(10)),
-                    onPressed: (context) {
-                      // Delete action
-                      // Handle delete logic here
-                      // For example, remove the item from the list
-                    },
-                    backgroundColor: AppColors.green,
-                    foregroundColor: Colors.white,
-                    icon: Icons.edit,
-                    label: 'Edit',
-                  ),
-                ),
-              ),
-            ],
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-            // height: 58,
-            decoration: BoxDecoration(
-              color: AppColors.scoreBgColor1,
-              border: Border.all(width: 2, color: AppColors.boaderColor),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 4,
-                  height: 50,
-                  margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                  decoration: BoxDecoration(
-                    color: AppColors.green,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data[index]['id']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.scoreHeader,
-                        ),
+    return Obx(() {
+      if (controller.data.value == null) {
+        return const Center(
+            child: CircularProgressIndicator(
+          color: AppColors.primaryColor,
+        ));
+      } else if (controller.data.value!.data!.isEmpty) {
+        return const Center(child: Text('No completed batches'));
+      } else {
+        var completedList = controller.data.value!.data!.first.completedDetails;
+        if (completedList!.isEmpty) {
+          return const Center(child: Text('No completed batches'));
+        }
+
+        return ListView.builder(
+          itemCount: completedList!.length,
+          itemBuilder: (context, index) {
+            final batch = completedList[index];
+            return Slidable(
+              key: Key(batch.id.toString()),
+              endActionPane: ActionPane(
+                motion: const ScrollMotion(),
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      child: SlidableAction(
+                        borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(10)),
+                        onPressed: (context) {
+                          // Pin action
+                          // Handle pin logic here
+                        },
+                        backgroundColor: AppColors.yellow,
+                        foregroundColor: Colors.white,
+                        icon: Icons.push_pin,
+                        label: 'Pin',
                       ),
-                      Text(
-                        data[index]['name']!,
-                        softWrap: true,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.green,
-                        ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                      child: SlidableAction(
+                        borderRadius: const BorderRadius.horizontal(
+                            right: Radius.circular(10)),
+                        onPressed: (context) {
+                          // Edit action
+                          // Handle edit logic here
+                        },
+                        backgroundColor: AppColors.green,
+                        foregroundColor: Colors.white,
+                        icon: Icons.edit,
+                        label: 'Edit',
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: Text(
-                          maxLines: 3,
-                          data[index]['address']!,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: AppColors.scoreBgColor1,
+                  border: Border.all(width: 2, color: AppColors.boaderColor),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 50,
+                      margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      decoration: BoxDecoration(
+                        color: AppColors.green,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            batch.id.toString(),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.scoreHeader,
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          Text(
+                            batch.name,
+                            softWrap: true,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.green,
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.3,
+                            child: Text(
+                              maxLines: 3,
+                              batch.address,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios,
+                        size: 16, color: AppColors.scoreHeader),
+                  ],
                 ),
-                const Icon(Icons.arrow_forward_ios,
-                    size: 16, color: AppColors.scoreHeader),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
-      },
-    );
+      }
+    });
   }
 }
