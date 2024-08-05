@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/values.dart';
+import 'package:v_ranger/features/batches/presentation/views/batchesList_view.dart';
 import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
 import 'package:v_ranger/features/home/presentation/controllers/home_controller.dart';
@@ -139,7 +140,8 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildCard(String title, String count, IconData icon, Color color) {
     return GestureDetector(
       onTap: () {
-        Get.to(const BatchesView());
+        //Get.to(const BatchesView());
+        Get.to(BatchesListView());
       },
       child: Container(
         //width: 100,
