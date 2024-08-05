@@ -1,15 +1,16 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/custom_text_field.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
-import 'package:v_ranger/core/routing/app_routes.dart';
-import 'package:v_ranger/core/values/app_strings.dart';
+import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/values.dart';
+import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
+import 'package:v_ranger/features/login/presentation/controllers/login_controller.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
-
+class LoginView extends StatelessWidget with SnackBarHelper {
+  LoginView({super.key});
+  final LocationController locationController = Get.put(LocationController());
+  final LoginController controller = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,12 +73,12 @@ class LoginView extends StatelessWidget {
               margin: const EdgeInsets.all(15),
               decoration: BoxDecoration(
                 color: AppColors.primaryWithOpColor,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primaryColor.withOpacity(0.2),
 
-                    offset: Offset(0, 0), // x and y offset
+                    offset: const Offset(0, 0), // x and y offset
                     blurRadius: 10, // Blur radius
                     spreadRadius: 0, // Spread radius
                   ),
@@ -143,7 +144,7 @@ class LoginView extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: AppColors.secondaryColor,
-                  ))
+                  )),
             ],
           ),
         ),
@@ -182,10 +183,12 @@ class LoginView extends StatelessWidget {
 
   Widget _buildLoginButton({required String buttonName}) {
     return SingleButton(
-      bgColor: AppColors.primaryColor,
-      buttonName: buttonName,
-      onTap: () => {Get.offAllNamed(Routes.dashboard)},
-    );
+        bgColor: AppColors.primaryColor,
+        buttonName: buttonName,
+        onTap: () => {
+              controller.login()
+            } // controller.login, //{Get.offAllNamed(Routes.dashboard)},
+        );
   }
 
   Widget _buildForgotTextButton(VoidCallback onTap, String? buttonText) {
@@ -233,14 +236,16 @@ class LoginView extends StatelessWidget {
         Align(
             alignment: Alignment.center,
             child: Container(
-                margin: EdgeInsets.all(15),
+                margin: const EdgeInsets.all(15),
                 child: Column(
                   children: [
                     CustomTextField(
                       labelText: 'Login',
+                      textEditingController: controller.emailController,
                     ),
                     CustomTextField(
                       labelText: 'Password',
+                      textEditingController: controller.passwordController,
                       isPassword: true,
                       hidePasswordIcon: false,
                     ),

@@ -127,4 +127,9 @@ abstract class PromptStyle {
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
+  static TextStyle greyDarkTextStyle = defaultStyle.copyWith(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      color: AppColors.textColorGreyDark,
+      height: 1.45);
 }

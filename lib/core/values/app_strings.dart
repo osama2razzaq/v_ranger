@@ -28,7 +28,8 @@ abstract class AppStrings {
   static const String registerTextButton = 'registerTextButton';
   static const String termsConditionTextButton = 'termNConditionTextButton';
   static const String faqTextButton = 'faqTextButton';
-
+  static const String noInternetConnection = 'No internet connection';
+  static const String error = 'Error';
   static const String registrationAppBarTitle = 'registrationAppBarTitle';
   static const String organizationlabel = 'organizationlabel';
   static const String organizationhint = 'organizationhint';

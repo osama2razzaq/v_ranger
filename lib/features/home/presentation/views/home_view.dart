@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/values.dart';
 import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
+import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
+import 'package:v_ranger/features/home/presentation/controllers/home_controller.dart';
+import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -15,80 +19,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final LatLng _center = const LatLng(3.0951582, 101.5920018);
-
-  List<Marker> markers = [
-    const Marker(
-        markerId: MarkerId('1'),
-        position: LatLng(3.1390, 101.6869), // Kuala Lumpur city center
-        infoWindow: InfoWindow(
-          title: 'KL City Center',
-          snippet: 'Location 1',
-        )),
-    const Marker(
-        markerId: MarkerId('2'),
-        position: LatLng(3.1654, 101.6786), // Near Batu Caves
-        infoWindow: InfoWindow(
-          title: 'Near Batu Caves',
-          snippet: 'Location 2',
-        )),
-    const Marker(
-        markerId: MarkerId('3'),
-        position: LatLng(3.1579, 101.7005), // Near Gombak
-        infoWindow: InfoWindow(
-          title: 'Near Gombak',
-          snippet: 'Location 3',
-        )),
-    const Marker(
-        markerId: MarkerId('4'),
-        position: LatLng(3.1168, 101.7290), // Near Ampang
-        infoWindow: InfoWindow(
-          title: 'Near Ampang',
-          snippet: 'Location 4',
-        )),
-    const Marker(
-        markerId: MarkerId('5'),
-        position: LatLng(3.1126, 101.6384), // Near Petaling Jaya
-        infoWindow: InfoWindow(
-          title: 'Near Petaling Jaya',
-          snippet: 'Location 5',
-        )),
-    const Marker(
-        markerId: MarkerId('6'),
-        position: LatLng(3.2101, 101.7182), // Near Kepong
-        infoWindow: InfoWindow(
-          title: 'Near Kepong',
-          snippet: 'Location 6',
-        )),
-    const Marker(
-        markerId: MarkerId('7'),
-        position: LatLng(3.1442, 101.6890), // Bangsar
-        infoWindow: InfoWindow(
-          title: 'Bangsar',
-          snippet: 'Location 7',
-        )),
-    const Marker(
-        markerId: MarkerId('8'),
-        position: LatLng(3.1458, 101.6639), // Near Setapak
-        infoWindow: InfoWindow(
-          title: 'Near Setapak',
-          snippet: 'Location 8',
-        )),
-    const Marker(
-        markerId: MarkerId('9'),
-        position: LatLng(3.1105, 101.6654), // Near Cheras
-        infoWindow: InfoWindow(
-          title: 'Near Cheras',
-          snippet: 'Location 9',
-        )),
-    const Marker(
-        markerId: MarkerId('10'),
-        position: LatLng(3.1141, 101.6750), // Near Pudu
-        infoWindow: InfoWindow(
-          title: 'Near Pudu',
-          snippet: 'Location 10',
-        )),
-  ];
+  final HomeController controller = Get.put(HomeController());
+  final LocationController locationController = Get.put(LocationController());
+  List<Marker> markers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -116,59 +49,96 @@ class _HomeViewState extends State<HomeView> {
           bottomLeft: Radius.circular(30.0),
           bottomRight: Radius.circular(30.0),
         ),
-        child: GoogleMap(
+        child: Obx(() {
+          if (controller.data.value == null) {
+            return Center(child: FormLoader());
+          }
+
+          markers = _createMarkersFromData(controller.data.value!);
+
+          return GoogleMap(
+            myLocationEnabled: true,
             scrollGesturesEnabled: true,
-            //    zoomGesturesEnabled: true,
             onMapCreated: (GoogleMapController controller) {},
             initialCameraPosition: const CameraPosition(
               target: LatLng(
                   3.1458, 101.6639), // Set the initial position of the camera
-              zoom: 12, // Set the initial zoom level
+              zoom: 10, // Set the initial zoom level
             ),
             markers: markers.toSet(),
             gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
               Factory<OneSequenceGestureRecognizer>(
                 () => EagerGestureRecognizer(),
               ),
-            }
-            // Pass the markers to the map
-            ),
+            },
+          );
+        }),
       ),
     );
   }
 
+  List<Marker> _createMarkersFromData(DashboardModel data) {
+    List<Marker> markers = [];
+    data.batches?.forEach((batch) {
+      batch.batchDetails?.forEach((detail) {
+        markers.add(
+          Marker(
+            markerId: MarkerId(detail.id.toString()),
+            position: LatLng(
+              double.parse(detail.batchfileLatitude ?? '0'),
+              double.parse(detail.batchfileLongitude ?? '0'),
+            ),
+            infoWindow: InfoWindow(
+              title: detail.address,
+              snippet: 'Batch: ${batch.batchNo}',
+            ),
+          ),
+        );
+      });
+    });
+    return markers;
+  }
+
   Widget _buildBottomContainer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _buildCard('Batch', '02', Icons.layers, AppColors.batchBlue),
+    return Obx(() {
+      final data = controller.data.value;
+      final totalBatches = data?.totalBatches?.toString() ?? '0';
+      final totalFiles = data?.totalBatchDetails?.toString() ?? '0';
+      final completedFiles =
+          data?.totalCompletedBatchDetails?.toString() ?? '0';
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildCard(
+                  'Batch', totalBatches, Icons.layers, AppColors.batchBlue),
+            ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _buildCard(
-                'Total Files', '09', Icons.folder, AppColors.fileRed),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildCard(
+                  'Total Files', totalFiles, Icons.folder, AppColors.fileRed),
+            ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _buildCard(
-                'Completed', '07', Icons.check_circle, AppColors.fileYellow),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildCard('Completed', completedFiles, Icons.check_circle,
+                  AppColors.fileYellow),
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   Widget _buildCard(String title, String count, IconData icon, Color color) {
     return GestureDetector(
       onTap: () {
-        print(":");
         Get.to(const BatchesView());
       },
       child: Container(

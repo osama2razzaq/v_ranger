@@ -4,7 +4,7 @@ import 'package:v_ranger/core/values/app_values.dart';
 
 class FormLoader extends StatelessWidget {
   final Color circularColor;
-  const FormLoader({this.circularColor = AppColors.colorWhite, super.key});
+  const FormLoader({this.circularColor = AppColors.primaryColor, super.key});
 
   @override
   Widget build(BuildContext context) {

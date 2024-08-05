@@ -14,7 +14,8 @@ import 'package:v_ranger/features/settings/presentation/views/settings_view.dart
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
   final BottomNavController controller = Get.put(BottomNavController());
-  final DashboardController controller1 = Get.put(DashboardController());
+  final DashboardController dashboardController =
+      Get.put(DashboardController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +78,8 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget? bottomNavigationBar() => BottomNavBar(
-      onNewMenuSelected: (menuCode) => controller1.onMenuSelected(menuCode));
+      onNewMenuSelected: (menuCode) =>
+          dashboardController.onMenuSelected(menuCode));
 
   Widget getPageOnSelectedMenu(MenuCode menuCode) {
     switch (menuCode) {
