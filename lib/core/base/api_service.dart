@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
+import 'package:v_ranger/features/login/data/model/userDetails_model.dart';
 
 class ApiService {
   Future<http.Response> login(
@@ -54,13 +55,13 @@ class ApiService {
     }
   }
 
-  Future<BatchesModel?> fetchBatchesData() async {
+  Future<BatchesModel?> fetchBatchesData(String batchId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.batches}');
-    final body = {'driver_id': 1.toString(), 'batch_id': null};
+    final body = {'driver_id': 1.toString(), 'batch_id': batchId};
     final bodyJson = jsonEncode(body);
 
     print("bodyJson== $bodyJson");
@@ -85,5 +86,14 @@ class ApiService {
       print('Error: $e');
       return null;
     }
+  }
+
+  Future<UserDetails?> getUserDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('user_data');
+    if (jsonString != null) {
+      return userDetailsFromJson(jsonString);
+    }
+    return null;
   }
 }

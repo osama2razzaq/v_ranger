@@ -114,10 +114,10 @@ Widget _buildMapsButtons(BuildContext context) {
           label: 'View In Maps',
           icon: Icons.map,
           onTap: () {
-            Get.to(MapScreen(
-              lat: 3.0951973,
-              long: 101.5920271,
-            ));
+            Get.to(() => MapScreen(
+                  lat: 3.0951973,
+                  long: 101.5920271,
+                ));
           },
           colors: [Colors.white, Colors.white!],
           borderColor: AppColors.primaryColor,

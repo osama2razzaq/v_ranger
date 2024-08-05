@@ -12,9 +12,12 @@ class BatchesListController extends GetxController with SnackBarHelper {
   @override
   Future<void> onInit() async {
     super.onInit();
+    fetchBatchesData('');
+  }
 
+  Future<void> fetchBatchesData(String? batchId) async {
     try {
-      final result = await apiService.fetchBatchesData();
+      final result = await apiService.fetchBatchesData(batchId!);
       data.value = result;
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');

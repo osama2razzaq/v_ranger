@@ -2,12 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/values.dart';
 import 'package:v_ranger/features/batches/presentation/views/batchesList_view.dart';
-import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
 import 'package:v_ranger/features/home/presentation/controllers/home_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
@@ -141,7 +139,7 @@ class _HomeViewState extends State<HomeView> {
     return GestureDetector(
       onTap: () {
         //Get.to(const BatchesView());
-        Get.to(BatchesListView());
+        Get.to(() => BatchesListView());
       },
       child: Container(
         //width: 100,
