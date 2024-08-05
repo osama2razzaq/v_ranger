@@ -17,8 +17,10 @@ class AppPages {
       name: Routes.dashboard,
       page: () => DashboardView(),
     ),
-    //   GetPage(
-    //       name: Routes.login, page: () => LoginView(), binding: LoginBinding()),
+    GetPage(
+      name: Routes.login,
+      page: () => LoginView(),
+    ),
     //   GetPage(
     //       name: Routes.termsCondtions,
     //       page: () => TermsConditionsView(),

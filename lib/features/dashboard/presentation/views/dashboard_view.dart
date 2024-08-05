@@ -36,7 +36,7 @@ class DashboardView extends StatelessWidget {
           ),
           Container(
             color: Colors.white,
-            child: const SettingsView(),
+            child: SettingsView(),
           ),
         ],
         onPageChanged: (index) {

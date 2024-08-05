@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
+import 'package:v_ranger/features/settings/presentation/controllers/settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
-
+  SettingsView({super.key});
+  final SettingsController controller = Get.put(SettingsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +56,7 @@ class SettingsView extends StatelessWidget {
               'Logout',
               () {
                 print("Logout");
+                controller.logout();
               },
             ),
           ],

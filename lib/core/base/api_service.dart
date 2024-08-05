@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
@@ -20,6 +18,25 @@ class ApiService {
         'devicetoken': deviceToken,
       },
     );
+    return response;
+  }
+
+  Future<http.Response> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+
+    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.logout}');
+    print("logout response== $token");
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
+    );
+    print("logout response== ${response.body}");
     return response;
   }
 
