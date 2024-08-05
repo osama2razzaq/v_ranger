@@ -29,8 +29,8 @@ class LoginController extends GetxController with SnackBarHelper {
 
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
-        final response =
-            await apiService.login("ramkumar", "ramkumar", deviceToken);
+        final response = await apiService.login(
+            emailController.text, passwordController.text, deviceToken);
 
         if (response.statusCode == 200) {
           // Parse successful response

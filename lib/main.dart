@@ -2,14 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/routing/app_pages.dart';
+import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/features/login/presentation/controllers/auth_service.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the AuthService
+  final authService = AuthService();
+  final token = await authService.getAccessToken();
+
+  // Determine the initial route based on the token
+  print("token== $token");
+  final initialRoute = token != null ? Routes.dashboard : Routes.login;
+
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: '',
       debugShowCheckedModeBanner: false,
       locale: Get.deviceLocale,
-      initialRoute: AppPages.initial,
+      initialRoute: initialRoute,
       getPages: AppPages.routes,
       // translations: Apptranslations(),
       // fallbackLocale: Apptranslations.fallbackLocale,
