@@ -131,6 +131,7 @@ class CustomTextField extends StatelessWidget {
         ValueListenableBuilder<bool>(
           valueListenable: _passwordVisible,
           builder: (context, value, child) => TextFormField(
+            cursorColor: AppColors.primaryColor,
             autofocus: autoFocus,
             controller: textEditingController,
             validator: validator,

@@ -7,9 +7,14 @@ import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 // For HTTP requests
 
 class SurveyPage extends StatelessWidget {
+  final BatchesListController controller;
+  final int index;
+  const SurveyPage({Key? key, required this.controller, required this.index})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,83 +83,105 @@ class SurveyPage extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget _userInfoForm(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _detailItem('Account ID', '5914141241'),
-        _detailItem('Account No', '88866033'),
-        _detailItem('Name', 'THINESH'),
-        _detailItem('IC Number', '************'),
-        _detailItem('Address',
-            'B-17-4 Level 17, Tower B (Plaza Pantai Persian Pantai Baru, Off, Jalan Pantai Baharu 59200, Kuala Lumpur'),
-        _detailItem('Total Outstanding', 'RM 140.00'),
-        _detailItem('Latitude', 'THINESH'),
-        _detailItem('Longitude', 'THINESH'),
-        _detailItem('Distance', '30.0 KM'),
-        _buildMapsButtons(context),
-        _buildNextButton(context, buttonName: 'Next')
-      ],
-    ),
-  );
-}
-
-Widget _buildMapsButtons(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CustomButton(
-          label: 'View In Maps',
-          icon: Icons.map,
-          onTap: () {
-            Get.to(() => MapScreen(
-                  lat: 3.0951973,
-                  long: 101.5920271,
-                ));
-          },
-          colors: [Colors.white, Colors.white!],
-          borderColor: AppColors.primaryColor,
-          textColor: Colors.blue[900]!,
-        ),
-        const SizedBox(width: 10),
-        CustomButton(
-          label: 'Direction',
-          icon: Icons.directions,
-          onTap: () {
-            print('Direction tapped');
-            navigateTo(1.3333, 0.33);
-          },
-          colors: [
-            AppColors.gradientStartColor, // Start color
-            AppColors.gradientMiddleColor,
-            AppColors.gradientEndColor, // End color
-          ],
-          borderColor: AppColors.primaryColor,
-          textColor: Colors.white,
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildNextButton(BuildContext context, {required String buttonName}) {
-  return Center(
-    child: Container(
-      width: MediaQuery.of(context).size.width,
-      child: SingleButton(
-        bgColor: AppColors.primaryColor,
-        buttonName: buttonName,
-        onTap: () => {},
+  Widget _userInfoForm(BuildContext context) {
+    final details = controller.data.value?.data!.first.pendingDetails![index];
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _detailItem('Account ID', '5914141241'),
+          _detailItem('Account No', '88866033'),
+          _detailItem('Name', 'THINESH'),
+          _detailItem('IC Number', '************'),
+          _detailItem('Address', details!.address!),
+          _detailItem('Total Outstanding', 'RM 140.00'),
+          _detailItem('Latitude', 'THINESH'),
+          _detailItem('Longitude', 'THINESH'),
+          _detailItem('Distance', '30.0 KM'),
+          _buildMapsButtons(context),
+          _buildNextButton(context, buttonName: 'Next')
+        ],
       ),
-    ),
-  );
+    );
+  }
+
+  Widget _buildMapsButtons(BuildContext context) {
+    final details = controller.data.value?.data!.first.pendingDetails![index];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CustomButton(
+            label: 'View In Maps',
+            icon: Icons.map,
+            onTap: () {
+              Get.to(() => MapScreen(
+                    lat: double.parse(details!.batchfileLatitude!),
+                    long: double.parse(details.batchfileLongitude!),
+                  ));
+            },
+            colors: [Colors.white, Colors.white!],
+            borderColor: AppColors.primaryColor,
+            textColor: Colors.blue[900]!,
+          ),
+          const SizedBox(width: 10),
+          CustomButton(
+            label: 'Direction',
+            icon: Icons.directions,
+            onTap: () {
+              print('Direction tapped');
+              navigateTo(1.3333, 0.33);
+            },
+            colors: [
+              AppColors.gradientStartColor, // Start color
+              AppColors.gradientMiddleColor,
+              AppColors.gradientEndColor, // End color
+            ],
+            borderColor: AppColors.primaryColor,
+            textColor: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextButton(BuildContext context, {required String buttonName}) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: SingleButton(
+          bgColor: AppColors.primaryColor,
+          buttonName: buttonName,
+          onTap: () => {},
+        ),
+      ),
+    );
+  }
+
+  Widget _detailItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 4.0),
+          Text(
+            label,
+            style: PromptStyle.profileSubTitle,
+          ),
+          Text(
+            value,
+            style: PromptStyle.profileTitle,
+          ),
+          const Divider(),
+        ],
+      ),
+    );
+  }
 }
 
 void navigateTo(double lat, double lng) async {
@@ -164,27 +191,6 @@ void navigateTo(double lat, double lng) async {
   } else {
     throw 'Could not launch ${uri.toString()}';
   }
-}
-
-Widget _detailItem(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 0.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 4.0),
-        Text(
-          label,
-          style: PromptStyle.profileSubTitle,
-        ),
-        Text(
-          value,
-          style: PromptStyle.profileTitle,
-        ),
-        const Divider(),
-      ],
-    ),
-  );
 }
 
 class CustomButton extends StatelessWidget {

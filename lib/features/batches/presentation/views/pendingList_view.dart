@@ -70,8 +70,10 @@ class PendingList extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  print("Navigating to survey details");
-                  Get.to(() => SurveyPage());
+                  Get.to(() => SurveyPage(
+                        controller: controller,
+                        index: index,
+                      ));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(5),
