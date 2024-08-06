@@ -14,7 +14,7 @@ void main() async {
   final token = await authService.getAccessToken();
 
   // Determine the initial route based on the token
-  print("token== $token");
+
   final initialRoute = token != null ? Routes.dashboard : Routes.login;
 
   runApp(MyApp(initialRoute: initialRoute));

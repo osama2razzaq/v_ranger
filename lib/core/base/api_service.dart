@@ -94,7 +94,7 @@ class ApiService {
 
       print('Failed to load data111 ${response.body}');
       if (response.statusCode == 200) {
-        return batchesFromJson(response.body);
+        return batchesModelFromJson(response.body);
       } else {
         print('Failed to load data111');
         return null;

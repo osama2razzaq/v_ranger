@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:v_ranger/core/common_widgets/map_view.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -8,13 +12,16 @@ import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
+import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 // For HTTP requests
 
 class SurveyPage extends StatelessWidget {
   final BatchesListController controller;
   final int index;
-  const SurveyPage({Key? key, required this.controller, required this.index})
+  SurveyPage({Key? key, required this.controller, required this.index})
       : super(key: key);
+
+  final LocationController locationController = Get.put(LocationController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,20 +93,32 @@ class SurveyPage extends StatelessWidget {
 
   Widget _userInfoForm(BuildContext context) {
     final details = controller.data.value?.data!.first.pendingDetails![index];
+    final currentLocation = locationController.currentLocation.value!;
+
+    double coordinateDistance(lat1, lon1, lat2, lon2) {
+      const double p = 0.017453292519943295; // Pi / 180
+      var c = cos;
+      var a = 0.5 -
+          c((lat2 - lat1) * p) / 2 +
+          c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+      return 12742 * asin(sqrt(a)); // 12742 = 2 * EarthRadius (in kilometers)
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _detailItem('Account ID', '5914141241'),
-          _detailItem('Account No', '88866033'),
-          _detailItem('Name', 'THINESH'),
-          _detailItem('IC Number', '************'),
-          _detailItem('Address', details!.address!),
-          _detailItem('Total Outstanding', 'RM 140.00'),
-          _detailItem('Latitude', 'THINESH'),
-          _detailItem('Longitude', 'THINESH'),
-          _detailItem('Distance', '30.0 KM'),
+          _detailItem('Account ID', details!.id!.toString()),
+          _detailItem('Account No', details!.accountNo!.toString()),
+          _detailItem('Name', details.name.toString()),
+          _detailItem('IC Number', details.icNo!.toString()),
+          _detailItem('Address', details.address!),
+          _detailItem('Total Outstanding', 'RM ${details.amount!.toString()}'),
+          _detailItem('Latitude', details.batchfileLatitude!.toString()),
+          _detailItem('Longitude', details.batchfileLongitude!.toString()),
+          _detailItem('Distance',
+              "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
           _buildMapsButtons(context),
           _buildNextButton(context, buttonName: 'Next')
         ],

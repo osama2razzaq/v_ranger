@@ -1,13 +1,13 @@
 // To parse this JSON data, do
 //
-//     final batches = batchesFromJson(jsonString);
+//     final batchesModel = batchesModelFromJson(jsonString);
 
 import 'dart:convert';
 
-BatchesModel batchesFromJson(String str) =>
+BatchesModel batchesModelFromJson(String str) =>
     BatchesModel.fromJson(json.decode(str));
 
-String batchesToJson(BatchesModel data) => json.encode(data.toJson());
+String batchesModelToJson(BatchesModel data) => json.encode(data.toJson());
 
 class BatchesModel {
   String? status;
@@ -97,6 +97,11 @@ class Datum {
 class PendingDetail {
   int? id;
   int? batchId;
+  String? name;
+  String? icNo;
+  String? accountNo;
+  String? billNo;
+  String? amount;
   String? address;
   String? districtLa;
   String? tamanMmid;
@@ -108,6 +113,11 @@ class PendingDetail {
   PendingDetail({
     this.id,
     this.batchId,
+    this.name,
+    this.icNo,
+    this.accountNo,
+    this.billNo,
+    this.amount,
     this.address,
     this.districtLa,
     this.tamanMmid,
@@ -120,6 +130,11 @@ class PendingDetail {
   factory PendingDetail.fromJson(Map<String, dynamic> json) => PendingDetail(
         id: json["id"],
         batchId: json["batch_id"],
+        name: json["name"],
+        icNo: json["ic_no"],
+        accountNo: json["account_no"],
+        billNo: json["bill_no"],
+        amount: json["amount"],
         address: json["address"],
         districtLa: json["district_la"],
         tamanMmid: json["taman_mmid"],
@@ -132,6 +147,11 @@ class PendingDetail {
   Map<String, dynamic> toJson() => {
         "id": id,
         "batch_id": batchId,
+        "name": name,
+        "ic_no": icNo,
+        "account_no": accountNo,
+        "bill_no": billNo,
+        "amount": amount,
         "address": address,
         "district_la": districtLa,
         "taman_mmid": tamanMmid,

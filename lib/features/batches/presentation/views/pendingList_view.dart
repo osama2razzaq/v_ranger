@@ -15,7 +15,7 @@ class PendingList extends StatelessWidget {
     return Obx(() {
       if (controller.data.value == null) {
         return const Center(
-            child: const CircularProgressIndicator(
+            child: CircularProgressIndicator(
           color: AppColors.primaryColor,
         ));
       } else if (controller.data.value!.data!.isEmpty) {

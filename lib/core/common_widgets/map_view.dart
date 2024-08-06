@@ -9,6 +9,7 @@ import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_details_view.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 import 'package:http/http.dart' as http; // For HTTP requests
+import 'package:geocoding/geocoding.dart'; // Import the geocoding package
 
 class MapScreen extends StatefulWidget {
   final double lat;
@@ -25,6 +26,16 @@ class _MapScreenState extends State<MapScreen> {
   final LocationController locationController = Get.put(LocationController());
 
   List<LatLng> polylinePoints = [];
+  String myAddress = '';
+  String destinationAddress = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getAddress(widget.lat, widget.long, true);
+    _getAddress(locationController.currentLocation.value!.latitude!,
+        locationController.currentLocation.value!.longitude!, false);
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -109,6 +120,26 @@ class _MapScreenState extends State<MapScreen> {
     return 12742 * asin(sqrt(a));
   }
 
+  Future<void> _getAddress(double lat, double lon, bool isDestination) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks.first;
+        String address =
+            '${placemark.street}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
+        setState(() {
+          if (isDestination) {
+            destinationAddress = address;
+          } else {
+            myAddress = address;
+          }
+        });
+      }
+    } catch (e) {
+      print('Error getting address: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,15 +174,17 @@ class _MapScreenState extends State<MapScreen> {
                             locationController.currentLocation.value!.latitude!,
                             locationController
                                 .currentLocation.value!.longitude!),
-                        infoWindow: const InfoWindow(
+                        infoWindow: InfoWindow(
                           title: 'My Location',
+                          snippet: myAddress,
                         ),
                       ),
                       Marker(
                         markerId: const MarkerId('end'),
                         position: LatLng(widget.lat, widget.long),
-                        infoWindow: const InfoWindow(
+                        infoWindow: InfoWindow(
                           title: 'Destination',
+                          snippet: destinationAddress,
                         ),
                       ),
                     },
@@ -203,17 +236,18 @@ class _MapScreenState extends State<MapScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'My Location',
+                                  myAddress,
                                   style: PromptStyle.locationAddress,
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 Text(
-                                  'B-17-4, Level 17, Tower B (Plaza Pantai\nPersiaran Pantai Baru, Off, Jalan Pantai\nBaharu, 59200 Kuala Lumpur',
+                                  destinationAddress,
                                   style: PromptStyle.locationAddress,
                                 ),
                               ],
