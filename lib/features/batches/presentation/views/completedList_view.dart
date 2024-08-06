@@ -26,7 +26,7 @@ class CompletedList extends StatelessWidget {
         }
 
         return ListView.builder(
-          itemCount: completedList!.length,
+          itemCount: completedList.length,
           itemBuilder: (context, index) {
             final batch = completedList[index];
             return Slidable(

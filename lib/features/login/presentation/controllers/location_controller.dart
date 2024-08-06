@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LocationController extends GetxController {
   var currentLocation = Rxn<LocationData>();
@@ -15,21 +14,21 @@ class LocationController extends GetxController {
   }
 
   Future<void> getLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
     // Ensure location services are enabled
-    _serviceEnabled = await _location.serviceEnabled();
-    while (!_serviceEnabled) {
+    serviceEnabled = await _location.serviceEnabled();
+    while (!serviceEnabled) {
       await showServiceAlert();
-      _serviceEnabled = await _location.requestService();
+      serviceEnabled = await _location.requestService();
     }
 
     // Ensure location permissions are granted
-    _permissionGranted = await _location.hasPermission();
-    while (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await _location.hasPermission();
+    while (permissionGranted != PermissionStatus.granted) {
       await showPermissionAlert();
-      _permissionGranted = await _location.requestPermission();
+      permissionGranted = await _location.requestPermission();
     }
 
     // Get the current location
@@ -49,8 +48,7 @@ class LocationController extends GetxController {
           TextButton(
             onPressed: () async {
               // Open the location settings
-              await Geolocator.openAppSettings();
-              ;
+              await Geolocator.openLocationSettings();
             },
             child: Text('Open Settings'),
           ),

@@ -1,9 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:v_ranger/core/common_widgets/map_view.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -93,7 +91,9 @@ class SurveyPage extends StatelessWidget {
 
   Widget _userInfoForm(BuildContext context) {
     final details = controller.data.value?.data!.first.pendingDetails![index];
-    final currentLocation = locationController.currentLocation.value!;
+    if (locationController.currentLocation.value == null) {
+      locationController.getLocation();
+    }
 
     double coordinateDistance(lat1, lon1, lat2, lon2) {
       const double p = 0.017453292519943295; // Pi / 180
@@ -104,26 +104,37 @@ class SurveyPage extends StatelessWidget {
       return 12742 * asin(sqrt(a)); // 12742 = 2 * EarthRadius (in kilometers)
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _detailItem('Account ID', details!.id!.toString()),
-          _detailItem('Account No', details!.accountNo!.toString()),
-          _detailItem('Name', details.name.toString()),
-          _detailItem('IC Number', details.icNo!.toString()),
-          _detailItem('Address', details.address!),
-          _detailItem('Total Outstanding', 'RM ${details.amount!.toString()}'),
-          _detailItem('Latitude', details.batchfileLatitude!.toString()),
-          _detailItem('Longitude', details.batchfileLongitude!.toString()),
-          _detailItem('Distance',
-              "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
-          _buildMapsButtons(context),
-          _buildNextButton(context, buttonName: 'Next')
-        ],
-      ),
-    );
+    return Obx(() => Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _detailItem('Account ID', details!.id!.toString()),
+              _detailItem('Account No', details!.accountNo!.toString()),
+              _detailItem('Name', details.name.toString()),
+              _detailItem('IC Number', details.icNo!.toString()),
+              _detailItem('Address', details.address!),
+              _detailItem(
+                  'Total Outstanding', 'RM ${details.amount!.toString()}'),
+              _detailItem('Latitude', details.batchfileLatitude!.toString()),
+              _detailItem('Longitude', details.batchfileLongitude!.toString()),
+              (locationController.currentLocation.value != null)
+                  ? _detailItem(
+                      'Distance',
+                      "${coordinateDistance(
+                        locationController.currentLocation.value!.latitude,
+                        locationController.currentLocation.value!.longitude,
+                        double.parse(details.batchfileLatitude!),
+                        double.parse(details.batchfileLongitude!),
+                      ).toStringAsFixed(2)} KM")
+                  : _detailItem('Distance', 'Unknown'),
+              // _detailItem('Distance',
+              //     "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
+              _buildMapsButtons(context),
+              _buildNextButton(context, buttonName: 'Next')
+            ],
+          ),
+        ));
   }
 
   Widget _buildMapsButtons(BuildContext context) {

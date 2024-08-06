@@ -64,7 +64,7 @@ class BatchesListView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.data.value == null) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.filteredData.isEmpty) {
