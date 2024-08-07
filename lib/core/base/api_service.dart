@@ -44,10 +44,11 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId');
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
     final body = {
-      'driver_id': 1,
+      'driver_id': driveId,
     };
     final bodyJson = jsonEncode(body);
     try {
@@ -76,9 +77,10 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.batches}');
-    final body = {'driver_id': 1.toString(), 'batch_id': batchId};
+    final body = {'driver_id': driveId.toString(), 'batch_id': batchId};
     final bodyJson = jsonEncode(body);
 
     print("bodyJson== $bodyJson");
@@ -103,14 +105,5 @@ class ApiService {
       print('Error: $e');
       return null;
     }
-  }
-
-  Future<UserDetails?> getUserDetails() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('user_data');
-    if (jsonString != null) {
-      return userDetailsFromJson(jsonString);
-    }
-    return null;
   }
 }

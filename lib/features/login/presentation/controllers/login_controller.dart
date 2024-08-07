@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // For local storage
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:v_ranger/features/profile/presentation/controllers/user_controller.dart'; // For local storage
 
 class LoginController extends GetxController with SnackBarHelper {
   // Observables for email and password
@@ -14,7 +15,7 @@ class LoginController extends GetxController with SnackBarHelper {
   // TextEditingController for the input fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
+  final UserController userController = Get.put(UserController());
   // Instance of ApiService
   final ApiService apiService =
       ApiService(); // Replace with your actual base URL
@@ -36,12 +37,13 @@ class LoginController extends GetxController with SnackBarHelper {
           // Parse successful response
           final responseData = jsonDecode(response.body);
           final accessToken = responseData['access_token'];
-          final userDetails = responseData['details'];
+          final driveId = responseData['details']['id'];
 
           // Save access token and user details locally
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('access_token', accessToken);
-          await prefs.setString('user_details', userDetails.toString());
+          await prefs.setInt('driveId', driveId);
+
           Get.offAllNamed(Routes.dashboard);
           showNormalSnackBar("Login successful");
         } else {
