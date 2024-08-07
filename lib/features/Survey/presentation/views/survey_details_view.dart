@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:v_ranger/core/common_widgets/map_view.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -11,7 +14,6 @@ import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
-// For HTTP requests
 
 class SurveyPage extends StatelessWidget {
   final BatchesListController controller;
@@ -91,6 +93,7 @@ class SurveyPage extends StatelessWidget {
 
   Widget _userInfoForm(BuildContext context) {
     final details = controller.data.value?.data!.first.pendingDetails![index];
+
     if (locationController.currentLocation.value == null) {
       locationController.getLocation();
     }
@@ -103,6 +106,33 @@ class SurveyPage extends StatelessWidget {
           c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
       return 12742 * asin(sqrt(a)); // 12742 = 2 * EarthRadius (in kilometers)
     }
+
+    Future<double> getDistance(String address) async {
+      List<Location> locations = await locationFromAddress(address);
+      if (locationController.currentLocation.value != null &&
+          locations.isNotEmpty) {
+        ByRoadDistanceCalculator distanceCalculator =
+            ByRoadDistanceCalculator();
+        String distanceString = await distanceCalculator.getDistance(
+            'AIzaSyBfk2lf9GDygZA8S95qs4Q94pRYrEjls8M',
+            startLatitude: // Your API key
+                locationController.currentLocation.value!.latitude!,
+            startLongitude:
+                locationController.currentLocation.value!.longitude!,
+            destinationLatitude: locations.first.latitude,
+            destinationLongitude: locations.first.longitude,
+            travelMode:
+                TravelModes.driving // Assuming travelMode should be a String
+            );
+
+        // Convert the distance to double
+        double distance = double.tryParse(distanceString) ?? -1;
+        return distance;
+      }
+      return -1;
+    }
+
+    ByRoadDistanceCalculator distance = ByRoadDistanceCalculator();
 
     return Obx(() => Padding(
           padding: const EdgeInsets.all(16.0),
@@ -118,16 +148,22 @@ class SurveyPage extends StatelessWidget {
                   'Total Outstanding', 'RM ${details.amount!.toString()}'),
               _detailItem('Latitude', details.batchfileLatitude!.toString()),
               _detailItem('Longitude', details.batchfileLongitude!.toString()),
-              (locationController.currentLocation.value != null)
-                  ? _detailItem(
-                      'Distance',
-                      "${coordinateDistance(
-                        locationController.currentLocation.value!.latitude,
-                        locationController.currentLocation.value!.longitude,
-                        double.parse(details.batchfileLatitude!),
-                        double.parse(details.batchfileLongitude!),
-                      ).toStringAsFixed(2)} KM")
-                  : _detailItem('Distance', 'Unknown'),
+              FutureBuilder<double>(
+                future: getDistance("${details.address!},${details.tamanMmid}"),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return _detailItem('Distance', 'Calculating...');
+                  } else if (snapshot.hasError) {
+                    return _detailItem(
+                        'Distance', 'Error calculating distance');
+                  } else if (snapshot.hasData) {
+                    return _detailItem(
+                        'Distance', "${snapshot.data!.toStringAsFixed(2)} KM");
+                  } else {
+                    return _detailItem('Distance', 'Unknown');
+                  }
+                },
+              ),
               // _detailItem('Distance',
               //     "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
               _buildMapsButtons(context),
@@ -150,8 +186,8 @@ class SurveyPage extends StatelessWidget {
             icon: Icons.map,
             onTap: () {
               Get.to(() => MapScreen(
-                    lat: double.parse(details!.batchfileLatitude!),
-                    long: double.parse(details.batchfileLongitude!),
+                    destinationAddress:
+                        "${details!.address!},${details.tamanMmid}",
                   ));
             },
             colors: [Colors.white, Colors.white!],

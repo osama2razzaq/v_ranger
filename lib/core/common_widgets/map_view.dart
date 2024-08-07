@@ -12,9 +12,9 @@ import 'package:http/http.dart' as http; // For HTTP requests
 import 'package:geocoding/geocoding.dart'; // Import the geocoding package
 
 class MapScreen extends StatefulWidget {
-  final double lat;
-  final double long;
-  MapScreen({super.key, required this.lat, required this.long});
+  final String destinationAddress; // Accept address as input
+
+  MapScreen({super.key, required this.destinationAddress});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -28,13 +28,14 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> polylinePoints = [];
   String myAddress = '';
   String destinationAddress = '';
+  LatLng? destinationLatLng; // Store destination coordinates
 
   @override
   void initState() {
     super.initState();
-    _getAddress(widget.lat, widget.long, true);
-    _getAddress(locationController.currentLocation.value!.latitude!,
-        locationController.currentLocation.value!.longitude!, false);
+    _getAddress(locationController.currentLocation.value?.latitude ?? 0,
+        locationController.currentLocation.value?.longitude ?? 0, false);
+    _getLatLngFromAddress(widget.destinationAddress);
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -44,9 +45,26 @@ class _MapScreenState extends State<MapScreen> {
 
   double distance = 0.0;
   double duration = 0.0;
+
+  Future<void> _getLatLngFromAddress(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      if (locations.isNotEmpty) {
+        final location = locations.first;
+        setState(() {
+          destinationLatLng = LatLng(location.latitude, location.longitude);
+        });
+        _getAddress(location.latitude, location.longitude, true);
+        _getPolyline(); // Fetch polyline after getting coordinates
+      }
+    } catch (e) {
+      print('Error getting location from address: $e');
+    }
+  }
+
   _getPolyline() async {
     String url =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=${locationController.currentLocation.value!.latitude},${locationController.currentLocation.value!.longitude}&destination=${widget.lat},${widget.long}&mode=driving&key=AIzaSyBfk2lf9GDygZA8S95qs4Q94pRYrEjls8M";
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${locationController.currentLocation.value!.latitude},${locationController.currentLocation.value!.longitude}&destination=${destinationLatLng?.latitude},${destinationLatLng?.longitude}&mode=driving&key=AIzaSyBfk2lf9GDygZA8S95qs4Q94pRYrEjls8M";
     Uri uri = Uri.parse(url);
 
     http.Response response = await http.get(uri);
@@ -179,14 +197,16 @@ class _MapScreenState extends State<MapScreen> {
                           snippet: myAddress,
                         ),
                       ),
-                      Marker(
-                        markerId: const MarkerId('end'),
-                        position: LatLng(widget.lat, widget.long),
-                        infoWindow: InfoWindow(
-                          title: 'Destination',
-                          snippet: destinationAddress,
+                      if (destinationLatLng != null)
+                        Marker(
+                          markerId: const MarkerId('end'),
+                          position: LatLng(destinationLatLng!.latitude,
+                              destinationLatLng!.longitude),
+                          infoWindow: InfoWindow(
+                            title: 'Destination',
+                            snippet: destinationAddress,
+                          ),
                         ),
-                      ),
                     },
                     polylines: {
                       Polyline(
@@ -247,7 +267,7 @@ class _MapScreenState extends State<MapScreen> {
                                   height: 10,
                                 ),
                                 Text(
-                                  destinationAddress,
+                                  widget.destinationAddress,
                                   style: PromptStyle.locationAddress,
                                 ),
                               ],
@@ -285,7 +305,8 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              navigateTo(widget.lat, widget.long);
+                              navigateTo(destinationLatLng!.latitude,
+                                  destinationLatLng!.longitude);
                             },
                             style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
