@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
-import 'package:v_ranger/features/login/data/model/userDetails_model.dart';
 
 class ApiService {
   Future<http.Response> login(

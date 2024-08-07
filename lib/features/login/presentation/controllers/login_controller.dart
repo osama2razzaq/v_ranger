@@ -5,7 +5,6 @@ import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:v_ranger/features/profile/presentation/controllers/user_controller.dart'; // For local storage
 
 class LoginController extends GetxController with SnackBarHelper {
   // Observables for email and password
@@ -15,7 +14,7 @@ class LoginController extends GetxController with SnackBarHelper {
   // TextEditingController for the input fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final UserController userController = Get.put(UserController());
+
   // Instance of ApiService
   final ApiService apiService =
       ApiService(); // Replace with your actual base URL
