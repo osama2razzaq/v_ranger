@@ -32,6 +32,7 @@ class SettingsController extends GetxController with SnackBarHelper {
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('access_token');
+        await prefs.remove('driveId');
         Get.offAllNamed(Routes.login);
 
         showNormalSnackBar("Logged out successfully");
