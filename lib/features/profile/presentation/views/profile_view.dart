@@ -34,7 +34,7 @@ class ProfileView extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Row(
                     children: [
-                      _buildProfileImage(),
+                      _buildProfileImage(controller),
                       _buildProfileName(controller),
                     ],
                   ),
@@ -56,27 +56,26 @@ class ProfileView extends StatelessWidget {
         ));
   }
 
-  Widget _buildProfileImage() {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: CircleAvatar(
-          radius: 55,
-          backgroundColor: AppColors.primaryColor,
+  Widget _buildProfileImage(ProfileController controller) {
+    return Obx(() {
+      final profile = controller.data.value?.profile;
+      return Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Align(
+          alignment: Alignment.topCenter,
           child: CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.white,
+            radius: 55,
+            backgroundColor: AppColors.primaryColor,
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage(
-                AppAssets.profileImage,
-              ),
+              backgroundColor: AppColors.scoreBgColor2,
+              child: Text(profile?.name![0].toUpperCase() ?? "Loading...",
+                  style: PromptStyle.profileCenterAlphabets),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildProfileName(ProfileController controller) {
@@ -86,7 +85,7 @@ class ProfileView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            profile?.name ?? "Loading...",
+            profile?.name!.toUpperCase() ?? "Loading...",
             style: PromptStyle.profileNameStyle,
           ),
           // _buildProgressBar(),

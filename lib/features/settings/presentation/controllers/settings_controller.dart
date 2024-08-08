@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // For local storage
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/core/values/app_strings.dart'; // For local storage
 
 class SettingsController extends GetxController with SnackBarHelper {
   // Observables for email and password
@@ -33,6 +35,7 @@ class SettingsController extends GetxController with SnackBarHelper {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('access_token');
         await prefs.remove('driveId');
+        Get.delete<SettingsController>();
         Get.offAllNamed(Routes.login);
 
         showNormalSnackBar("Logged out successfully");
@@ -67,6 +70,59 @@ class SettingsController extends GetxController with SnackBarHelper {
       await prefs.setInt('error_status_code', -1); // -1 indicates an exception
       await prefs.setString('error_message', e.toString());
     }
+  }
+
+  Future<void> showPermissionAlert() async {
+    await Get.dialog(
+      AlertDialog(
+        title: const Center(
+          child: Text('Logout',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+                fontSize: 18,
+              )),
+        ),
+        content: const Text('Are you sure, do you want to logout?',
+            style: TextStyle(
+              fontFamily: AppStrings.fontFamilyPrompt,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
+              fontSize: 12,
+            )),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              logout();
+            },
+            child: const Text(
+              'Yes',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(); // Dismiss the dialog
+            },
+            child: const Text(
+              'No',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible:
+          false, // Prevent dismissing the dialog by tapping outside
+    );
   }
 
   @override

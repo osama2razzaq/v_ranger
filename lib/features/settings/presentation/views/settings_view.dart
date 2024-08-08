@@ -30,33 +30,26 @@ class SettingsView extends StatelessWidget {
               context,
               Icons.notifications,
               'Notifications',
-              () {
-                print("Notifications");
-              },
+              () {},
             ),
             _settingItem(
               context,
               Icons.fingerprint,
               'Fingerprint Enable',
-              () {
-                print("Fingerprint");
-              },
+              () {},
             ),
             _settingItem(
               context,
               Icons.lock,
               'Change Password',
-              () {
-                print("Password");
-              },
+              () {},
             ),
             _settingItem(
               context,
               Icons.logout,
               'Logout',
               () {
-                print("Logout");
-                controller.logout();
+                controller.showPermissionAlert();
               },
             ),
           ],

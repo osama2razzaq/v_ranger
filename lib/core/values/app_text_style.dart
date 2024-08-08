@@ -147,4 +147,9 @@ abstract class PromptStyle {
     fontWeight: FontWeight.w500,
     color: AppColors.black,
   );
+  static TextStyle profileCenterAlphabets = defaultStyle.copyWith(
+    fontSize: 58,
+    fontWeight: FontWeight.w600,
+    color: AppColors.primaryColor,
+  );
 }

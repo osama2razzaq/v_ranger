@@ -3,6 +3,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:v_ranger/core/base/api_service.dart';
+import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/core/values/app_strings.dart';
+import 'package:v_ranger/core/values/app_text_style.dart';
 
 class LocationController extends GetxController {
   var currentLocation = Rxn<LocationData>();
@@ -52,21 +55,50 @@ class LocationController extends GetxController {
   Future<void> showServiceAlert() async {
     await Get.dialog(
       AlertDialog(
-        title: Text('Location Service'),
-        content: Text('Location services are required. Please enable them.'),
+        title: const Center(
+          child: Text('Location Service',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+                fontSize: 18,
+              )),
+        ),
+        content:
+            const Text('Location services are required. Please enable them.',
+                style: TextStyle(
+                  fontFamily: AppStrings.fontFamilyPrompt,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.black,
+                  fontSize: 12,
+                )),
         actions: [
           TextButton(
             onPressed: () async {
               // Open the location settings
               await Geolocator.openLocationSettings();
             },
-            child: Text('Open Settings'),
+            child: const Text(
+              'Open Settings',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               Get.back(); // Dismiss the dialog
             },
-            child: Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
           ),
         ],
       ),
@@ -78,21 +110,50 @@ class LocationController extends GetxController {
   Future<void> showPermissionAlert() async {
     await Get.dialog(
       AlertDialog(
-        title: Text('Location Permission'),
-        content: Text('Location permissions are required. Please grant them.'),
+        title: const Center(
+          child: Text('Location Permission',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+                fontSize: 18,
+              )),
+        ),
+        content:
+            const Text('Location permissions are required. Please grant them.',
+                style: TextStyle(
+                  fontFamily: AppStrings.fontFamilyPrompt,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.black,
+                  fontSize: 12,
+                )),
         actions: [
           TextButton(
             onPressed: () async {
               // Open the app settings
               await Geolocator.openAppSettings();
             },
-            child: Text('Open Settings'),
+            child: const Text(
+              'Open Settings',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               Get.back(); // Dismiss the dialog
             },
-            child: Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
           ),
         ],
       ),
@@ -104,14 +165,14 @@ class LocationController extends GetxController {
   Future<void> showErrorAlert(String message) async {
     await Get.dialog(
       AlertDialog(
-        title: Text('Error'),
+        title: const Center(child: const Text('Error')),
         content: Text('Failed to get location: $message'),
         actions: [
           TextButton(
             onPressed: () {
               Get.back(); // Dismiss the dialog
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
