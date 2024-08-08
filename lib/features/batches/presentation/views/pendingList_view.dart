@@ -70,7 +70,7 @@ class PendingList extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => SurveyPage(
+                  Get.to(() => SurveyDetailsPage(
                         controller: controller,
                         index: index,
                       ));

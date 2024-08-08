@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:get/get.dart';
 import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,13 +12,14 @@ import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
+import 'package:v_ranger/features/Survey/presentation/views/survey_form_view.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 
-class SurveyPage extends StatelessWidget {
+class SurveyDetailsPage extends StatelessWidget {
   final BatchesListController controller;
   final int index;
-  SurveyPage({Key? key, required this.controller, required this.index})
+  SurveyDetailsPage({Key? key, required this.controller, required this.index})
       : super(key: key);
 
   final LocationController locationController = Get.put(LocationController());
@@ -83,7 +84,8 @@ class SurveyPage extends StatelessWidget {
                     _userInfoForm(context)
                   ],
                 ),
-              )
+              ),
+              _buildNextButton(context, buttonName: 'Next')
             ],
           ),
         ),
@@ -167,7 +169,6 @@ class SurveyPage extends StatelessWidget {
               // _detailItem('Distance',
               //     "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
               _buildMapsButtons(context),
-              _buildNextButton(context, buttonName: 'Next')
             ],
           ),
         ));
@@ -218,11 +219,17 @@ class SurveyPage extends StatelessWidget {
   Widget _buildNextButton(BuildContext context, {required String buttonName}) {
     return Center(
       child: Container(
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
         width: MediaQuery.of(context).size.width,
         child: SingleButton(
           bgColor: AppColors.primaryColor,
           buttonName: buttonName,
-          onTap: () => {},
+          onTap: () => {
+            Get.to(() => SurveyFormPage(
+                  controller: controller,
+                  index: index,
+                ))
+          },
         ),
       ),
     );
@@ -267,7 +274,7 @@ class CustomButton extends StatelessWidget {
   final Color? borderColor;
   final Color textColor;
 
-  CustomButton({
+  const CustomButton({
     required this.label,
     required this.icon,
     required this.onTap,

@@ -132,4 +132,14 @@ abstract class PromptStyle {
       fontWeight: FontWeight.w400,
       color: AppColors.textColorGreyDark,
       height: 1.45);
+  static TextStyle toggleTextStyle = defaultStyle.copyWith(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.batchBlue,
+  );
+  static TextStyle hintTextStyle = defaultStyle.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w300,
+    color: AppColors.scoreHeader,
+  );
 }
