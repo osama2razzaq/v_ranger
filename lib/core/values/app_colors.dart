@@ -7,6 +7,7 @@ abstract class AppColors {
 
   static const primaryColor = Color(0xFF174FA1);
   static const primaryWithOpColor = Color(0xFFD1DCEC);
+  static const black = Color.fromARGB(255, 0, 0, 0);
 
   static const secondaryColor = Color(0xFF3e7250);
 

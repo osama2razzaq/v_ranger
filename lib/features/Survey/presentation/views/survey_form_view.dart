@@ -93,15 +93,19 @@ class SurveyFormPage extends StatelessWidget {
                 isVisible: surveyFormController.isCorrectAddressVisible,
                 labelText: 'Correct Address',
               ),
-              customDropdown(
-                labelText: '--Select Ownership--',
-                items: ['Owner', 'Renter', 'Other'],
-                headerText: 'Ownership',
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select Ownership--',
+                  items: surveyFormController.ownershipItems,
+                  headerText: 'Ownership',
+                ),
               ),
-              customDropdown(
-                labelText: '--Select Occupancy Status--',
-                items: ['Owner', 'Renter', 'Other'],
-                headerText: 'Occupancy Status',
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select Occupancy Status--',
+                  items: surveyFormController.occupancyStatusItems,
+                  headerText: 'Occupancy Status',
+                ),
               ),
               customTextField(
                   labelText: 'Occupier Name', hintText: 'Enter Occupier Name'),
@@ -113,26 +117,32 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: 'Occupier Email', hintText: 'Enter Email Address'),
               customTextField(
                   labelText: 'Shope Name', hintText: 'Enter Business Name'),
-              customDropdown(
-                labelText: '--Select Nature Of Business--',
-                items: ['Business1', 'Business2', 'Business3'],
-                headerText: 'Nature Of Business Code',
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select Nature Of Business--',
+                  items: surveyFormController.natureOfBusinessItems,
+                  headerText: 'Nature Of Business Code',
+                ),
               ),
-              customDropdown(
-                labelText: '--Select DR Code--',
-                items: ['Business1', 'Business2', 'Business3'],
-                headerText: 'DR Code',
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select DR Code--',
+                  items: surveyFormController.drCodeItems,
+                  headerText: 'DR Code',
+                ),
               ),
-              customDropdown(
-                labelText: '--Select Property List--',
-                items: ['Business1', 'Business2', 'Business3'],
-                headerText: 'Property Type',
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select Property List--',
+                  items: surveyFormController.propertyTypeItems,
+                  headerText: 'Property Type',
+                ),
               ),
-              customDropdown(
-                labelText: '--Select Classification--',
-                items: ['Business1', 'Business2', 'Business3'],
-                headerText: 'Classification',
-              ),
+              Obx(() => customDropdown(
+                    labelText: '--Select Classification--',
+                    items: surveyFormController.classificationItems,
+                    headerText: 'Classification',
+                  )),
             ],
           ),
         ),
@@ -165,6 +175,7 @@ class SurveyFormPage extends StatelessWidget {
                 border: Border.all(color: AppColors.boaderColor, width: 2),
                 borderRadius: BorderRadius.circular(12)),
             child: DropdownButtonFormField<String>(
+              dropdownColor: Colors.white,
               decoration: const InputDecoration(border: InputBorder.none),
               hint: Text(
                 labelText!,
@@ -173,10 +184,15 @@ class SurveyFormPage extends StatelessWidget {
               items: items?.map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(
+                    maxLines: 2,
+                    value,
+                    style: PromptStyle.dropDownInerText,
+                  ),
                 );
               }).toList(),
               onChanged: (newValue) {},
+              isExpanded: true,
             ),
           ),
         ],

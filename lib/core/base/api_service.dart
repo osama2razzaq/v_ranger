@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
+import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
 
@@ -98,6 +99,36 @@ class ApiService {
         return batchesModelFromJson(response.body);
       } else {
         print('Failed to load data111');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<DropdownModel?> fetchDropDownData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getdropdowns}');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      print('Failed to load getdropdowns ${response.body}');
+      if (response.statusCode == 200) {
+        return dropdownModelFromJson(response.body);
+      } else {
+        print('Failed to load getdropdowns');
         return null;
       }
     } catch (e) {

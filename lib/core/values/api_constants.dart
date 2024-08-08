@@ -26,4 +26,5 @@ abstract class ApiConstants {
   static const logout = '/logout';
   static const dashboard = '/dashboard';
   static const batches = '/batches';
+  static const getdropdowns = '/getdropdowns';
 }
