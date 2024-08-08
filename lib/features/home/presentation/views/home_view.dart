@@ -83,16 +83,21 @@ class _HomeViewState extends State<HomeView> {
       batch.batchDetails?.forEach((detail) {
         markers.add(
           Marker(
-            markerId: MarkerId(detail.id.toString()),
-            position: LatLng(
-              double.parse(detail.batchfileLatitude ?? '0'),
-              double.parse(detail.batchfileLongitude ?? '0'),
-            ),
-            infoWindow: InfoWindow(
-              title: detail.address,
-              snippet: 'Batch: ${batch.batchNo}',
-            ),
-          ),
+              markerId: MarkerId(detail.id.toString()),
+              position: LatLng(
+                double.parse(detail.batchfileLatitude ?? '0'),
+                double.parse(detail.batchfileLongitude ?? '0'),
+              ),
+              infoWindow: InfoWindow(
+                title: detail.address,
+                snippet: 'Batch: ${batch.batchNo}',
+              ),
+              onTap: () {
+                print(batch.id);
+                Get.to(() => BatchesTabsView(
+                      batchId: '${batch.id}',
+                    ));
+              }),
         );
       });
     });
