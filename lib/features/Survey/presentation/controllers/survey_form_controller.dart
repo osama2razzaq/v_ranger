@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
@@ -5,6 +6,16 @@ import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 
 class SurveyFormController extends GetxController with SnackBarHelper {
   final Rx<DropdownModel?> dropDownData = Rx<DropdownModel?>(null);
+
+  // Controllers for text fields
+  final waterBillController = TextEditingController();
+  final waterMeterController = TextEditingController();
+  final correctAddressController = TextEditingController();
+  final occupierNameController = TextEditingController();
+  final occupierPhoneNumberController = TextEditingController();
+  final occupierEmailController = TextEditingController();
+  final shopNameController = TextEditingController();
+
   // Observable lists for dropdowns
   var ownershipItems = <String>[].obs;
   var occupancyStatusItems = <String>[].obs;
@@ -23,6 +34,18 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   void onInit() {
     fetchDropdownList();
     super.onInit();
+  }
+
+  void onClose() {
+    // Dispose all controllers when the controller is disposed
+    waterBillController.dispose();
+    waterMeterController.dispose();
+    correctAddressController.dispose();
+    occupierNameController.dispose();
+    occupierPhoneNumberController.dispose();
+    occupierEmailController.dispose();
+    shopNameController.dispose();
+    super.onClose();
   }
 
   Future<void> fetchDropdownList() async {

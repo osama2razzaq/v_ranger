@@ -82,17 +82,17 @@ class SurveyFormPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               toggleTextField(
-                isVisible: surveyFormController.isWaterBillVisible,
-                labelText: 'Water Bill',
-              ),
+                  isVisible: surveyFormController.isWaterBillVisible,
+                  labelText: 'Water Bill',
+                  controller: surveyFormController.waterBillController),
               toggleTextField(
-                isVisible: surveyFormController.isWaterMeterVisible,
-                labelText: 'Water Meter',
-              ),
+                  isVisible: surveyFormController.isWaterMeterVisible,
+                  labelText: 'Water Meter',
+                  controller: surveyFormController.waterMeterController),
               toggleTextField(
-                isVisible: surveyFormController.isCorrectAddressVisible,
-                labelText: 'Correct Address',
-              ),
+                  isVisible: surveyFormController.isCorrectAddressVisible,
+                  labelText: 'Correct Address',
+                  controller: surveyFormController.correctAddressController),
               Obx(
                 () => customDropdown(
                   labelText: '--Select Ownership--',
@@ -108,15 +108,23 @@ class SurveyFormPage extends StatelessWidget {
                 ),
               ),
               customTextField(
-                  labelText: 'Occupier Name', hintText: 'Enter Occupier Name'),
+                  labelText: 'Occupier Name',
+                  hintText: 'Enter Occupier Name',
+                  controller: surveyFormController.occupierNameController),
               const SizedBox(height: 10),
               customTextField(
                   labelText: 'Occupier Phone Number',
-                  hintText: 'Enter Phone Number'),
+                  hintText: 'Enter Phone Number',
+                  controller:
+                      surveyFormController.occupierPhoneNumberController),
               customTextField(
-                  labelText: 'Occupier Email', hintText: 'Enter Email Address'),
+                  labelText: 'Occupier Email',
+                  hintText: 'Enter Email Address',
+                  controller: surveyFormController.occupierEmailController),
               customTextField(
-                  labelText: 'Shope Name', hintText: 'Enter Business Name'),
+                  labelText: 'Shope Name',
+                  hintText: 'Enter Business Name',
+                  controller: surveyFormController.shopNameController),
               Obx(
                 () => customDropdown(
                   labelText: '--Select Nature Of Business--',
@@ -200,7 +208,11 @@ class SurveyFormPage extends StatelessWidget {
     );
   }
 
-  Widget customTextField({String? labelText, String? hintText}) {
+  Widget customTextField({
+    String? labelText,
+    String? hintText,
+    required TextEditingController controller,
+  }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: Column(
@@ -247,7 +259,11 @@ class SurveyFormPage extends StatelessWidget {
     );
   }
 
-  Widget toggleTextField({RxBool? isVisible, String? labelText}) {
+  Widget toggleTextField({
+    required RxBool? isVisible,
+    required String? labelText,
+    required TextEditingController? controller,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -279,7 +295,10 @@ class SurveyFormPage extends StatelessWidget {
           ],
         ),
         Obx(() => isVisible!.value
-            ? customTextField(labelText: null, hintText: 'Enter $labelText')
+            ? customTextField(
+                labelText: null,
+                hintText: 'Enter $labelText',
+                controller: controller!)
             : Container()),
       ],
     );
