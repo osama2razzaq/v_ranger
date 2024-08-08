@@ -40,8 +40,8 @@ class Data {
   int? completedCount;
   int? abortedCount;
   List<PendingDetail>? pendingDetails;
-  List<dynamic>? completedDetails;
-  List<dynamic>? abortedDetails;
+  List<CompletedDetail>? completedDetails;
+  List<AbortedDetail>? abortedDetails;
 
   Data({
     this.pendingCount,
@@ -62,10 +62,12 @@ class Data {
                 json["pending_details"]!.map((x) => PendingDetail.fromJson(x))),
         completedDetails: json["completed_details"] == null
             ? []
-            : List<dynamic>.from(json["completed_details"]!.map((x) => x)),
+            : List<CompletedDetail>.from(json["completed_details"]!
+                .map((x) => CompletedDetail.fromJson(x))),
         abortedDetails: json["aborted_details"] == null
             ? []
-            : List<dynamic>.from(json["aborted_details"]!.map((x) => x)),
+            : List<AbortedDetail>.from(
+                json["aborted_details"]!.map((x) => AbortedDetail.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -77,10 +79,10 @@ class Data {
             : List<dynamic>.from(pendingDetails!.map((x) => x.toJson())),
         "completed_details": completedDetails == null
             ? []
-            : List<dynamic>.from(completedDetails!.map((x) => x)),
+            : List<dynamic>.from(completedDetails!.map((x) => x.toJson())),
         "aborted_details": abortedDetails == null
             ? []
-            : List<dynamic>.from(abortedDetails!.map((x) => x)),
+            : List<dynamic>.from(abortedDetails!.map((x) => x.toJson())),
       };
 }
 
@@ -120,6 +122,151 @@ class PendingDetail {
   });
 
   factory PendingDetail.fromJson(Map<String, dynamic> json) => PendingDetail(
+        id: json["id"],
+        batchId: json["batch_id"],
+        name: json["name"],
+        icNo: json["ic_no"],
+        accountNo: json["account_no"],
+        billNo: json["bill_no"],
+        amount: json["amount"],
+        address: json["address"],
+        districtLa: json["district_la"],
+        tamanMmid: json["taman_mmid"],
+        assignedto: json["assignedto"],
+        batchfileLatitude: json["batchfile_latitude"],
+        status: json["status"],
+        batchfileLongitude: json["batchfile_longitude"],
+        pinnedAt: json["pinned_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "batch_id": batchId,
+        "name": name,
+        "ic_no": icNo,
+        "account_no": accountNo,
+        "bill_no": billNo,
+        "amount": amount,
+        "address": address,
+        "district_la": districtLa,
+        "taman_mmid": tamanMmid,
+        "assignedto": assignedto,
+        "batchfile_latitude": batchfileLatitude,
+        "status": status,
+        "batchfile_longitude": batchfileLongitude,
+        "pinned_at": pinnedAt,
+      };
+}
+
+class CompletedDetail {
+  int? id;
+  int? batchId;
+  String? name;
+  String? icNo;
+  String? accountNo;
+  String? billNo;
+  String? amount;
+  String? address;
+  String? districtLa;
+  String? tamanMmid;
+  int? assignedto;
+  String? batchfileLatitude;
+  String? status;
+  String? batchfileLongitude;
+  dynamic pinnedAt;
+
+  CompletedDetail({
+    this.id,
+    this.batchId,
+    this.name,
+    this.icNo,
+    this.accountNo,
+    this.billNo,
+    this.amount,
+    this.address,
+    this.districtLa,
+    this.tamanMmid,
+    this.assignedto,
+    this.batchfileLatitude,
+    this.status,
+    this.batchfileLongitude,
+    this.pinnedAt,
+  });
+
+  factory CompletedDetail.fromJson(Map<String, dynamic> json) =>
+      CompletedDetail(
+        id: json["id"],
+        batchId: json["batch_id"],
+        name: json["name"],
+        icNo: json["ic_no"],
+        accountNo: json["account_no"],
+        billNo: json["bill_no"],
+        amount: json["amount"],
+        address: json["address"],
+        districtLa: json["district_la"],
+        tamanMmid: json["taman_mmid"],
+        assignedto: json["assignedto"],
+        batchfileLatitude: json["batchfile_latitude"],
+        status: json["status"],
+        batchfileLongitude: json["batchfile_longitude"],
+        pinnedAt: json["pinned_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "batch_id": batchId,
+        "name": name,
+        "ic_no": icNo,
+        "account_no": accountNo,
+        "bill_no": billNo,
+        "amount": amount,
+        "address": address,
+        "district_la": districtLa,
+        "taman_mmid": tamanMmid,
+        "assignedto": assignedto,
+        "batchfile_latitude": batchfileLatitude,
+        "status": status,
+        "batchfile_longitude": batchfileLongitude,
+        "pinned_at": pinnedAt,
+      };
+}
+
+class AbortedDetail {
+  int? id;
+  int? batchId;
+  String? name;
+  String? icNo;
+  String? accountNo;
+  String? billNo;
+  String? amount;
+  String? address;
+  String? districtLa;
+  String? tamanMmid;
+  int? assignedto;
+  String? batchfileLatitude;
+  String? status;
+  String? batchfileLongitude;
+  dynamic pinnedAt;
+
+  AbortedDetail({
+    this.id,
+    this.batchId,
+    this.name,
+    this.icNo,
+    this.accountNo,
+    this.billNo,
+    this.amount,
+    this.address,
+    this.districtLa,
+    this.tamanMmid,
+    this.assignedto,
+    this.batchfileLatitude,
+    this.status,
+    this.batchfileLongitude,
+    this.pinnedAt,
+  });
+
+  factory AbortedDetail.fromJson(Map<String, dynamic> json) => AbortedDetail(
         id: json["id"],
         batchId: json["batch_id"],
         name: json["name"],

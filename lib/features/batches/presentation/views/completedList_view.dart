@@ -102,7 +102,7 @@ class CompletedList extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            batch.name,
+                            batch.name.toString(),
                             softWrap: true,
                             style: const TextStyle(
                               fontSize: 12,
@@ -114,7 +114,7 @@ class CompletedList extends StatelessWidget {
                             width: MediaQuery.of(context).size.width / 1.3,
                             child: Text(
                               maxLines: 3,
-                              batch.address,
+                              batch.address.toString(),
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,

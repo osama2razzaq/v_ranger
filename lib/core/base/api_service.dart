@@ -213,4 +213,41 @@ class ApiService {
     }
     return null;
   }
+
+  Future<http.Response?> updateBatchPin(
+      String batchDetailId, String action) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.updatebatchdetailpin}');
+    final body = {
+      'batch_detail_id': batchDetailId,
+      'action': action,
+    };
+    final bodyJson = jsonEncode(body);
+
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      print('updateBatchPin updated successfully${response.body}');
+      if (response.statusCode == 200) {
+        print('updateBatchPin has been updated');
+      } else {
+        print('Failed to load updateBatchPin');
+        return response;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+    return null;
+  }
 }

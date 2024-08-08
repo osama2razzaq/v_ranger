@@ -12,16 +12,17 @@ class AbortList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.data.value == null) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+            child: CircularProgressIndicator(
+          color: AppColors.primaryColor,
+        ));
+      } else if (controller.data.value!.data!.pendingDetails!.isEmpty) {
+        return const Center(child: Text('No pending batches'));
       } else {
         var abortList = controller.data.value!.data!.abortedDetails;
 
-        if (abortList!.isEmpty) {
-          return const Center(child: Text('No aborted batches'));
-        }
-
         return ListView.builder(
-          itemCount: abortList.length,
+          itemCount: abortList!.length,
           itemBuilder: (context, index) {
             final batch = abortList[index];
             return Container(
@@ -56,7 +57,7 @@ class AbortList extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          batch.name,
+                          batch.name.toString(),
                           softWrap: true,
                           style: const TextStyle(
                             fontSize: 12,
@@ -68,7 +69,7 @@ class AbortList extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 1.3,
                           child: Text(
                             maxLines: 3,
-                            batch.address,
+                            batch.address.toString(),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -80,8 +81,8 @@ class AbortList extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios,
-                      size: 16, color: AppColors.scoreHeader),
+                  // const Icon(Icons.arrow_forward_ios,
+                  //     size: 16, color: AppColors.scoreHeader),
                 ],
               ),
             );

@@ -23,18 +23,10 @@ class BatchesListController extends GetxController with SnackBarHelper {
     try {
       final result = await apiService.fetchBatchesData(batchId!);
       data.value = result;
-      updateCounts();
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
     }
-  }
-
-  void updateCounts() {
-    // Assuming your BatchesModel has lists for pending, completed, and aborted batches
-    pendingCount.value = data.value?.data!.first.pendingCount! as int;
-    completedCount.value = data.value?.data!.first.completedCount! as int;
-    abortCount.value = data.value?.data!.first.abortedCount! as int;
   }
 
   var searchText = "".obs;

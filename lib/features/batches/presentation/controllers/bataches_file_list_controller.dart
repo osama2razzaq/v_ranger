@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
@@ -27,6 +29,23 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
       final result = await apiService.fetchBatchDetailsList(batchId!);
       data.value = result;
       updateCounts();
+    } catch (e) {
+      showNormalSnackBar('Failed to load data: $e');
+      data.value = null; // Clear data on error
+    }
+  }
+
+  Future<void> updateBatchPin(
+    String? batchId,
+    String? batchfileId,
+    String? action,
+  ) async {
+    try {
+      final result = await apiService.updateBatchPin(batchfileId!, action!);
+      final responseData = jsonDecode(result!.body);
+      final message = responseData['message'] ?? 'Unknown error';
+      fetchBatchesData(batchId);
+      showNormalSnackBar(message);
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
