@@ -24,6 +24,7 @@ abstract class ApiConstants {
   static const baseUrl = 'http://124.217.247.246/api';
   static const login = '/login';
   static const logout = '/logout';
+  static const driverprofile = '/driverprofile';
   static const dashboard = '/dashboard';
   static const batches = '/batches';
   static const getbatchdetails = '/getbatchdetails';

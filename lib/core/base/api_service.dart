@@ -6,6 +6,7 @@ import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 import 'package:v_ranger/features/batches/data/model/batch_details_model.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
+import 'package:v_ranger/features/profile/data/model/profile_model.dart';
 
 class ApiService {
   Future<http.Response> login(
@@ -63,6 +64,38 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return dashboardModelFromJson(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<ProfileModel?> fetchProfileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId');
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driverprofile}');
+    final body = {
+      'driver_id': driveId.toString(),
+    };
+    final bodyJson = jsonEncode(body);
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return profileModelFromJson(response.body);
       } else {
         return null;
       }
