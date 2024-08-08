@@ -172,4 +172,45 @@ class ApiService {
       return null;
     }
   }
+
+  Future<http.Response?> postUpdateLocation(
+      double latitude, double longitude) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.updatelocation}');
+    final body = {
+      'driver_id': driveId,
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+    final bodyJson = jsonEncode(body);
+
+    print("bodyJson== $bodyJson");
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      print('Location updated successfully${response.body}');
+      if (response.statusCode == 200) {
+        print('location has been updated');
+      } else {
+        print('Failed to load data111');
+        return response;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+    return null;
+  }
 }

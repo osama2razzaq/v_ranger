@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:v_ranger/core/base/api_service.dart';
 
 class LocationController extends GetxController {
   var currentLocation = Rxn<LocationData>();
   final Location _location = Location();
-
+  final ApiService apiService = ApiService();
   @override
   void onInit() {
     super.onInit();
@@ -34,9 +35,18 @@ class LocationController extends GetxController {
     // Get the current location
     try {
       currentLocation.value = await _location.getLocation();
+      updateLocation();
     } catch (e) {
       showErrorAlert(e.toString());
     }
+  }
+
+  Future<void> updateLocation() async {
+    try {
+      final result = await apiService.postUpdateLocation(
+          currentLocation.value!.latitude!, currentLocation.value!.longitude!);
+      print(result);
+    } catch (e) {}
   }
 
   Future<void> showServiceAlert() async {

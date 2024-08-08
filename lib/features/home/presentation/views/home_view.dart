@@ -93,7 +93,6 @@ class _HomeViewState extends State<HomeView> {
                 snippet: 'Batch: ${batch.batchNo}',
               ),
               onTap: () {
-                print(batch.id);
                 Get.to(() => BatchesTabsView(
                       batchId: '${batch.id}',
                     ));
