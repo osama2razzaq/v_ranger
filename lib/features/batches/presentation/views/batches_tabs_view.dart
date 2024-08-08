@@ -2,27 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
-import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 import 'package:v_ranger/features/batches/presentation/views/abortList_view.dart';
 import 'package:v_ranger/features/batches/presentation/views/completedList_view.dart';
 import 'package:v_ranger/features/batches/presentation/views/pendingList_view.dart';
 
 class BatchesTabsView extends StatefulWidget {
-  final int? batchId;
-  const BatchesTabsView({super.key, this.batchId});
+  final String? batchId;
+  final bool? isCompleted;
+
+  const BatchesTabsView({super.key, this.batchId, this.isCompleted});
 
   @override
   _BatchesTabsViewState createState() => _BatchesTabsViewState();
 }
 
 class _BatchesTabsViewState extends State<BatchesTabsView> {
-  TextEditingController _searchController = TextEditingController();
-  final BatchesListController controller = Get.put(BatchesListController());
+  final BatachesFileListController controller =
+      Get.put(BatachesFileListController());
 
   @override
   Widget build(BuildContext context) {
     controller.fetchBatchesData(widget.batchId.toString());
-
+    int initialIndex = widget.isCompleted == true ? 1 : 0;
     return Scaffold(
       backgroundColor: AppColors.colorWhite,
       appBar: AppBar(
@@ -79,6 +81,7 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
       body: SafeArea(
         child: DefaultTabController(
           length: 3,
+          initialIndex: initialIndex,
           child: Column(
             children: <Widget>[
               Container(

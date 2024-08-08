@@ -13,11 +13,12 @@ import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_form_view.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 
 class SurveyDetailsPage extends StatelessWidget {
-  final BatchesListController controller;
+  final BatachesFileListController controller;
   final int index;
   SurveyDetailsPage({Key? key, required this.controller, required this.index})
       : super(key: key);
@@ -94,7 +95,7 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 
   Widget _userInfoForm(BuildContext context) {
-    final details = controller.data.value?.data!.first.pendingDetails![index];
+    final details = controller.data.value!.data!.pendingDetails![index];
 
     if (locationController.currentLocation.value == null) {
       locationController.getLocation();
@@ -175,7 +176,7 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 
   Widget _buildMapsButtons(BuildContext context) {
-    final details = controller.data.value?.data!.first.pendingDetails![index];
+    final details = controller.data.value?.data!.pendingDetails![index];
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Row(

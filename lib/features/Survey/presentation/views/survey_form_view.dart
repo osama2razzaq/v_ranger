@@ -6,10 +6,11 @@ import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_uploadImage_view.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 
 class SurveyFormPage extends StatelessWidget {
-  final BatchesListController controller;
+  final BatachesFileListController controller;
   final int index;
   SurveyFormPage({Key? key, required this.controller, required this.index})
       : super(key: key);

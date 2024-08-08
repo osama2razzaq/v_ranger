@@ -3,10 +3,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_details_view.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 
 class PendingList extends StatelessWidget {
-  final BatchesListController controller;
+  final BatachesFileListController controller;
 
   const PendingList({Key? key, required this.controller}) : super(key: key);
 
@@ -18,10 +19,10 @@ class PendingList extends StatelessWidget {
             child: CircularProgressIndicator(
           color: AppColors.primaryColor,
         ));
-      } else if (controller.data.value!.data!.isEmpty) {
+      } else if (controller.data.value!.data!.pendingDetails!.isEmpty) {
         return const Center(child: Text('No pending batches'));
       } else {
-        var pendingList = controller.data.value!.data!.first.pendingDetails;
+        var pendingList = controller.data.value!.data!.pendingDetails;
 
         return ListView.builder(
           itemCount: pendingList!.length,

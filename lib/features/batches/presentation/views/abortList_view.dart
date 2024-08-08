@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
-import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
 class AbortList extends StatelessWidget {
-  final BatchesListController controller;
+  final BatachesFileListController controller;
 
   const AbortList({Key? key, required this.controller}) : super(key: key);
 
@@ -14,7 +14,7 @@ class AbortList extends StatelessWidget {
       if (controller.data.value == null) {
         return const Center(child: CircularProgressIndicator());
       } else {
-        var abortList = controller.data.value!.data!.first.abortedDetails;
+        var abortList = controller.data.value!.data!.abortedDetails;
 
         if (abortList!.isEmpty) {
           return const Center(child: Text('No aborted batches'));

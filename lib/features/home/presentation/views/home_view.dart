@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/values.dart';
 import 'package:v_ranger/features/batches/presentation/views/batchesList_view.dart';
+import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
 import 'package:v_ranger/features/home/presentation/controllers/home_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
@@ -50,7 +51,7 @@ class _HomeViewState extends State<HomeView> {
         ),
         child: Obx(() {
           if (controller.data.value == null) {
-            return Center(child: FormLoader());
+            return const Center(child: FormLoader());
           }
 
           markers = _createMarkersFromData(controller.data.value!);
@@ -113,21 +114,50 @@ class _HomeViewState extends State<HomeView> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: _buildCard(
-                  'Batch', totalBatches, Icons.layers, AppColors.batchBlue),
+                'Batch',
+                totalBatches,
+                Icons.layers,
+                AppColors.batchBlue,
+                () {
+                  //Get.to(const BatchesView());
+                  Get.to(() => BatchesListView());
+                },
+              ),
             ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: _buildCard(
-                  'Total Files', totalFiles, Icons.folder, AppColors.fileRed),
+                'Total Files',
+                totalFiles,
+                Icons.folder,
+                AppColors.fileRed,
+                () {
+                  //Get.to(const BatchesView());
+                  Get.to(() => const BatchesTabsView(
+                        batchId: '',
+                      ));
+                },
+              ),
             ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _buildCard('Completed', completedFiles, Icons.check_circle,
-                  AppColors.fileYellow),
+              child: _buildCard(
+                'Completed',
+                completedFiles,
+                Icons.check_circle,
+                AppColors.fileYellow,
+                () {
+                  //Get.to(const BatchesView());
+                  Get.to(() => const BatchesTabsView(
+                        batchId: '',
+                        isCompleted: true,
+                      ));
+                },
+              ),
             ),
           ),
         ],
@@ -135,15 +165,13 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  Widget _buildCard(String title, String count, IconData icon, Color color) {
+  Widget _buildCard(String title, String count, IconData icon, Color color,
+      final VoidCallback onTap) {
     return GestureDetector(
-      onTap: () {
-        //Get.to(const BatchesView());
-        Get.to(() => BatchesListView());
-      },
+      onTap: onTap,
       child: Container(
         //width: 100,
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(10.0),

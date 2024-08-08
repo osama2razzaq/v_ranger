@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
-import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
 class CompletedList extends StatelessWidget {
-  final BatchesListController controller;
+  final BatachesFileListController controller;
 
   const CompletedList({Key? key, required this.controller}) : super(key: key);
 
@@ -17,10 +17,10 @@ class CompletedList extends StatelessWidget {
             child: CircularProgressIndicator(
           color: AppColors.primaryColor,
         ));
-      } else if (controller.data.value!.data!.isEmpty) {
+      } else if (controller.data.value!.data!.completedDetails!.isEmpty) {
         return const Center(child: Text('No completed batches'));
       } else {
-        var completedList = controller.data.value!.data!.first.completedDetails;
+        var completedList = controller.data.value!.data!.completedDetails;
         if (completedList!.isEmpty) {
           return const Center(child: Text('No completed batches'));
         }

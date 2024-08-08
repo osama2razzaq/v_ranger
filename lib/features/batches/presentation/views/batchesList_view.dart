@@ -68,7 +68,7 @@ class BatchesListView extends StatelessWidget {
         }
 
         if (controller.filteredData.isEmpty) {
-          return Center(child: Text("No batches found"));
+          return const Center(child: Text("No batches found"));
         }
 
         return ListView.builder(
@@ -77,7 +77,8 @@ class BatchesListView extends StatelessWidget {
             var batch = controller.filteredData[index];
             return GestureDetector(
               onTap: () {
-                Get.to(() => BatchesTabsView(batchId: batch.batchId));
+                Get.to(
+                    () => BatchesTabsView(batchId: batch.batchId.toString()));
               },
               child: Container(
                 padding: const EdgeInsets.all(5),
