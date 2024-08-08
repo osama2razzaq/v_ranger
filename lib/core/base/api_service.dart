@@ -28,7 +28,6 @@ class ApiService {
         prefs.getString('access_token'); // Adjust the key as necessary
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.logout}');
-    print("logout response== $token");
 
     final response = await http.post(
       url,
@@ -37,7 +36,7 @@ class ApiService {
         "Authorization": "Bearer $token"
       },
     );
-    print("logout response== ${response.body}");
+
     return response;
   }
 
@@ -65,11 +64,9 @@ class ApiService {
       if (response.statusCode == 200) {
         return dashboardModelFromJson(response.body);
       } else {
-        print('Failed to load data');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
@@ -95,15 +92,12 @@ class ApiService {
         },
       );
 
-      print('Failed to load data111 ${response.body}');
       if (response.statusCode == 200) {
         return batchesModelFromJson(response.body);
       } else {
-        print('Failed to load data111');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
@@ -118,8 +112,6 @@ class ApiService {
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
     final body = {'driver_id': driveId.toString(), 'batch_id': batchId};
     final bodyJson = jsonEncode(body);
-
-    print("bodyJson== $bodyJson");
     try {
       final response = await http.post(
         url,
@@ -130,15 +122,12 @@ class ApiService {
         },
       );
 
-      print('Failed to load data111 ${response.body}');
       if (response.statusCode == 200) {
         return batchDetailsListFromJson(response.body);
       } else {
-        print('Failed to load data111');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
@@ -160,15 +149,12 @@ class ApiService {
         },
       );
 
-      print('Failed to load getdropdowns ${response.body}');
       if (response.statusCode == 200) {
         return dropdownModelFromJson(response.body);
       } else {
-        print('Failed to load getdropdowns');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
   }
@@ -189,7 +175,6 @@ class ApiService {
     };
     final bodyJson = jsonEncode(body);
 
-    print("bodyJson== $bodyJson");
     try {
       final response = await http.post(
         url,
@@ -200,15 +185,11 @@ class ApiService {
         },
       );
 
-      print('Location updated successfully${response.body}');
       if (response.statusCode == 200) {
-        print('location has been updated');
       } else {
-        print('Failed to load data111');
         return response;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
     return null;
@@ -237,15 +218,11 @@ class ApiService {
         },
       );
 
-      print('updateBatchPin updated successfully${response.body}');
       if (response.statusCode == 200) {
-        print('updateBatchPin has been updated');
       } else {
-        print('Failed to load updateBatchPin');
         return response;
       }
     } catch (e) {
-      print('Error: $e');
       return null;
     }
     return null;
