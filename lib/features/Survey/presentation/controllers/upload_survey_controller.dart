@@ -11,7 +11,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       Get.find<SurveyFormController>();
   final ImagePicker _picker = ImagePicker();
   var images = <XFile>[].obs;
-
+  var isLoading = false.obs;
   Future<void> pickImage() async {
     if (images.length < 5) {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
@@ -48,6 +48,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     String formattedTime = DateFormat('HH:mm').format(now);
 
     try {
+      isLoading.value = true; //
       final result = await apiService.postSurvey(
         batchId: batchId,
         batchDetailId: batchDetailId,
@@ -87,6 +88,8 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     } catch (e) {
       showErrorSnackBar('Failed to load data: $e');
       print("fetchDropdownList:: ${e}");
+    } finally {
+      isLoading.value = false; // End loading
     }
   }
 }

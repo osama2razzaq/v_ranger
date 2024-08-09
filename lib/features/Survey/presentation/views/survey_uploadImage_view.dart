@@ -113,8 +113,8 @@ class SurveyUploadImagePage extends StatelessWidget {
                             right: 10,
                             top: 10,
                             child: IconButton(
-                              icon:
-                                  Icon(Icons.remove_circle, color: Colors.red),
+                              icon: const Icon(Icons.remove_circle,
+                                  color: Colors.red),
                               onPressed: () {
                                 surveyFormController.removeImage(index);
                               },
@@ -127,7 +127,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                 ),
               );
             }),
-            _buildNextButton(context, buttonName: 'Submit')
+            _buildSubmitButton(context, buttonName: 'Submit')
           ],
         ),
       ),
@@ -177,22 +177,40 @@ class SurveyUploadImagePage extends StatelessWidget {
     );
   }
 
-  Widget _buildNextButton(BuildContext context, {required String buttonName}) {
+  Widget _buildSubmitButton(BuildContext context,
+      {required String buttonName}) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-        width: MediaQuery.of(context).size.width,
-        child: SingleButton(
-            bgColor: AppColors.primaryColor,
-            buttonName: buttonName,
-            onTap: () {
-              surveyFormController.postSurvey(
-                  controller.data.value!.data!.completedDetails![index].batchId
-                      .toString(),
-                  controller.data.value!.data!.completedDetails![index].id
-                      .toString());
-            }),
-      ),
+          padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+          width: MediaQuery.of(context).size.width,
+          child: Obx(() {
+            if (!surveyFormController.isLoading.value) {
+              return SingleButton(
+                bgColor: AppColors.primaryColor,
+                buttonName: buttonName,
+                onTap: () {
+                  if (!surveyFormController.isLoading.value) {
+                    surveyFormController.postSurvey(
+                      controller
+                          .data.value!.data!.completedDetails![index].batchId
+                          .toString(),
+                      controller.data.value!.data!.completedDetails![index].id
+                          .toString(),
+                    );
+                  }
+                },
+                isLoading: surveyFormController.isLoading.value,
+              );
+            } else {
+              return const SizedBox(
+                  child: Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryColor,
+                  semanticsLabel: 'uploading',
+                ),
+              ));
+            }
+          })),
     );
   }
 }
