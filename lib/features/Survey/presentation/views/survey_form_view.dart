@@ -7,7 +7,6 @@ import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_uploadImage_view.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
-import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 
 class SurveyFormPage extends StatelessWidget {
   final BatachesFileListController controller;

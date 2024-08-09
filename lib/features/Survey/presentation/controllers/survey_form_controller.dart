@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
@@ -76,6 +77,53 @@ class SurveyFormController extends GetxController with SnackBarHelper {
               .toList() ??
           [];
       print("fetchDropdownList:: $result");
+    } catch (e) {
+      showNormalSnackBar('Failed to load data: $e');
+      dropDownData.value = null; // Clear data on error
+    }
+  }
+
+  Future<void> postSurvey(
+      String batchId, String batchDetailId, String userId) async {
+    DateTime now = DateTime.now();
+
+    // Format the date and time
+    String formattedDate = DateFormat('dd/MM/yy').format(now);
+    String formattedTime = DateFormat('HH:mm').format(now);
+
+    try {
+      final result = await apiService.postSurvey(
+        batchId: batchId,
+        batchDetailId: batchDetailId,
+        userId: userId,
+        waterMeterNo: waterMeterController.text,
+        waterBillNo: waterBillController.text,
+        isCorrectAddress: isCorrectAddressVisible.value,
+        correctAddress: correctAddressController.text,
+        ownership: ownershipItems.isNotEmpty ? ownershipItems.first : null,
+        contactPersonName: occupierNameController.text,
+        contactNumber: occupierPhoneNumberController.text,
+        email: occupierEmailController.text,
+        natureOfBusinessCode: natureOfBusinessItems.isNotEmpty
+            ? natureOfBusinessItems.first
+            : null,
+        shopName: shopNameController.text,
+        drCode: drCodeItems.isNotEmpty ? drCodeItems.first : null,
+        propertyCode:
+            propertyTypeItems.isNotEmpty ? propertyTypeItems.first : null,
+        occupancy:
+            occupancyStatusItems.isNotEmpty ? occupancyStatusItems.first : null,
+        remark: 'your_remark',
+        visitDate: formattedDate,
+        visitTime: formattedTime,
+        photo1: null,
+        photo2: null,
+        photo3: null,
+        photo4: null,
+        photo5: null,
+      );
+
+      print("fetchDropdownList:: ${result!.body}");
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error

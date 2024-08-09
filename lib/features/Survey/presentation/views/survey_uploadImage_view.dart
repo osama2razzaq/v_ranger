@@ -9,6 +9,7 @@ import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/image_controller.dart';
+import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
 class SurveyUploadImagePage extends StatelessWidget {
@@ -17,6 +18,8 @@ class SurveyUploadImagePage extends StatelessWidget {
   SurveyUploadImagePage(
       {super.key, required this.controller, required this.index});
   final ImageController imageController = Get.put(ImageController());
+  final SurveyFormController surveyFormController =
+      Get.put(SurveyFormController());
 
   @override
   Widget build(BuildContext context) {
@@ -179,10 +182,12 @@ class SurveyUploadImagePage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
         width: MediaQuery.of(context).size.width,
         child: SingleButton(
-          bgColor: AppColors.primaryColor,
-          buttonName: buttonName,
-          onTap: () => {},
-        ),
+            bgColor: AppColors.primaryColor,
+            buttonName: buttonName,
+            onTap: () {
+              surveyFormController.postSurvey('3', '185', '3');
+              print(surveyFormController.occupierNameController.text);
+            }),
       ),
     );
   }

@@ -26,6 +26,7 @@ dependencies:
   flutter_polyline_points: ^2.1.0
   gmaps_by_road_distance_calculator: ^2.0.6
   image_picker: ^1.1.2
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

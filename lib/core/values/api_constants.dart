@@ -31,4 +31,5 @@ abstract class ApiConstants {
   static const getdropdowns = '/getdropdowns';
   static const updatelocation = '/updatelocation';
   static const updatebatchdetailpin = '/updatebatchdetail';
+  static const storesurvey = '/storesurvey';
 }
