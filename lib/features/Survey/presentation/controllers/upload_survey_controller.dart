@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:v_ranger/core/base/api_service.dart';
+import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:image_picker/image_picker.dart';
@@ -49,7 +50,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
 
     try {
       isLoading.value = true; //
-      final result = await apiService.postSurvey(
+      final response = await apiService.postSurvey(
         batchId: batchId,
         batchDetailId: batchDetailId,
         waterMeterNo: surveyFormController.waterMeterController.text,
@@ -85,6 +86,12 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         photo4: images.length > 3 ? images[3] : null,
         photo5: images.length > 4 ? images[4] : null,
       );
+      print("esponse.statusCode== ${response?.statusCode}");
+      if (response?.statusCode == 201) {
+        showNormalSnackBar('Survey submitted successfully');
+
+        Get.offAllNamed(Routes.dashboard);
+      }
     } catch (e) {
       showErrorSnackBar('Failed to load data: $e');
       print("fetchDropdownList:: ${e}");
