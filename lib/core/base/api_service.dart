@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
@@ -266,7 +266,6 @@ class ApiService {
   Future<http.Response?> postSurvey({
     required String batchId,
     required String batchDetailId,
-    required String userId,
     String? waterMeterNo,
     String? waterBillNo,
     bool? isCorrectAddress,
@@ -283,11 +282,11 @@ class ApiService {
     String? remark,
     String? visitDate,
     String? visitTime,
-    File? photo1,
-    File? photo2,
-    File? photo3,
-    File? photo4,
-    File? photo5,
+    XFile? photo1,
+    XFile? photo2,
+    XFile? photo3,
+    XFile? photo4,
+    XFile? photo5,
   }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
@@ -295,61 +294,65 @@ class ApiService {
     int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.storesurvey}');
+    final request = http.MultipartRequest('POST', url)
+      ..fields['batch_id'] = batchId
+      ..fields['batch_detail_id'] = batchDetailId
+      ..fields['user_id'] = driveId.toString()
+      ..fields['water_meter_no'] = waterMeterNo ?? ''
+      ..fields['water_bill_no'] = waterBillNo ?? ''
+      ..fields['is_correct_address'] = isCorrectAddress?.toString() ?? ''
+      ..fields['correct_address'] = correctAddress ?? ''
+      ..fields['ownership'] = ownership ?? ''
+      ..fields['contact_person_name'] = contactPersonName ?? ''
+      ..fields['contact_number'] = contactNumber ?? ''
+      ..fields['email'] = email ?? ''
+      ..fields['nature_of_business_code'] = natureOfBusinessCode ?? ''
+      ..fields['shop_name'] = shopName ?? ''
+      ..fields['dr_code'] = drCode ?? ''
+      ..fields['property_code'] = propertyCode ?? ''
+      ..fields['occupancy'] = occupancy ?? ''
+      ..fields['remark'] = remark ?? ''
+      ..fields['visitdate'] = visitDate ?? ''
+      ..fields['visittime'] = visitTime ?? '';
 
-    final paramBody = {
-      'batch_id': batchId,
-      'batch_detail_id': batchDetailId,
-      'user_id': driveId,
-      'water_meter_no': waterMeterNo,
-      'water_bill_no': waterBillNo,
-      'is_correct_address': isCorrectAddress,
-      'correct_address': correctAddress,
-      'ownership': ownership,
-      'contact_person_name': contactPersonName,
-      'contact_number': contactNumber,
-      'email': email,
-      'nature_of_business_code': natureOfBusinessCode,
-      'shop_name': shopName,
-      'dr_code': drCode,
-      'property_code': propertyCode,
-      'occupancy': occupancy,
-      'remark': remark,
-      'visitdate': visitDate,
-      'visittime': visitTime,
-      'photo1': photo1 != null
-          ? await http.MultipartFile.fromPath('image', photo1.path)
-          : null,
-      'photo2': photo2 != null
-          ? await http.MultipartFile.fromPath('image', photo2.path)
-          : null,
-      'photo3': photo3 != null
-          ? await http.MultipartFile.fromPath('image', photo3.path)
-          : null,
-      'photo4': photo4 != null
-          ? await http.MultipartFile.fromPath('image', photo4.path)
-          : null,
-      'photo5': photo5 != null
-          ? await http.MultipartFile.fromPath('image', photo5.path)
-          : null,
-    };
-    final bodyJson = jsonEncode(paramBody);
+    // Add files to the request if they are not null
+    if (photo1 != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('photo1', photo1.path));
+    }
+    if (photo2 != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('photo2', photo2.path));
+    }
+    if (photo3 != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('photo3', photo3.path));
+    }
+    if (photo4 != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('photo4', photo4.path));
+    }
+    if (photo5 != null) {
+      request.files
+          .add(await http.MultipartFile.fromPath('photo5', photo5.path));
+    }
+
+    // Add Authorization header
+    request.headers['Authorization'] = 'Bearer $token';
 
     try {
-      final response = await http.post(
-        url,
-        body: bodyJson,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-      );
+      final response = await request.send();
+      final responseBody = await http.Response.fromStream(response);
 
       if (response.statusCode == 200) {
-        return response;
+        print(responseBody.body);
+        return responseBody;
       } else {
-        return response;
+        print(responseBody.body);
+        return responseBody;
       }
     } catch (e) {
+      print('Error: $e');
       return null;
     }
   }

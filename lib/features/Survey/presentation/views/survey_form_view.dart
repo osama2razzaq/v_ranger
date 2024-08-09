@@ -98,6 +98,7 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: '--Select Ownership--',
                   items: surveyFormController.ownershipItems,
                   headerText: 'Ownership',
+                  selectedValue: surveyFormController.selectedOwnership,
                 ),
               ),
               Obx(
@@ -105,6 +106,7 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: '--Select Occupancy Status--',
                   items: surveyFormController.occupancyStatusItems,
                   headerText: 'Occupancy Status',
+                  selectedValue: surveyFormController.selectedOccupancyStatus,
                 ),
               ),
               customTextField(
@@ -130,6 +132,7 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: '--Select Nature Of Business--',
                   items: surveyFormController.natureOfBusinessItems,
                   headerText: 'Nature Of Business Code',
+                  selectedValue: surveyFormController.selectedNatureOfBusiness,
                 ),
               ),
               Obx(
@@ -137,6 +140,7 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: '--Select DR Code--',
                   items: surveyFormController.drCodeItems,
                   headerText: 'DR Code',
+                  selectedValue: surveyFormController.selectedDrCode,
                 ),
               ),
               Obx(
@@ -144,12 +148,14 @@ class SurveyFormPage extends StatelessWidget {
                   labelText: '--Select Property List--',
                   items: surveyFormController.propertyTypeItems,
                   headerText: 'Property Type',
+                  selectedValue: surveyFormController.selectedPropertyType,
                 ),
               ),
               Obx(() => customDropdown(
                     labelText: '--Select Classification--',
                     items: surveyFormController.classificationItems,
                     headerText: 'Classification',
+                    selectedValue: surveyFormController.selectedClassification,
                   )),
               customTextField(
                   labelText: 'Add (Remarks)',
@@ -166,6 +172,7 @@ class SurveyFormPage extends StatelessWidget {
     required String? headerText,
     required String? labelText,
     required List<String>? items,
+    required Rx<String?> selectedValue,
   }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -203,7 +210,9 @@ class SurveyFormPage extends StatelessWidget {
                   ),
                 );
               }).toList(),
-              onChanged: (newValue) {},
+              onChanged: (newValue) {
+                selectedValue.value = newValue; // Update the selected value
+              },
               isExpanded: true,
             ),
           ),

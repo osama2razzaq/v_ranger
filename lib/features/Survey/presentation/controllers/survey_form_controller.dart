@@ -26,6 +26,14 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   var propertyTypeItems = <String>[].obs;
   var classificationItems = <String>[].obs;
 
+  // Variables to hold selected dropdown values
+  final selectedOwnership = Rx<String?>(null);
+  final selectedOccupancyStatus = Rx<String?>(null);
+  final selectedNatureOfBusiness = Rx<String?>(null);
+  final selectedDrCode = Rx<String?>(null);
+  final selectedPropertyType = Rx<String?>(null);
+  final selectedClassification = Rx<String?>(null);
+
   var isWaterBillVisible = false.obs;
   var isWaterMeterVisible = false.obs;
   var isCorrectAddressVisible = false.obs;
@@ -35,6 +43,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   @override
   void onInit() {
     fetchDropdownList();
+
     super.onInit();
   }
 
@@ -64,13 +73,17 @@ class SurveyFormController extends GetxController with SnackBarHelper {
           [];
 
       natureOfBusinessItems.value = result?.natureOfBussinessCode
-              ?.map((item) => item.natureOfBussinessCodeName!)
+              ?.map((item) =>
+                  "${item.code!} - ${item.natureOfBussinessCodeName!}")
               .toList() ??
           [];
-      drCodeItems.value =
-          result?.drCode?.map((item) => item.drCodeName!).toList() ?? [];
+      drCodeItems.value = result?.drCode
+              ?.map((item) => "${item.code!} - ${item.drCodeName!}")
+              .toList() ??
+          [];
+
       propertyTypeItems.value = result?.propertyType
-              ?.map((item) => item.propertyTypeName!)
+              ?.map((item) => "${item.code!} - ${item.propertyTypeName!}")
               .toList() ??
           [];
       classificationItems.value = result?.classification
@@ -78,53 +91,6 @@ class SurveyFormController extends GetxController with SnackBarHelper {
               .toList() ??
           [];
       print("fetchDropdownList:: $result");
-    } catch (e) {
-      showNormalSnackBar('Failed to load data: $e');
-      dropDownData.value = null; // Clear data on error
-    }
-  }
-
-  Future<void> postSurvey(
-      String batchId, String batchDetailId, String userId) async {
-    DateTime now = DateTime.now();
-
-    // Format the date and time
-    String formattedDate = DateFormat('dd/MM/yy').format(now);
-    String formattedTime = DateFormat('HH:mm').format(now);
-
-    try {
-      final result = await apiService.postSurvey(
-        batchId: batchId,
-        batchDetailId: batchDetailId,
-        userId: userId,
-        waterMeterNo: waterMeterController.text,
-        waterBillNo: waterBillController.text,
-        isCorrectAddress: isCorrectAddressVisible.value,
-        correctAddress: correctAddressController.text,
-        ownership: ownershipItems.isNotEmpty ? ownershipItems.first : null,
-        contactPersonName: occupierNameController.text,
-        contactNumber: occupierPhoneNumberController.text,
-        email: occupierEmailController.text,
-        natureOfBusinessCode: natureOfBusinessItems.isNotEmpty
-            ? natureOfBusinessItems.first
-            : null,
-        shopName: shopNameController.text,
-        drCode: drCodeItems.isNotEmpty ? drCodeItems.first : null,
-        propertyCode:
-            propertyTypeItems.isNotEmpty ? propertyTypeItems.first : null,
-        occupancy:
-            occupancyStatusItems.isNotEmpty ? occupancyStatusItems.first : null,
-        remark: addRemarkController.text,
-        visitDate: formattedDate,
-        visitTime: formattedTime,
-        photo1: null,
-        photo2: null,
-        photo3: null,
-        photo4: null,
-        photo5: null,
-      );
-
-      print("fetchDropdownList:: ${result!.body}");
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error

@@ -8,8 +8,9 @@ import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
-import 'package:v_ranger/features/Survey/presentation/controllers/image_controller.dart';
-import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
+
+import 'package:v_ranger/features/Survey/presentation/controllers/upload_survey_controller.dart';
+
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
 class SurveyUploadImagePage extends StatelessWidget {
@@ -17,9 +18,9 @@ class SurveyUploadImagePage extends StatelessWidget {
   final int index;
   SurveyUploadImagePage(
       {super.key, required this.controller, required this.index});
-  final ImageController imageController = Get.put(ImageController());
-  final SurveyFormController surveyFormController =
-      Get.put(SurveyFormController());
+
+  final UploadSurveyController surveyFormController =
+      Get.put(UploadSurveyController());
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +55,15 @@ class SurveyUploadImagePage extends StatelessWidget {
                 //   height: 600,
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: imageController.images.length +
+                  itemCount: surveyFormController.images.length +
                       1, // Increment itemCount by 1
                   itemBuilder: (context, index) {
-                    if (index == imageController.images.length) {
+                    if (index == surveyFormController.images.length) {
                       // Return the "Add Item" button as the last item
                       return GestureDetector(
                         onTap: () {
                           // Implement the logic to add a new item to the list
-                          imageController
+                          surveyFormController
                               .pickImage(); // Replace with your actual method
                         },
                         child: Padding(
@@ -77,7 +78,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                               ),
                               child: Center(
                                 child: GestureDetector(
-                                  onTap: imageController.pickImage,
+                                  onTap: surveyFormController.pickImage,
                                   child: const Center(
                                     child: Icon(
                                       Icons.camera_alt,
@@ -92,7 +93,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      final image = imageController.images[index];
+                      final image = surveyFormController.images[index];
                       return Stack(
                         children: [
                           Padding(
@@ -115,7 +116,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                               icon:
                                   Icon(Icons.remove_circle, color: Colors.red),
                               onPressed: () {
-                                imageController.removeImage(index);
+                                surveyFormController.removeImage(index);
                               },
                             ),
                           ),
@@ -185,8 +186,11 @@ class SurveyUploadImagePage extends StatelessWidget {
             bgColor: AppColors.primaryColor,
             buttonName: buttonName,
             onTap: () {
-              surveyFormController.postSurvey('3', '185', '3');
-              print(surveyFormController.occupierNameController.text);
+              surveyFormController.postSurvey(
+                  controller.data.value!.data!.completedDetails![index].batchId
+                      .toString(),
+                  controller.data.value!.data!.completedDetails![index].id
+                      .toString());
             }),
       ),
     );
