@@ -143,7 +143,7 @@ abstract class PromptStyle {
     color: AppColors.scoreHeader,
   );
   static TextStyle dropDownInerText = defaultStyle.copyWith(
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.black,
   );

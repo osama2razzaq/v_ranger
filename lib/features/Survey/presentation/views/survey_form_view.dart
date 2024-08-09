@@ -243,6 +243,8 @@ class SurveyFormPage extends StatelessWidget {
               keyboardType: TextInputType.multiline, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
+              style: PromptStyle.dropDownInerText,
+
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
