@@ -140,12 +140,12 @@ class PendingList extends StatelessWidget {
                           children: [
                             batch.pinnedAt == null
                                 ? Container()
-                                : Icon(Icons.push_pin,
+                                : const Icon(Icons.push_pin,
                                     size: 20, color: AppColors.yellow),
-                            SizedBox(
+                            const SizedBox(
                                 width:
                                     10), // Adjust spacing between icons if needed
-                            Icon(Icons.arrow_forward_ios,
+                            const Icon(Icons.arrow_forward_ios,
                                 size: 16, color: AppColors.scoreHeader),
                           ],
                         ),
