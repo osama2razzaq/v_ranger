@@ -151,6 +151,10 @@ class SurveyFormPage extends StatelessWidget {
                     items: surveyFormController.classificationItems,
                     headerText: 'Classification',
                   )),
+              customTextField(
+                  labelText: 'Add (Remarks)',
+                  hintText: 'Write your remarks here......',
+                  controller: surveyFormController.addRemarkController),
             ],
           ),
         ),
@@ -224,8 +228,10 @@ class SurveyFormPage extends StatelessWidget {
               child: Text(labelText, style: PromptStyle.profileSubTitle),
             ),
           SizedBox(
-            height: 50,
+            //    height: 50,
             child: TextField(
+              maxLines: null, // Allows the TextField to grow vertically
+              keyboardType: TextInputType.multiline, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
               decoration: InputDecoration(

@@ -16,6 +16,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   final occupierPhoneNumberController = TextEditingController();
   final occupierEmailController = TextEditingController();
   final shopNameController = TextEditingController();
+  final addRemarkController = TextEditingController();
 
   // Observable lists for dropdowns
   var ownershipItems = <String>[].obs;
@@ -113,7 +114,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
             propertyTypeItems.isNotEmpty ? propertyTypeItems.first : null,
         occupancy:
             occupancyStatusItems.isNotEmpty ? occupancyStatusItems.first : null,
-        remark: 'your_remark',
+        remark: addRemarkController.text,
         visitDate: formattedDate,
         visitTime: formattedTime,
         photo1: null,
