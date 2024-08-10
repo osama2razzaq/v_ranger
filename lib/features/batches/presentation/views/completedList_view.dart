@@ -43,7 +43,7 @@ class CompletedList extends StatelessWidget {
                     //   onPressed: (context) {
                     //     // Pin action
                     //     // Handle pin logic here
-                    //   },
+                    //   },e
                     //   backgroundColor: AppColors.yellow,
                     //   foregroundColor: Colors.white,
                     //   icon: Icons.push_pin,
@@ -57,6 +57,7 @@ class CompletedList extends StatelessWidget {
                         Get.to(() => SurveyDetailsPage(
                               controller: controller,
                               index: index,
+                              isEdit: true,
                             ));
                       },
                       backgroundColor: AppColors.green,

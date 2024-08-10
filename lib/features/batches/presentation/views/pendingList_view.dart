@@ -78,6 +78,7 @@ class PendingList extends StatelessWidget {
                     Get.to(() => SurveyDetailsPage(
                           controller: controller,
                           index: index,
+                          isEdit: false,
                         ));
                   },
                   child: Container(

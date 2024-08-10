@@ -96,7 +96,6 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       }
     } catch (e) {
       showErrorSnackBar('Failed to load data: $e');
-      print("fetchDropdownList:: ${e}");
     } finally {
       isLoading.value = false; // End loading
     }

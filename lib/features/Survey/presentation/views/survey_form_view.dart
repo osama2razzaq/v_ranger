@@ -10,8 +10,14 @@ import 'package:v_ranger/features/batches/presentation/controllers/bataches_file
 
 class SurveyFormPage extends StatelessWidget {
   final BatachesFileListController controller;
+  final bool isEdit;
+
   final int index;
-  SurveyFormPage({Key? key, required this.controller, required this.index})
+  SurveyFormPage(
+      {Key? key,
+      required this.controller,
+      required this.isEdit,
+      required this.index})
       : super(key: key);
   final SurveyFormController surveyFormController =
       Get.put(SurveyFormController());
@@ -394,6 +400,7 @@ class SurveyFormPage extends StatelessWidget {
             Get.to(() => SurveyUploadImagePage(
                   controller: controller,
                   index: index,
+                  isEdit: isEdit,
                 ))
           },
         ),

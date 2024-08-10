@@ -15,9 +15,14 @@ import 'package:v_ranger/features/batches/presentation/controllers/bataches_file
 
 class SurveyUploadImagePage extends StatelessWidget {
   final BatachesFileListController controller;
+  final bool isEdit;
+
   final int index;
   SurveyUploadImagePage(
-      {super.key, required this.controller, required this.index});
+      {super.key,
+      required this.controller,
+      required this.isEdit,
+      required this.index});
 
   final UploadSurveyController surveyFormController =
       Get.put(UploadSurveyController());
@@ -191,11 +196,20 @@ class SurveyUploadImagePage extends StatelessWidget {
                 onTap: () {
                   if (!surveyFormController.isLoading.value) {
                     surveyFormController.postSurvey(
-                      controller
-                          .data.value!.data!.completedDetails![index].batchId
-                          .toString(),
-                      controller.data.value!.data!.completedDetails![index].id
-                          .toString(),
+                      isEdit == true
+                          ? controller.data.value!.data!
+                              .completedDetails![index].batchId
+                              .toString()
+                          : controller
+                              .data.value!.data!.pendingDetails![index].batchId
+                              .toString(),
+                      isEdit == true
+                          ? controller
+                              .data.value!.data!.pendingDetails![index].id
+                              .toString()
+                          : controller
+                              .data.value!.data!.pendingDetails![index].id
+                              .toString(),
                     );
                   }
                 },
