@@ -18,6 +18,16 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   final shopNameController = TextEditingController();
   final addRemarkController = TextEditingController();
 
+  // lists for FocusNode for go to next TextField
+  final FocusNode waterBillFocus = FocusNode();
+  final FocusNode waterMeterFocus = FocusNode();
+  final FocusNode correctAddressFocus = FocusNode();
+  final FocusNode occupierNameFocus = FocusNode();
+  final FocusNode occupierPhoneNumberFocus = FocusNode();
+  final FocusNode occupierEmailFocus = FocusNode();
+  final FocusNode shopNameFocus = FocusNode();
+  final FocusNode addRemarkFocus = FocusNode();
+
   // Observable lists for dropdowns
   var ownershipItems = <String>[].obs;
   var occupancyStatusItems = <String>[].obs;
@@ -33,6 +43,15 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   final selectedDrCode = Rx<String?>(null);
   final selectedPropertyType = Rx<String?>(null);
   final selectedClassification = Rx<String?>(null);
+
+  final inputWaterBill = Rx<String?>(null);
+  final inputWaterMeter = Rx<String?>(null);
+  final inputCorrectAddress = Rx<String?>(null);
+  final inputOccupierName = Rx<String?>(null);
+  final inputOccupierPhoneNumber = Rx<String?>(null);
+  final inputOccupierEmail = Rx<String?>(null);
+  final inputShopName = Rx<String?>(null);
+  final inputAddRemark = Rx<String?>(null);
 
   var isWaterBillVisible = false.obs;
   var isWaterMeterVisible = false.obs;

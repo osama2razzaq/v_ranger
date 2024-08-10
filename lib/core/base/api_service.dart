@@ -266,7 +266,9 @@ class ApiService {
   Future<http.Response?> postSurvey({
     required String batchId,
     required String batchDetailId,
+    bool? hasWaterMeter,
     String? waterMeterNo,
+    bool? hasWaterBill,
     String? waterBillNo,
     bool? isCorrectAddress,
     String? correctAddress,
@@ -280,67 +282,70 @@ class ApiService {
     String? propertyCode,
     String? occupancy,
     String? remark,
-    String? visitDate,
-    String? visitTime,
+    String? visitDate, // Corrected parameter name to match field
+    String? visitTime, // Corrected parameter name to match field
     XFile? photo1,
     XFile? photo2,
     XFile? photo3,
     XFile? photo4,
     XFile? photo5,
   }) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
-
-    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.storesurvey}');
-    final request = http.MultipartRequest('POST', url)
-      ..fields['batch_id'] = batchId
-      ..fields['batch_detail_id'] = batchDetailId
-      ..fields['user_id'] = driveId.toString()
-      ..fields['water_meter_no'] = waterMeterNo ?? ''
-      ..fields['water_bill_no'] = waterBillNo ?? ''
-      ..fields['is_correct_address'] = isCorrectAddress?.toString() ?? ''
-      ..fields['correct_address'] = correctAddress ?? ''
-      ..fields['ownership'] = ownership ?? ''
-      ..fields['contact_person_name'] = contactPersonName ?? ''
-      ..fields['contact_number'] = contactNumber ?? ''
-      ..fields['email'] = email ?? ''
-      ..fields['nature_of_business_code'] = natureOfBusinessCode ?? ''
-      ..fields['shop_name'] = shopName ?? ''
-      ..fields['dr_code'] = drCode ?? ''
-      ..fields['property_code'] = propertyCode ?? ''
-      ..fields['occupancy'] = occupancy ?? ''
-      ..fields['remark'] = remark ?? ''
-      ..fields['visitdate'] = visitDate ?? ''
-      ..fields['visittime'] = visitTime ?? '';
-
-    // Add files to the request if they are not null
-    if (photo1 != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('photo1', photo1.path));
-    }
-    if (photo2 != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('photo2', photo2.path));
-    }
-    if (photo3 != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('photo3', photo3.path));
-    }
-    if (photo4 != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('photo4', photo4.path));
-    }
-    if (photo5 != null) {
-      request.files
-          .add(await http.MultipartFile.fromPath('photo5', photo5.path));
-    }
-
-    // Add Authorization header
-    request.headers['Authorization'] = 'Bearer $token';
-
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('access_token');
+      int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+      if (token == null) throw Exception('No access token found.');
+
+      final url =
+          Uri.parse('${ApiConstants.baseUrl}${ApiConstants.storesurvey}');
+      final request = http.MultipartRequest('POST', url)
+        ..fields['batch_id'] = batchId
+        ..fields['batch_detail_id'] = batchDetailId
+        ..fields['user_id'] = driveId.toString()
+        ..fields['has_water_meter'] = hasWaterMeter?.toString() ?? ''
+        ..fields['water_meter_no'] = waterMeterNo ?? ''
+        ..fields['has_water_bill'] = hasWaterBill?.toString() ?? ''
+        ..fields['water_bill_no'] = waterBillNo ?? ''
+        ..fields['is_correct_address'] = isCorrectAddress?.toString() ?? ''
+        ..fields['correct_address'] = correctAddress ?? ''
+        ..fields['ownership'] = ownership ?? ''
+        ..fields['contact_person_name'] = contactPersonName ?? ''
+        ..fields['contact_number'] = contactNumber ?? ''
+        ..fields['email'] = email ?? ''
+        ..fields['nature_of_business_code'] = natureOfBusinessCode ?? ''
+        ..fields['shop_name'] = shopName ?? ''
+        ..fields['dr_code'] = drCode ?? ''
+        ..fields['property_code'] = propertyCode ?? ''
+        ..fields['occupancy'] = occupancy ?? ''
+        ..fields['remark'] = remark ?? ''
+        ..fields['visitdate'] = visitDate ?? ''
+        ..fields['visittime'] = visitTime ?? '';
+
+      // Add files to the request if they are not null
+      if (photo1 != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo1', photo1.path));
+      }
+      if (photo2 != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo2', photo2.path));
+      }
+      if (photo3 != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo3', photo3.path));
+      }
+      if (photo4 != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo4', photo4.path));
+      }
+      if (photo5 != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('photo5', photo5.path));
+      }
+
+      // Add Authorization header
+      request.headers['Authorization'] = 'Bearer $token';
+
       final response = await request.send();
       final responseBody = await http.Response.fromStream(response);
 

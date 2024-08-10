@@ -82,17 +82,32 @@ class SurveyFormPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               toggleTextField(
-                  isVisible: surveyFormController.isWaterBillVisible,
-                  labelText: 'Water Bill',
-                  controller: surveyFormController.waterBillController),
+                isVisible: surveyFormController.isWaterBillVisible,
+                labelText: 'Enter Water Bill Number',
+                controller: surveyFormController.waterBillController,
+                // focusNode: surveyFormController.waterBillFocus,
+                // nextFocusNode: surveyFormController.waterMeterFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputWaterBill.value = value,
+              ),
               toggleTextField(
-                  isVisible: surveyFormController.isWaterMeterVisible,
-                  labelText: 'Water Meter',
-                  controller: surveyFormController.waterMeterController),
+                isVisible: surveyFormController.isWaterMeterVisible,
+                labelText: 'Enter Water Meter Number',
+                controller: surveyFormController.waterMeterController,
+                // focusNode: surveyFormController.waterMeterFocus,
+                // nextFocusNode: surveyFormController.correctAddressFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputWaterMeter.value = value,
+              ),
               toggleTextField(
-                  isVisible: surveyFormController.isCorrectAddressVisible,
-                  labelText: 'Correct Address',
-                  controller: surveyFormController.correctAddressController),
+                isVisible: surveyFormController.isCorrectAddressVisible,
+                labelText: 'Enter Correct Address',
+                controller: surveyFormController.correctAddressController,
+                // focusNode: surveyFormController.correctAddressFocus,
+                // nextFocusNode: surveyFormController.occupierNameFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputCorrectAddress.value = value,
+              ),
               Obx(
                 () => customDropdown(
                   labelText: '--Select Ownership--',
@@ -110,23 +125,42 @@ class SurveyFormPage extends StatelessWidget {
                 ),
               ),
               customTextField(
-                  labelText: 'Occupier Name',
-                  hintText: 'Enter Occupier Name',
-                  controller: surveyFormController.occupierNameController),
+                labelText: 'Occupier Name',
+                hintText: 'Enter Occupier Name',
+                controller: surveyFormController.occupierNameController,
+                // focusNode: surveyFormController.occupierNameFocus,
+                // nextFocusNode: surveyFormController.occupierPhoneNumberFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputOccupierName.value = value,
+              ),
               const SizedBox(height: 10),
               customTextField(
-                  labelText: 'Occupier Phone Number',
-                  hintText: 'Enter Phone Number',
-                  controller:
-                      surveyFormController.occupierPhoneNumberController),
+                labelText: 'Occupier Phone Number',
+                hintText: 'Enter Phone Number',
+                controller: surveyFormController.occupierPhoneNumberController,
+                // focusNode: surveyFormController.occupierPhoneNumberFocus,
+                // nextFocusNode: surveyFormController.occupierEmailFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputOccupierPhoneNumber.value = value,
+              ),
               customTextField(
-                  labelText: 'Occupier Email',
-                  hintText: 'Enter Email Address',
-                  controller: surveyFormController.occupierEmailController),
+                labelText: 'Occupier Email',
+                hintText: 'Enter Email Address',
+                controller: surveyFormController.occupierEmailController,
+                // focusNode: surveyFormController.occupierEmailFocus,
+                // nextFocusNode: surveyFormController.shopNameFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputOccupierEmail.value = value,
+              ),
               customTextField(
-                  labelText: 'Shope Name',
-                  hintText: 'Enter Business Name',
-                  controller: surveyFormController.shopNameController),
+                labelText: 'Shop Name',
+                hintText: 'Enter Business Name',
+                controller: surveyFormController.shopNameController,
+                // focusNode: surveyFormController.shopNameFocus,
+                // nextFocusNode: surveyFormController.addRemarkFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputShopName.value = value,
+              ),
               Obx(
                 () => customDropdown(
                   labelText: '--Select Nature Of Business--',
@@ -151,16 +185,23 @@ class SurveyFormPage extends StatelessWidget {
                   selectedValue: surveyFormController.selectedPropertyType,
                 ),
               ),
-              Obx(() => customDropdown(
-                    labelText: '--Select Classification--',
-                    items: surveyFormController.classificationItems,
-                    headerText: 'Classification',
-                    selectedValue: surveyFormController.selectedClassification,
-                  )),
+              Obx(
+                () => customDropdown(
+                  labelText: '--Select Classification--',
+                  items: surveyFormController.classificationItems,
+                  headerText: 'Classification',
+                  selectedValue: surveyFormController.selectedClassification,
+                ),
+              ),
               customTextField(
-                  labelText: 'Add (Remarks)',
-                  hintText: 'Write your remarks here......',
-                  controller: surveyFormController.addRemarkController),
+                labelText: 'Add (Remarks)',
+                hintText: 'Write your remarks here...',
+                controller: surveyFormController.addRemarkController,
+                // focusNode: surveyFormController.addRemarkFocus,
+                onChanged: (value) =>
+                    surveyFormController.inputAddRemark.value = value,
+                isAddRmarks: true,
+              ),
             ],
           ),
         ),
@@ -221,11 +262,15 @@ class SurveyFormPage extends StatelessWidget {
     );
   }
 
-  Widget customTextField({
-    String? labelText,
-    String? hintText,
-    required TextEditingController controller,
-  }) {
+  Widget customTextField(
+      {String? labelText,
+      String? hintText,
+      bool? isAddRmarks,
+      required TextEditingController controller,
+      // required FocusNode focusNode,
+      // FocusNode? nextFocusNode,
+      Function(String)? onChanged,
+      BuildContext? context}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
       child: Column(
@@ -239,7 +284,17 @@ class SurveyFormPage extends StatelessWidget {
           SizedBox(
             //    height: 50,
             child: TextField(
-              maxLines: null, // Allows the TextField to grow vertically
+              // focusNode: focusNode,
+              onChanged: onChanged,
+              onSubmitted: (value) {
+                // if (nextFocusNode != null) {
+                //   focusNode.unfocus();
+                //   FocusScope.of(context!).requestFocus(nextFocusNode);
+                // }
+              },
+              maxLines: isAddRmarks == true
+                  ? null
+                  : 1, // Allows the TextField to grow vertically
               keyboardType: TextInputType.multiline, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
@@ -280,6 +335,9 @@ class SurveyFormPage extends StatelessWidget {
     required RxBool? isVisible,
     required String? labelText,
     required TextEditingController? controller,
+    // required FocusNode focusNode,
+    // FocusNode? nextFocusNode,
+    Function(String)? onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,8 +372,11 @@ class SurveyFormPage extends StatelessWidget {
         Obx(() => isVisible!.value
             ? customTextField(
                 labelText: null,
-                hintText: 'Enter $labelText',
-                controller: controller!)
+                hintText: labelText,
+                controller: controller!,
+                isAddRmarks: false,
+                onChanged: onChanged,
+              )
             : Container()),
       ],
     );

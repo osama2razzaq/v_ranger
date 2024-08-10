@@ -53,21 +53,23 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       final response = await apiService.postSurvey(
         batchId: batchId,
         batchDetailId: batchDetailId,
-        waterMeterNo: surveyFormController.waterMeterController.text,
-        waterBillNo: surveyFormController.waterBillController.text,
+        hasWaterMeter: surveyFormController.isWaterMeterVisible.value,
+        waterMeterNo: surveyFormController.inputWaterMeter.value,
+        hasWaterBill: surveyFormController.isWaterBillVisible.value,
+        waterBillNo: surveyFormController.inputWaterBill.value,
         isCorrectAddress: surveyFormController.isCorrectAddressVisible.value,
-        correctAddress: surveyFormController.correctAddressController.text,
+        correctAddress: surveyFormController.inputCorrectAddress.value,
         ownership: surveyFormController.ownershipItems.isNotEmpty
             ? surveyFormController.selectedOwnership.value
             : null,
-        contactPersonName: surveyFormController.occupierNameController.text,
-        contactNumber: surveyFormController.occupierPhoneNumberController.text,
-        email: surveyFormController.occupierEmailController.text,
+        contactPersonName: surveyFormController.inputOccupierName.value,
+        contactNumber: surveyFormController.inputOccupierPhoneNumber.value,
+        email: surveyFormController.inputOccupierEmail.value,
         natureOfBusinessCode:
             surveyFormController.natureOfBusinessItems.isNotEmpty
                 ? surveyFormController.selectedNatureOfBusiness.value
                 : null,
-        shopName: surveyFormController.shopNameController.text,
+        shopName: surveyFormController.inputShopName.value,
         drCode: surveyFormController.drCodeItems.isNotEmpty
             ? surveyFormController.selectedDrCode.value
             : null,
@@ -77,7 +79,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         occupancy: surveyFormController.occupancyStatusItems.isNotEmpty
             ? surveyFormController.selectedOccupancyStatus.value
             : null,
-        remark: surveyFormController.addRemarkController.text,
+        remark: surveyFormController.inputAddRemark.value,
         visitDate: formattedDate,
         visitTime: formattedTime,
         photo1: images.length > 0 ? images[0] : null,
