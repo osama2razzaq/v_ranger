@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:393466040421:android:58f6f1f3124c91ea46b68c",
+        "mobilesdk_app_id": "1:393466040421:android:2d74d360ce7caf6e46b68c",
         "android_client_info": {
-          "package_name": "com.example.v_ranger"
+          "package_name": "com.vranger.v_ranger"
         }
       },
       "oauth_client": [],
