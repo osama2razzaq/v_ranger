@@ -14,6 +14,7 @@ class ApiService {
   Future<http.Response> login(
       String email, String password, String deviceToken) async {
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.login}');
+    print("deviceToken: $deviceToken");
     final response = await http.post(
       url,
       body: {
