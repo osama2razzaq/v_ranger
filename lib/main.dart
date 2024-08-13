@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -5,9 +8,19 @@ import 'package:v_ranger/core/routing/app_pages.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/features/login/presentation/controllers/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+Future<void> _firebadeMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase
+      .initializeApp(); // options: DefaultFirebaseConfig.platformOptions
+  print('Handling a background message ${message.messageId}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Request notification permissions on iOS (optional for Android)
 
   // Initialize the AuthService
   final authService = AuthService();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:v_ranger/core/base/api_service.dart';
@@ -20,9 +21,32 @@ class LoginController extends GetxController with SnackBarHelper {
       ApiService(); // Replace with your actual base URL
 
   // Device token (for demonstration purposes, this should be retrieved from your device)
-  final String deviceToken = '131131';
+  String? fcmtoken = '';
 
   // Method to handle login
+
+  @override
+  void onInit() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+
+    // Get the FCM token
+    fcmtoken = await messaging.getToken();
+    print("FCM Token: $fcmtoken");
+
+    super.onInit();
+  }
+
   void login() async {
     final email = emailController.text;
     final password = passwordController.text;
@@ -30,7 +54,7 @@ class LoginController extends GetxController with SnackBarHelper {
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
         final response = await apiService.login(
-            emailController.text, passwordController.text, deviceToken);
+            emailController.text, passwordController.text, fcmtoken!);
 
         if (response.statusCode == 200) {
           // Parse successful response
