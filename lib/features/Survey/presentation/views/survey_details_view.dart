@@ -100,7 +100,17 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 
   Widget _userInfoForm(BuildContext context) {
-    final details = controller.data.value!.data!.pendingDetails![index];
+    var completedDetails =
+        (controller.data.value?.data?.completedDetails != null &&
+                index < controller.data.value!.data!.completedDetails!.length)
+            ? controller.data.value!.data!.completedDetails![index]
+            : null;
+
+// Safely access pendingDetails
+    var pendingDetails = (controller.data.value?.data?.pendingDetails != null &&
+            index < controller.data.value!.data!.pendingDetails!.length)
+        ? controller.data.value!.data!.pendingDetails![index]
+        : null;
 
     if (locationController.currentLocation.value == null) {
       locationController.getLocation();
@@ -140,24 +150,56 @@ class SurveyDetailsPage extends StatelessWidget {
       return -1;
     }
 
-    ByRoadDistanceCalculator distance = ByRoadDistanceCalculator();
-
     return Obx(() => Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailItem('Account ID', details!.id!.toString()),
-              _detailItem('Account No', details!.accountNo!.toString()),
-              _detailItem('Name', details.name.toString()),
-              _detailItem('IC Number', details.icNo!.toString()),
-              _detailItem('Address', details.address!),
               _detailItem(
-                  'Total Outstanding', 'RM ${details.amount!.toString()}'),
-              _detailItem('Latitude', details.batchfileLatitude!.toString()),
-              _detailItem('Longitude', details.batchfileLongitude!.toString()),
+                  'Account ID',
+                  !isEdit
+                      ? pendingDetails?.id?.toString() ?? 'N/A'
+                      : completedDetails?.id?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Account No',
+                  !isEdit
+                      ? pendingDetails?.accountNo?.toString() ?? 'N/A'
+                      : completedDetails?.accountNo?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Name',
+                  !isEdit
+                      ? pendingDetails?.name?.toString() ?? 'N/A'
+                      : completedDetails?.name?.toString() ?? 'N/A'),
+              _detailItem(
+                  'IC Number',
+                  !isEdit
+                      ? pendingDetails?.icNo?.toString() ?? 'N/A'
+                      : completedDetails?.icNo?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Address',
+                  !isEdit
+                      ? pendingDetails?.address ?? 'N/A'
+                      : completedDetails?.address ?? 'N/A'),
+              _detailItem(
+                  'Total Outstanding',
+                  !isEdit
+                      ? 'RM ${pendingDetails?.amount?.toString() ?? '0.00'}'
+                      : 'RM ${completedDetails?.amount?.toString() ?? '0.00'}'),
+              _detailItem(
+                  'Latitude',
+                  !isEdit
+                      ? pendingDetails?.batchfileLatitude?.toString() ?? 'N/A'
+                      : completedDetails?.batchfileLatitude?.toString() ??
+                          'N/A'),
+              _detailItem(
+                  'Longitude',
+                  !isEdit
+                      ? pendingDetails?.batchfileLongitude?.toString() ?? 'N/A'
+                      : completedDetails?.batchfileLongitude?.toString() ??
+                          'N/A'),
               FutureBuilder<double>(
-                future: getDistance("${details.address!},${details.tamanMmid}"),
+                future: getDistance(
+                    "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''},${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return _detailItem('Distance', 'Calculating...');
@@ -172,8 +214,6 @@ class SurveyDetailsPage extends StatelessWidget {
                   }
                 },
               ),
-              // _detailItem('Distance',
-              //     "${coordinateDistance(currentLocation.latitude, currentLocation.longitude, double.parse(details.batchfileLatitude!), double.parse(details.batchfileLongitude!)).toStringAsFixed(2)} KM"),
               _buildMapsButtons(context),
             ],
           ),
@@ -181,7 +221,18 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 
   Widget _buildMapsButtons(BuildContext context) {
-    final details = controller.data.value?.data!.pendingDetails![index];
+    var completedDetails =
+        (controller.data.value?.data?.completedDetails != null &&
+                index < controller.data.value!.data!.completedDetails!.length)
+            ? controller.data.value!.data!.completedDetails![index]
+            : null;
+
+// Safely access pendingDetails
+    var pendingDetails = (controller.data.value?.data?.pendingDetails != null &&
+            index < controller.data.value!.data!.pendingDetails!.length)
+        ? controller.data.value!.data!.pendingDetails![index]
+        : null;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Row(
@@ -194,7 +245,7 @@ class SurveyDetailsPage extends StatelessWidget {
             onTap: () {
               Get.to(() => MapScreen(
                     destinationAddress:
-                        "${details!.address!},${details.tamanMmid}",
+                        "${isEdit ? pendingDetails!.address! : completedDetails!.address!},${isEdit ? pendingDetails!.tamanMmid : completedDetails!.tamanMmid}",
                   ));
             },
             colors: [Colors.white, Colors.white!],

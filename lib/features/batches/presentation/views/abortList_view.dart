@@ -16,8 +16,8 @@ class AbortList extends StatelessWidget {
             child: CircularProgressIndicator(
           color: AppColors.primaryColor,
         ));
-      } else if (controller.data.value!.data!.pendingDetails!.isEmpty) {
-        return const Center(child: Text('No pending batches'));
+      } else if (controller.data.value!.data!.abortedDetails!.isEmpty) {
+        return const Center(child: Text('No abort batches'));
       } else {
         var abortList = controller.data.value!.data!.abortedDetails;
 

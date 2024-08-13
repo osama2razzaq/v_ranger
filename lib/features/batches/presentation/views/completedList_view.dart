@@ -60,7 +60,7 @@ class CompletedList extends StatelessWidget {
                               isEdit: true,
                             ));
                       },
-                      backgroundColor: AppColors.green,
+                      backgroundColor: const Color.fromRGBO(47, 124, 55, 1),
                       foregroundColor: Colors.white,
                       icon: Icons.edit,
                       label: 'Edit',

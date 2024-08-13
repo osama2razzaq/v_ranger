@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:v_ranger/core/base/api_service.dart';
@@ -5,6 +9,7 @@ import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
@@ -15,9 +20,46 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   var isLoading = false.obs;
   Future<void> pickImage() async {
     if (images.length < 5) {
-      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-      if (image != null) {
-        images.add(image);
+      final XFile? imageFile =
+          await _picker.pickImage(source: ImageSource.camera);
+      if (imageFile != null) {
+        // Load the image using the image package
+        Uint8List imageBytes = await imageFile.readAsBytes();
+        img.Image? originalImage = img.decodeImage(imageBytes);
+
+        // Check if image is loaded
+        if (originalImage != null) {
+          // Get the current time
+          String timestamp =
+              DateFormat('dd/MM/yy HH:mm').format(DateTime.now());
+
+          // Define position and color
+          int xPosition = 10;
+          int yPosition = originalImage.height - 30;
+          int color = img.getColor(232, 232, 222); // White color
+          img.BitmapFont font = img.arial_24;
+
+          // Draw the timestamp on the image
+          img.drawString(
+            originalImage,
+            font,
+            xPosition,
+            yPosition,
+            timestamp,
+            color: color,
+          );
+
+          // Save the modified image back to a file
+          Uint8List modifiedImageBytes =
+              Uint8List.fromList(img.encodeJpg(originalImage));
+          final String modifiedImagePath =
+              '${imageFile.path}_modified.jpg'; // New file path
+          final File modifiedImageFile = File(modifiedImagePath);
+          await modifiedImageFile.writeAsBytes(modifiedImageBytes);
+
+          // Add the modified image to the list
+          images.add(XFile(modifiedImagePath));
+        }
       }
     } else {
       // Limit reached, show a message
