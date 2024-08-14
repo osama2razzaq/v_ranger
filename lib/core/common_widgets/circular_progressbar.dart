@@ -14,13 +14,11 @@ class MyCircularPercentIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double percentage = (totalValue - leftValue
-          ..truncateToDouble()) /
-        totalValue.truncateToDouble();
+    // Calculate the percentage of completion
+    double percentage = (leftValue / totalValue);
 
     // Clamp the percentage to ensure it remains within the range of 0.0 to 1.0
     double displayPercent = percentage.clamp(0.0, 1.0);
-    displayPercent.truncateToDouble();
 
     return CircularPercentIndicator(
       backgroundColor: color.withOpacity(0.2),

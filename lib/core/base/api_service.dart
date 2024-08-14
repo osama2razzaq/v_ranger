@@ -8,6 +8,7 @@ import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 import 'package:v_ranger/features/batches/data/model/batch_details_model.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
+import 'package:v_ranger/features/leaderboard/data/Model/leaderboard_details_model.dart';
 import 'package:v_ranger/features/profile/data/model/profile_model.dart';
 
 class ApiService {
@@ -229,6 +230,39 @@ class ApiService {
       return null;
     }
     return null;
+  }
+
+  Future<LeaderBoardDetails?> fetchDriversleaderBoard() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driversleaderboard}');
+    final body = {
+      'driver_id': driveId.toString(),
+    };
+    final bodyJson = jsonEncode(body);
+
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      print("response::: ${response.body}");
+      if (response.statusCode == 200) {
+        return leaderBoardDetailsFromJson(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<http.Response?> updateBatchPin(

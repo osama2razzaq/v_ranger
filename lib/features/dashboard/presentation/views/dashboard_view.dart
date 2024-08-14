@@ -28,7 +28,7 @@ class DashboardView extends StatelessWidget {
           ),
           Container(
             color: Colors.white,
-            child: const LeaderboardView(),
+            child: LeaderboardView(),
           ),
           Container(
             color: Colors.white,

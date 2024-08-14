@@ -1,45 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/circular_progressbar.dart';
 import 'package:v_ranger/core/common_widgets/progress_bar.dart';
 import 'package:v_ranger/core/values/app_assets.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
+import 'package:v_ranger/features/leaderboard/data/Model/leaderboard_details_model.dart';
+import 'package:v_ranger/features/leaderboard/presentation/controllers/leaderboard_controller.dart';
 
-class LeaderboardView extends StatefulWidget {
-  const LeaderboardView({super.key});
+class LeaderboardView extends StatelessWidget {
+  LeaderboardView({super.key});
+  final LeaderboardController controller = Get.put(LeaderboardController());
 
-  @override
-  State<LeaderboardView> createState() => _LeaderboardViewState();
-}
-
-class _LeaderboardViewState extends State<LeaderboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.profileBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: AppColors.primaryColor,
-          title: Center(
-            child: Text(
-              "Leaderboard",
-              style: PromptStyle.appBarTitleStyle,
-            ),
+      backgroundColor: AppColors.profileBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        title: Center(
+          child: Text(
+            "Leaderboard",
+            style: PromptStyle.appBarTitleStyle,
           ),
         ),
-        body: SafeArea(
-          child: Column(
+      ),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.data.value == null) {
+            // Show a loading spinner or some placeholder
+            return const Center(
+                child: CircularProgressIndicator(
+              color: AppColors.primaryColor,
+            ));
+          }
+
+          final requestedDriver = controller.data.value!.requestedDriver;
+          final otherDrivers = controller.data.value!.otherDrivers;
+
+          return Column(
             children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
-                color: AppColors.profileBackgroundColor,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [_buildProfileImage(), _buildProfileName()],
-                  ),
-                ),
-              ),
+              _buildProfileSection(requestedDriver),
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
@@ -47,18 +48,33 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
                     ),
-                    color: Colors.white, // Example background color
+                    color: Colors.white,
                   ),
-                  child: Container(
-                    height: 500,
-                    width: MediaQuery.sizeOf(context).width,
-                    child: _buildListView(),
-                  ),
+                  child: _buildListView(otherDrivers!),
                 ),
               )
             ],
-          ),
-        ));
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildProfileSection(RequestedDriver? requestedDriver) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+      color: AppColors.profileBackgroundColor,
+      child: Align(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildProfileImage(),
+            _buildProfileName(requestedDriver?.driverName ?? "Unknown"),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildProfileImage() {
@@ -84,12 +100,12 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     );
   }
 
-  Widget _buildProfileName() {
+  Widget _buildProfileName(String name) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "David",
+          name,
           style: PromptStyle.leaderboardProfileNameStyle,
         ),
         _buildPrgressbar(),
@@ -104,43 +120,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     );
   }
 
-  Widget _buildListView() {
-    final List<Map<String, dynamic>> dataList = [
-      {
-        'no': '1',
-        'score': '90',
-        'fullname': 'John',
-        'assign': '4',
-        'complete': '4',
-        'pending': '0'
-      },
-      {
-        'no': '2',
-        'score': '85',
-        'fullname': 'Danial',
-        'assign': '7',
-        'complete': '4',
-        'pending': '3'
-      },
-      {
-        'no': '3',
-        'score': '95',
-        'fullname': 'EMY',
-        'assign': '3',
-        'complete': '0',
-        'pending': '3'
-      },
-      {
-        'no': '4',
-        'score': '95',
-        'fullname': 'Osama',
-        'assign': '10',
-        'complete': '9',
-        'pending': '1'
-      },
-      // Add more data as needed
-    ];
+  Widget _buildListView(List<OtherDriver> otherDrivers) {
     Color getColorBasedOnPercentage(int percentage) {
+      print("percentage::: $percentage");
       if (percentage == 100) {
         return AppColors.scoreBgColor1;
       } else if (percentage >= 75) {
@@ -152,77 +134,72 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       }
     }
 
-    return Column(children: <Widget>[
-      Expanded(
-        child: ListView.builder(
-          itemCount: dataList.length + 1, // +1 for the header row
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              // Header row
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: ListView.builder(
+            itemCount: otherDrivers.length + 1, // +1 for the header row
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                // Header row
+                return Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: <Widget>[
+                      _buildHeaderItem('No', flex: 1),
+                      _buildHeaderItem('Score', flex: 1),
+                      _buildHeaderItem('Fullname', flex: 1),
+                      _buildHeaderItem('Assign', flex: 1),
+                      _buildHeaderItem('Complete', flex: 1),
+                      _buildHeaderItem('Pending', flex: 1),
+                    ],
+                  ),
+                );
+              }
+
+              final driver = otherDrivers[index - 1];
+              int assign = driver.statusCounts?.assigned ?? 0;
+              int complete =
+                  int.tryParse(driver.statusCounts?.completed ?? '0') ?? 0;
+              int pending =
+                  int.tryParse(driver.statusCounts?.pending ?? '0') ?? 0;
+              int percentage =
+                  assign != 0 ? ((complete / assign) * 100).round() : 0;
+
               return Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                decoration: BoxDecoration(
+                  color: getColorBasedOnPercentage(percentage),
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    _buildHeaderItem('No', flex: 1),
-                    _buildHeaderItem('Score', flex: 1),
-                    _buildHeaderItem('Fullname', flex: 1),
-                    _buildHeaderItem('Assign', flex: 1),
-                    _buildHeaderItem('Complete', flex: 1),
-                    _buildHeaderItem('Pending', flex: 1),
+                    _buildDataItem('$index', flex: 1),
+                    _buildDataScore(driver.statusCounts?.completed ?? '0',
+                        percentage, complete, assign),
+                    _buildDataItem(driver.driverName ?? '', flex: 2),
+                    _buildDataItem('$assign', flex: 1),
+                    _buildDataItem('${complete}', flex: 1),
+                    _buildDataItem('${pending}', flex: 1),
                   ],
                 ),
               );
-            }
-
-            // Subtracting 1 to get correct index for data list
-            final rowData = dataList[index - 1];
-            // Subtracting 1 to get correct index for data list
-            int assign = int.parse(rowData['assign']);
-            int complete = int.parse(rowData['complete']);
-            int pending = int.parse(rowData['pending']);
-            int percentage =
-                assign != 0 ? ((complete / assign) * 100).round() : 0;
-
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-              decoration: BoxDecoration(
-                color: getColorBasedOnPercentage(
-                    percentage), // AppColors.scoreBgColor,
-                // Alternate row colors for better readability
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    spreadRadius: 0,
-                    blurRadius: 4,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  _buildDataItem(rowData['no'], flex: 1),
-                  _buildDataScore(
-                      rowData['score'],
-                      flex: 1,
-                      percentage,
-                      assign,
-                      pending,
-                      complete),
-                  _buildDataItem(rowData['fullname'], flex: 2),
-                  _buildDataItem(rowData['assign'], flex: 1),
-                  _buildDataItem(rowData['complete'], flex: 1),
-                  _buildDataItem(rowData['pending'], flex: 1),
-                ],
-              ),
-            );
-          },
+            },
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _buildHeaderItem(String text, {int flex = 1}) {
@@ -236,8 +213,7 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     );
   }
 
-  Widget _buildDataScore(
-      String text, int percentage, int complete, int pending, int assign,
+  Widget _buildDataScore(String text, int percentage, int complete, int assign,
       {int flex = 1}) {
     Color getColorBasedOnPercentage(int percentage) {
       if (percentage == 100) {
@@ -254,11 +230,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
     return Expanded(
       flex: flex,
       child: Container(
-        //  height: 50,
-
         child: MyCircularPercentIndicator(
-          totalValue: assign, // Set your total value here
-          leftValue: pending, // Set your left value here
+          totalValue: assign,
+          leftValue: complete,
           color: getColorBasedOnPercentage(percentage),
         ),
       ),

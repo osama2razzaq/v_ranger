@@ -32,4 +32,5 @@ abstract class ApiConstants {
   static const updatelocation = '/updatelocation';
   static const updatebatchdetailpin = '/updatebatchdetail';
   static const storesurvey = '/storesurvey';
+  static const driversleaderboard = '/driversleaderboard';
 }
