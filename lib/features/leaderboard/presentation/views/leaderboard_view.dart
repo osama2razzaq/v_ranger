@@ -10,10 +10,14 @@ import 'package:v_ranger/features/leaderboard/presentation/controllers/leaderboa
 
 class LeaderboardView extends StatelessWidget {
   LeaderboardView({super.key});
-  final LeaderboardController controller = Get.put(LeaderboardController());
 
   @override
   Widget build(BuildContext context) {
+    // Get the instance of LeaderboardController
+    final LeaderboardController controller = Get.put(LeaderboardController());
+
+    // Call the API method when the view is built
+    controller.fetchLeaderboardData();
     return Scaffold(
       backgroundColor: AppColors.profileBackgroundColor,
       appBar: AppBar(
@@ -70,7 +74,7 @@ class LeaderboardView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildProfileImage(),
-            _buildProfileName(requestedDriver?.driverName ?? "Unknown"),
+            _buildProfileName(requestedDriver),
           ],
         ),
       ),
@@ -100,29 +104,30 @@ class LeaderboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileName(String name) {
+  Widget _buildProfileName(RequestedDriver? requestedDriver) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          name,
+          requestedDriver!.driverName!,
           style: PromptStyle.leaderboardProfileNameStyle,
         ),
-        _buildPrgressbar(),
+        _buildPrgressbar(requestedDriver),
       ],
     );
   }
 
-  Widget _buildPrgressbar() {
-    return const ProgressBar(
-      count: 4,
-      totalCount: '5',
+  Widget _buildPrgressbar(RequestedDriver? requestedDriver) {
+    final totalCount = requestedDriver!.statusCounts?.assigned;
+    final count = requestedDriver.statusCounts?.completed;
+    return ProgressBar(
+      count: int.parse(count!),
+      totalCount: '$totalCount',
     );
   }
 
   Widget _buildListView(List<OtherDriver> otherDrivers) {
     Color getColorBasedOnPercentage(int percentage) {
-      print("percentage::: $percentage");
       if (percentage == 100) {
         return AppColors.scoreBgColor1;
       } else if (percentage >= 75) {
@@ -202,7 +207,7 @@ class LeaderboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderItem(String text, {int flex = 1}) {
+  Widget _buildHeaderItem(text, {int flex = 1}) {
     return Expanded(
       flex: flex,
       child: Text(
@@ -213,7 +218,7 @@ class LeaderboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildDataScore(String text, int percentage, int complete, int assign,
+  Widget _buildDataScore(text, int percentage, int complete, int assign,
       {int flex = 1}) {
     Color getColorBasedOnPercentage(int percentage) {
       if (percentage == 100) {
@@ -239,7 +244,7 @@ class LeaderboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildDataItem(String text, {int flex = 1}) {
+  Widget _buildDataItem(text, {int flex = 1}) {
     return Expanded(
       flex: flex,
       child: Text(

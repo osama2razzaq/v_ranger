@@ -4,7 +4,7 @@ import '../values/app_colors.dart';
 class ProgressBar extends StatelessWidget {
   const ProgressBar({Key? key, required this.count, required this.totalCount})
       : super(key: key);
-  final num count;
+  final int count;
   final String totalCount;
 
   @override
