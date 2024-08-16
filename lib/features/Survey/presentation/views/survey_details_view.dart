@@ -335,8 +335,20 @@ void navigateTo(double lat, double lng, BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Choose Navigation App"),
-        content: Text("Which app would you like to use for navigation?"),
+        title: const Text("Choose Navigation App",
+            style: TextStyle(
+              fontFamily: AppStrings.fontFamilyPrompt,
+              fontWeight: FontWeight.w600,
+              color: AppColors.black,
+              fontSize: 18,
+            )),
+        content: const Text("Which app would you like to use for navigation?",
+            style: TextStyle(
+              fontFamily: AppStrings.fontFamilyPrompt,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
+              fontSize: 12,
+            )),
         actions: [
           ListTile(
             leading: Image.asset(
@@ -344,7 +356,7 @@ void navigateTo(double lat, double lng, BuildContext context) async {
               width: 40.0,
               height: 40.0,
             ),
-            title: Text("Google Maps"),
+            title: const Text("Google Maps"),
             onTap: () {
               Navigator.of(context).pop(); // Close the dialog
               launchGoogleMaps(lat, lng);
@@ -356,7 +368,7 @@ void navigateTo(double lat, double lng, BuildContext context) async {
               width: 40.0,
               height: 40.0,
             ),
-            title: Text("Waze"),
+            title: const Text("Waze"),
             onTap: () {
               Navigator.of(context).pop(); // Close the dialog
               launchWazeRoute(lat, lng);

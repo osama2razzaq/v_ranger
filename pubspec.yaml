@@ -46,7 +46,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
-    - assets/iocns/
+    - assets/icons/
     
   fonts:
     - family: Prompt
