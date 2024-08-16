@@ -56,6 +56,13 @@ class SurveyDetailsPage extends StatelessWidget {
                   isActive1: true,
                   isActive2: false,
                   isActive3: false,
+                  onTap: () {
+                    Get.to(() => SurveyFormPage(
+                          controller: controller,
+                          index: index,
+                          isEdit: isEdit,
+                        ));
+                  },
                 ),
               ),
               Container(

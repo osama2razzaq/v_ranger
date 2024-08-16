@@ -119,57 +119,60 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     // Format the date and time
     String formattedDate = DateFormat('dd/MM/yy').format(now);
     String formattedTime = DateFormat('HH:mm').format(now);
+    if (images.isEmpty) {
+      showErrorSnackBar('You must upload at least 1 image');
+    } else {
+      try {
+        isLoading.value = true; //
+        final response = await apiService.postSurvey(
+          batchId: batchId,
+          batchDetailId: batchDetailId,
+          hasWaterMeter: surveyFormController.isWaterMeterVisible.value,
+          waterMeterNo: surveyFormController.inputWaterMeter.value,
+          hasWaterBill: surveyFormController.isWaterBillVisible.value,
+          waterBillNo: surveyFormController.inputWaterBill.value,
+          isCorrectAddress: surveyFormController.isCorrectAddressVisible.value,
+          correctAddress: surveyFormController.inputCorrectAddress.value,
+          ownership: surveyFormController.ownershipItems.isNotEmpty
+              ? surveyFormController.selectedOwnership.value
+              : null,
+          contactPersonName: surveyFormController.inputOccupierName.value,
+          contactNumber: surveyFormController.inputOccupierPhoneNumber.value,
+          email: surveyFormController.inputOccupierEmail.value,
+          natureOfBusinessCode:
+              surveyFormController.natureOfBusinessItems.isNotEmpty
+                  ? surveyFormController.selectedNatureOfBusiness.value
+                  : null,
+          shopName: surveyFormController.inputShopName.value,
+          drCode: surveyFormController.drCodeItems.isNotEmpty
+              ? surveyFormController.selectedDrCode.value
+              : null,
+          propertyCode: surveyFormController.propertyTypeItems.isNotEmpty
+              ? surveyFormController.selectedPropertyType.value
+              : null,
+          occupancy: surveyFormController.occupancyStatusItems.isNotEmpty
+              ? surveyFormController.selectedOccupancyStatus.value
+              : null,
+          remark: surveyFormController.inputAddRemark.value,
+          visitDate: formattedDate,
+          visitTime: formattedTime,
+          photo1: images.length > 0 ? images[0] : null,
+          photo2: images.length > 1 ? images[1] : null,
+          photo3: images.length > 2 ? images[2] : null,
+          photo4: images.length > 3 ? images[3] : null,
+          photo5: images.length > 4 ? images[4] : null,
+        );
+        print("esponse.statusCode== ${response?.statusCode}");
+        if (response?.statusCode == 201) {
+          showNormalSnackBar('Survey submitted successfully');
 
-    try {
-      isLoading.value = true; //
-      final response = await apiService.postSurvey(
-        batchId: batchId,
-        batchDetailId: batchDetailId,
-        hasWaterMeter: surveyFormController.isWaterMeterVisible.value,
-        waterMeterNo: surveyFormController.inputWaterMeter.value,
-        hasWaterBill: surveyFormController.isWaterBillVisible.value,
-        waterBillNo: surveyFormController.inputWaterBill.value,
-        isCorrectAddress: surveyFormController.isCorrectAddressVisible.value,
-        correctAddress: surveyFormController.inputCorrectAddress.value,
-        ownership: surveyFormController.ownershipItems.isNotEmpty
-            ? surveyFormController.selectedOwnership.value
-            : null,
-        contactPersonName: surveyFormController.inputOccupierName.value,
-        contactNumber: surveyFormController.inputOccupierPhoneNumber.value,
-        email: surveyFormController.inputOccupierEmail.value,
-        natureOfBusinessCode:
-            surveyFormController.natureOfBusinessItems.isNotEmpty
-                ? surveyFormController.selectedNatureOfBusiness.value
-                : null,
-        shopName: surveyFormController.inputShopName.value,
-        drCode: surveyFormController.drCodeItems.isNotEmpty
-            ? surveyFormController.selectedDrCode.value
-            : null,
-        propertyCode: surveyFormController.propertyTypeItems.isNotEmpty
-            ? surveyFormController.selectedPropertyType.value
-            : null,
-        occupancy: surveyFormController.occupancyStatusItems.isNotEmpty
-            ? surveyFormController.selectedOccupancyStatus.value
-            : null,
-        remark: surveyFormController.inputAddRemark.value,
-        visitDate: formattedDate,
-        visitTime: formattedTime,
-        photo1: images.length > 0 ? images[0] : null,
-        photo2: images.length > 1 ? images[1] : null,
-        photo3: images.length > 2 ? images[2] : null,
-        photo4: images.length > 3 ? images[3] : null,
-        photo5: images.length > 4 ? images[4] : null,
-      );
-      print("esponse.statusCode== ${response?.statusCode}");
-      if (response?.statusCode == 201) {
-        showNormalSnackBar('Survey submitted successfully');
-
-        Get.offAllNamed(Routes.dashboard);
+          Get.offAllNamed(Routes.dashboard);
+        }
+      } catch (e) {
+        showErrorSnackBar('Failed to load data: $e');
+      } finally {
+        isLoading.value = false; // End loading
       }
-    } catch (e) {
-      showErrorSnackBar('Failed to load data: $e');
-    } finally {
-      isLoading.value = false; // End loading
     }
   }
 }

@@ -8,14 +8,17 @@ class StepIndicator extends StatelessWidget {
   final int number1;
   final int number2;
   final int number3;
+  VoidCallback? onTap;
 
-  StepIndicator(
-      {required this.isActive1,
-      required this.isActive2,
-      required this.isActive3,
-      required this.number1,
-      required this.number2,
-      required this.number3});
+  StepIndicator({
+    required this.isActive1,
+    required this.isActive2,
+    required this.isActive3,
+    required this.number1,
+    required this.number2,
+    required this.number3,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +57,20 @@ class StepIndicator extends StatelessWidget {
               ),
             )
           : null,
-      child: CircleAvatar(
-          radius: 12.0,
-          backgroundColor: isActive ? AppColors.primaryColor : Colors.grey,
-          child: Text(
-            '$number',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12.0,
-            ),
-          )),
+      child: GestureDetector(
+        onTap: onTap,
+        child: CircleAvatar(
+            radius: 12.0,
+            backgroundColor: isActive ? AppColors.primaryColor : Colors.grey,
+            child: Text(
+              '$number',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12.0,
+              ),
+            )),
+      ),
     );
   }
 
