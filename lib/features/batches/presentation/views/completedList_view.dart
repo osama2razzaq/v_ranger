@@ -37,18 +37,6 @@ class CompletedList extends StatelessWidget {
                 endActionPane: ActionPane(
                   motion: const ScrollMotion(),
                   children: [
-                    // SlidableAction(
-                    //   borderRadius: const BorderRadius.horizontal(
-                    //       left: Radius.circular(10)),
-                    //   onPressed: (context) {
-                    //     // Pin action
-                    //     // Handle pin logic here
-                    //   },e
-                    //   backgroundColor: AppColors.yellow,
-                    //   foregroundColor: Colors.white,
-                    //   icon: Icons.push_pin,
-                    //   label: 'Pin',
-                    // ),
                     SlidableAction(
                       borderRadius: const BorderRadius.horizontal(
                           left: Radius.circular(10),
