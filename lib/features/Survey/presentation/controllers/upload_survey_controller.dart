@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,55 +9,78 @@ import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:image_watermark/image_watermark.dart';
 
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
   final SurveyFormController surveyFormController =
       Get.find<SurveyFormController>();
   final ImagePicker _picker = ImagePicker();
-  var images = <XFile>[].obs;
+  var images = <File>[].obs;
   var isLoading = false.obs;
+
   Future<void> pickImage() async {
     if (images.length < 5) {
       final XFile? imageFile =
           await _picker.pickImage(source: ImageSource.camera);
+
       if (imageFile != null) {
-        // Load the image using the image package
+        // Load the image as bytes
         Uint8List imageBytes = await imageFile.readAsBytes();
+
+        // Decode the image to get its dimensions
         img.Image? originalImage = img.decodeImage(imageBytes);
 
-        // Check if image is loaded
         if (originalImage != null) {
-          // Get the current time
+          // Get the current timestamp
           String timestamp =
               DateFormat('dd/MM/yy HH:mm').format(DateTime.now());
 
-          // Define position and color
-          int xPosition = 10;
-          int yPosition = originalImage.height - 30;
-          int color = img.getColor(232, 232, 222); // White color
-          img.BitmapFont font = img.arial_24;
+          // Set rectangle and text position
+          int paddingFromBottom = 50; // Padding from the bottom
+          int rectHeight = 100; // Height of the rectangle box
 
-          // Draw the timestamp on the image
+          int rectY1 = originalImage.height - rectHeight - paddingFromBottom;
+
+          final assetFont =
+              await rootBundle.load('assets/fonts/Prompt-Bold.ttf.zip');
+          final font = assetFont.buffer
+              .asUint8List(assetFont.offsetInBytes, assetFont.lengthInBytes);
+          final bitMapFont = ImageFont.readOtherFontZip(font);
+
+          int lineY = originalImage.height - paddingFromBottom;
+          img.drawLine(originalImage,
+              x1: 0,
+              y1: lineY,
+              x2: originalImage.width,
+              y2: lineY,
+              thickness: 130,
+              color: img.ColorFloat16.rgb(0, 0, 0));
+
+          // Calculate the text position (centered in the rectangle)
+          int textX = (originalImage.width - timestamp.length * 10) ~/
+              2; // Centered horizontally
+          int textY =
+              rectY1 + (rectHeight / 2).toInt() + 10; // Centered vertically
           img.drawString(
             originalImage,
-            font,
-            xPosition,
-            yPosition,
+            font: bitMapFont,
+            x: textX,
+            y: textY,
             timestamp,
-            color: color,
           );
 
-          // Save the modified image back to a file
+          // Convert the image back to bytes
           Uint8List modifiedImageBytes =
               Uint8List.fromList(img.encodeJpg(originalImage));
-          final String modifiedImagePath =
-              '${imageFile.path}_modified.jpg'; // New file path
+
+          // Save the modified image back to a file
+          final String modifiedImagePath = '${imageFile.path}_modified.jpg';
           final File modifiedImageFile = File(modifiedImagePath);
           await modifiedImageFile.writeAsBytes(modifiedImageBytes);
 
           // Add the modified image to the list
-          images.add(XFile(modifiedImagePath));
+          images.add(modifiedImageFile);
         }
       }
     } else {

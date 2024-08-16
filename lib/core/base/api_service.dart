@@ -319,11 +319,11 @@ class ApiService {
     String? remark,
     String? visitDate, // Corrected parameter name to match field
     String? visitTime, // Corrected parameter name to match field
-    XFile? photo1,
-    XFile? photo2,
-    XFile? photo3,
-    XFile? photo4,
-    XFile? photo5,
+    File? photo1,
+    File? photo2,
+    File? photo3,
+    File? photo4,
+    File? photo5,
   }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
