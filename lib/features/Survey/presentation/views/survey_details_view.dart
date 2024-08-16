@@ -1,11 +1,12 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:get/get.dart';
 import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:v_ranger/core/common_widgets/map_view.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
@@ -265,7 +266,14 @@ class SurveyDetailsPage extends StatelessWidget {
             icon: Icons.directions,
             onTap: () {
               print('Direction tapped');
-              navigateTo(1.3333, 0.33);
+              navigateTo(
+                  !isEdit
+                      ? double.parse(pendingDetails!.batchfileLatitude!)
+                      : double.parse(completedDetails!.batchfileLatitude!),
+                  !isEdit
+                      ? double.parse(pendingDetails!.batchfileLongitude!)
+                      : double.parse(completedDetails!.batchfileLongitude!),
+                  context);
             },
             colors: [
               AppColors.gradientStartColor, // Start color
@@ -322,12 +330,75 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 }
 
-void navigateTo(double lat, double lng) async {
-  var uri = Uri.parse("google.navigation:q=$lat,$lng&mode=d");
-  if (await canLaunch(uri.toString())) {
-    await launch(uri.toString());
-  } else {
-    throw 'Could not launch ${uri.toString()}';
+void navigateTo(double lat, double lng, BuildContext context) async {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Choose Navigation App"),
+        content: Text("Which app would you like to use for navigation?"),
+        actions: [
+          ListTile(
+            leading: Image.asset(
+              'assets/icons/google_maps_icon.png',
+              width: 40.0,
+              height: 40.0,
+            ),
+            title: Text("Google Maps"),
+            onTap: () {
+              Navigator.of(context).pop(); // Close the dialog
+              launchGoogleMaps(lat, lng);
+            },
+          ),
+          ListTile(
+            leading: Image.asset(
+              'assets/icons/waze_icon.png',
+              width: 40.0,
+              height: 40.0,
+            ),
+            title: Text("Waze"),
+            onTap: () {
+              Navigator.of(context).pop(); // Close the dialog
+              launchWazeRoute(lat, lng);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> launchWazeRoute(double lat, double lng) async {
+  var url = 'waze://?ll=${lat.toString()},${lng.toString()}';
+  var fallbackUrl =
+      'https://waze.com/ul?ll=${lat.toString()},${lng.toString()}&navigate=yes';
+  try {
+    bool launched = false;
+    if (!kIsWeb) {
+      launched = await url_launcher.launchUrl(Uri.parse(url));
+    }
+    if (!launched) {
+      await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+    }
+  } catch (e) {
+    await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+  }
+}
+
+Future<void> launchGoogleMaps(double lat, double lng) async {
+  var url = 'google.navigation:q=${lat.toString()},${lng.toString()}';
+  var fallbackUrl =
+      'https://www.google.com/maps/search/?api=1&query=${lat.toString()},${lng.toString()}';
+  try {
+    bool launched = false;
+    if (!kIsWeb) {
+      launched = await url_launcher.launchUrl(Uri.parse(url));
+    }
+    if (!launched) {
+      await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+    }
+  } catch (e) {
+    await url_launcher.launchUrl(Uri.parse(fallbackUrl));
   }
 }
 

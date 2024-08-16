@@ -306,7 +306,7 @@ class _MapScreenState extends State<MapScreen> {
                           ElevatedButton(
                             onPressed: () {
                               navigateTo(destinationLatLng!.latitude,
-                                  destinationLatLng!.longitude);
+                                  destinationLatLng!.longitude, context);
                             },
                             style: ElevatedButton.styleFrom(
                               shape: const CircleBorder(),
