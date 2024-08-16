@@ -20,74 +20,80 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   var isLoading = false.obs;
 
   Future<void> pickImage() async {
-    if (images.length < 5) {
-      final XFile? imageFile =
-          await _picker.pickImage(source: ImageSource.camera);
+    isLoading.value = true; // Show loader
+    try {
+      if (images.length < 5) {
+        final XFile? imageFile =
+            await _picker.pickImage(source: ImageSource.camera);
 
-      if (imageFile != null) {
-        // Load the image as bytes
-        Uint8List imageBytes = await imageFile.readAsBytes();
+        if (imageFile != null) {
+          // Load the image as bytes
+          Uint8List imageBytes = await imageFile.readAsBytes();
 
-        // Decode the image to get its dimensions
-        img.Image? originalImage = img.decodeImage(imageBytes);
+          // Decode the image to get its dimensions
+          img.Image? originalImage = img.decodeImage(imageBytes);
 
-        if (originalImage != null) {
-          // Get the current timestamp
-          String timestamp =
-              DateFormat('dd/MM/yy HH:mm').format(DateTime.now());
+          if (originalImage != null) {
+            // Get the current timestamp
+            String timestamp =
+                DateFormat('dd/MM/yy HH:mm').format(DateTime.now());
 
-          // Set rectangle and text position
-          int paddingFromBottom = 50; // Padding from the bottom
-          int rectHeight = 100; // Height of the rectangle box
+            // Set rectangle and text position
+            int paddingFromBottom = 50; // Padding from the bottom
+            int rectHeight = 100; // Height of the rectangle box
 
-          int rectY1 = originalImage.height - rectHeight - paddingFromBottom;
+            int rectY1 = originalImage.height - rectHeight - paddingFromBottom;
 
-          final assetFont =
-              await rootBundle.load('assets/fonts/Prompt-Bold.ttf.zip');
-          final font = assetFont.buffer
-              .asUint8List(assetFont.offsetInBytes, assetFont.lengthInBytes);
-          final bitMapFont = ImageFont.readOtherFontZip(font);
+            final assetFont =
+                await rootBundle.load('assets/fonts/Prompt-Bold.ttf.zip');
+            final font = assetFont.buffer
+                .asUint8List(assetFont.offsetInBytes, assetFont.lengthInBytes);
+            final bitMapFont = ImageFont.readOtherFontZip(font);
 
-          int lineY = originalImage.height - paddingFromBottom;
-          img.drawLine(originalImage,
-              x1: 0,
-              y1: lineY,
-              x2: originalImage.width,
-              y2: lineY,
-              thickness: 130,
-              color: img.ColorFloat16.rgb(0, 0, 0));
-          int textHeight = 20; // Approximate height based on font size
-          int textWidth = timestamp.length * 20;
-          int textX = (originalImage.width - textWidth) ~/ 2;
-          int textY = rectY1 +
-              (rectHeight - textHeight) ~/ 2 +
-              textHeight; // Centered vertically
+            int lineY = originalImage.height - paddingFromBottom;
+            img.drawLine(originalImage,
+                x1: 0,
+                y1: lineY,
+                x2: originalImage.width,
+                y2: lineY,
+                thickness: 130,
+                color: img.ColorFloat16.rgb(0, 0, 0));
+            int textHeight = 20; // Approximate height based on font size
+            int textWidth = timestamp.length * 20;
+            int textX = (originalImage.width - textWidth) ~/ 2;
+            int textY = rectY1 +
+                (rectHeight - textHeight) ~/ 2 +
+                textHeight; // Centered vertically
 
-          // Draw the timestamp text inside the rectangle (white text)
-          img.drawString(
-            originalImage,
-            font: bitMapFont,
-            x: textX,
-            y: textY,
-            timestamp,
-          );
+            // Draw the timestamp text inside the rectangle (white text)
+            img.drawString(
+              originalImage,
+              font: bitMapFont,
+              x: textX,
+              y: textY,
+              timestamp,
+            );
 
-          // Convert the image back to bytes
-          Uint8List modifiedImageBytes =
-              Uint8List.fromList(img.encodeJpg(originalImage));
+            // Convert the image back to bytes
+            Uint8List modifiedImageBytes =
+                Uint8List.fromList(img.encodeJpg(originalImage));
 
-          // Save the modified image back to a file
-          final String modifiedImagePath = '${imageFile.path}_modified.jpg';
-          final File modifiedImageFile = File(modifiedImagePath);
-          await modifiedImageFile.writeAsBytes(modifiedImageBytes);
+            // Save the modified image back to a file
+            final String modifiedImagePath = '${imageFile.path}_modified.jpg';
+            final File modifiedImageFile = File(modifiedImagePath);
+            await modifiedImageFile.writeAsBytes(modifiedImageBytes);
 
-          // Add the modified image to the list
-          images.add(modifiedImageFile);
+            // Add the modified image to the list
+            images.add(modifiedImageFile);
+          }
         }
+      } else {
+        // Limit reached, show a message
+        showErrorSnackBar(
+            'Limit reached, You can upload a maximum of 5 images');
       }
-    } else {
-      // Limit reached, show a message
-      showErrorSnackBar('Limit reached, You can upload a maximum of 5 images');
+    } finally {
+      isLoading.value = false;
     }
   }
 
