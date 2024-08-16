@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/custom_text_field.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -240,9 +241,11 @@ class LoginView extends StatelessWidget with SnackBarHelper {
                 child: Column(
                   children: [
                     CustomTextField(
-                      labelText: 'Login',
-                      textEditingController: controller.emailController,
-                    ),
+                        labelText: 'Login',
+                        textEditingController: controller.emailController,
+                        inputFormatters: [
+                          UpperCaseTextFormatter(),
+                        ]),
                     CustomTextField(
                       labelText: 'Password',
                       textEditingController: controller.passwordController,
@@ -257,6 +260,17 @@ class LoginView extends StatelessWidget with SnackBarHelper {
 
         //  Text(AppStrings.appSubTitle, style: PromptStyle.subLogoStyle),
       ],
+    );
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }
