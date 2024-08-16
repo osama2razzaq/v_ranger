@@ -205,7 +205,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                               .toString(),
                       isEdit == true
                           ? controller
-                              .data.value!.data!.pendingDetails![index].id
+                              .data.value!.data!.completedDetails![index].id
                               .toString()
                           : controller
                               .data.value!.data!.pendingDetails![index].id
