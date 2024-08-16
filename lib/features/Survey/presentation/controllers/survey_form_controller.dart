@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
@@ -56,6 +55,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   var isWaterBillVisible = false.obs;
   var isWaterMeterVisible = false.obs;
   var isCorrectAddressVisible = false.obs;
+  var accountNo = Rx<String?>(null);
 
   final ApiService apiService = ApiService();
 

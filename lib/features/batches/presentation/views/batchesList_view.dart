@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/batchesList_controller.dart';
 import 'package:v_ranger/features/batches/presentation/views/batches_tabs_view.dart';
 
-class BatchesListView extends StatelessWidget {
+class BatchesListView extends StatelessWidget with SnackBarHelper {
   final BatchesListController controller = Get.put(BatchesListController());
 
   @override
@@ -65,7 +66,10 @@ class BatchesListView extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.data.value == null) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: AppColors.primaryColor,
+          ));
         }
 
         if (controller.filteredData.isEmpty) {
@@ -88,7 +92,13 @@ class BatchesListView extends StatelessWidget {
                           left: Radius.circular(10),
                           right: Radius.circular(10)),
                       onPressed: (context) {
-                        print("Soft Delete");
+                        if (batch.pendingCount == 0) {
+                          controller.softDeleteBatch(
+                              batch.batchId.toString(), 'softdelete');
+                        } else {
+                          showErrorSnackBar(
+                              'Deletion is not allowed until all pending files are complete.');
+                        }
                       },
                       backgroundColor: AppColors.red,
                       foregroundColor: Colors.white,

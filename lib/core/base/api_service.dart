@@ -298,6 +298,38 @@ class ApiService {
     return null;
   }
 
+  Future<http.Response?> softDeletebatch(String batchId, String action) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.softDeleteBatch}');
+    final body = {
+      'batch_id': batchId,
+      'action': action,
+    };
+    final bodyJson = jsonEncode(body);
+
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+      } else {
+        return response;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  }
+
   Future<http.Response?> postSurvey({
     required String batchId,
     required String batchDetailId,

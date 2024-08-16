@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
@@ -23,6 +25,22 @@ class BatchesListController extends GetxController with SnackBarHelper {
     try {
       final result = await apiService.fetchBatchesData(batchId!);
       data.value = result;
+    } catch (e) {
+      showNormalSnackBar('Failed to load data: $e');
+      data.value = null; // Clear data on error
+    }
+  }
+
+  Future<void> softDeleteBatch(
+    String? batchId,
+    String? action,
+  ) async {
+    try {
+      final result = await apiService.softDeletebatch(batchId!, action!);
+      final responseData = jsonDecode(result!.body);
+      final message = responseData['message'] ?? 'Unknown error';
+      fetchBatchesData('');
+      showNormalSnackBar(message);
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
