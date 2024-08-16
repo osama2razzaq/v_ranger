@@ -56,12 +56,14 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
               y2: lineY,
               thickness: 130,
               color: img.ColorFloat16.rgb(0, 0, 0));
+          int textHeight = 20; // Approximate height based on font size
+          int textWidth = timestamp.length * 20;
+          int textX = (originalImage.width - textWidth) ~/ 2;
+          int textY = rectY1 +
+              (rectHeight - textHeight) ~/ 2 +
+              textHeight; // Centered vertically
 
-          // Calculate the text position (centered in the rectangle)
-          int textX = (originalImage.width - timestamp.length * 10) ~/
-              2; // Centered horizontally
-          int textY =
-              rectY1 + (rectHeight / 2).toInt() + 10; // Centered vertically
+          // Draw the timestamp text inside the rectangle (white text)
           img.drawString(
             originalImage,
             font: bitMapFont,
