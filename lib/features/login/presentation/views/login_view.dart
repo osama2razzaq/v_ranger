@@ -5,6 +5,8 @@ import 'package:v_ranger/core/common_widgets/custom_text_field.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/values.dart';
+import 'package:v_ranger/features/forgotPassword/presentation/views/forgot_password_view.dart';
+import 'package:v_ranger/features/forgotPassword/presentation/views/opt_verification_view.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/login_controller.dart';
 
@@ -24,7 +26,7 @@ class LoginView extends StatelessWidget with SnackBarHelper {
               buildConntainer(context),
               _buildLoginButton(buttonName: "Login"),
               _buildForgotTextButton(
-                () => Get.to(()),
+                () => Get.to(() => MobileOtpScreen()),
                 'Forgot Password',
               ),
             ],

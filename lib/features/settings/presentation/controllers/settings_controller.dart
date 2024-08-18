@@ -6,7 +6,8 @@ import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
-import 'package:v_ranger/core/values/app_strings.dart'; // For local storage
+import 'package:v_ranger/core/values/app_strings.dart';
+import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart'; // For local storage
 
 class SettingsController extends GetxController with SnackBarHelper {
   // Observables for email and password
@@ -16,6 +17,8 @@ class SettingsController extends GetxController with SnackBarHelper {
   // TextEditingController for the input fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final LocationController locationController = Get.put(LocationController());
 
   // Instance of ApiService
   final ApiService apiService =
@@ -37,7 +40,7 @@ class SettingsController extends GetxController with SnackBarHelper {
         await prefs.remove('driveId');
         Get.delete<SettingsController>();
         Get.offAllNamed(Routes.login);
-
+        locationController.stopLocationUpdates;
         showNormalSnackBar("Logged out successfully");
       } else {
         // Parse error response

@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/dashedline_painter.dart';
@@ -8,9 +6,7 @@ import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/common_widgets/step_Indicator.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
-
 import 'package:v_ranger/features/Survey/presentation/controllers/upload_survey_controller.dart';
-
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
 class SurveyUploadImagePage extends StatelessWidget {

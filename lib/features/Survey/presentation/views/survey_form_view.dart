@@ -280,8 +280,6 @@ class SurveyFormPage extends StatelessWidget {
       String? hintText,
       bool? isAddRmarks,
       required TextEditingController controller,
-      // required FocusNode focusNode,
-      // FocusNode? nextFocusNode,
       Function(String)? onChanged,
       BuildContext? context}) {
     return Padding(

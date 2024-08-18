@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
@@ -223,6 +222,7 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        print("updated location ${response.body}");
       } else {
         return response;
       }

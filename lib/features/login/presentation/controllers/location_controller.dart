@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -5,16 +6,23 @@ import 'package:location/location.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
-import 'package:v_ranger/core/values/app_text_style.dart';
 
 class LocationController extends GetxController {
   var currentLocation = Rxn<LocationData>();
   final Location _location = Location();
   final ApiService apiService = ApiService();
+  Timer? _locationTimer;
+
   @override
   void onInit() {
     super.onInit();
     getLocation();
+  }
+
+  @override
+  void onClose() {
+    stopLocationUpdates(); // Stop location updates when the controller is closed
+    super.onClose();
   }
 
   Future<void> getLocation() async {
@@ -35,21 +43,44 @@ class LocationController extends GetxController {
       permissionGranted = await _location.requestPermission();
     }
 
-    // Get the current location
+    // Get the current location and start updating every 5 minutes
     try {
       currentLocation.value = await _location.getLocation();
-      updateLocation();
+      updateLocation(); // Initial location update
+      startLocationUpdates(); // Start periodic updates
     } catch (e) {
       showErrorAlert(e.toString());
     }
   }
 
+  void startLocationUpdates() {
+    // Update location every 5 minutes (300 seconds)
+    _locationTimer = Timer.periodic(const Duration(minutes: 5), (timer) async {
+      currentLocation.value = await _location.getLocation();
+      updateLocation();
+    });
+  }
+
+  void stopLocationUpdates() {
+    // Cancel the timer to stop location updates
+    if (_locationTimer != null) {
+      _locationTimer!.cancel();
+      _locationTimer = null;
+    }
+  }
+
   Future<void> updateLocation() async {
     try {
-      final result = await apiService.postUpdateLocation(
-          currentLocation.value!.latitude!, currentLocation.value!.longitude!);
-      print(result);
-    } catch (e) {}
+      if (currentLocation.value != null) {
+        final result = await apiService.postUpdateLocation(
+          currentLocation.value!.latitude!,
+          currentLocation.value!.longitude!,
+        );
+        print("location has been updated:: ${result!.body}");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> showServiceAlert() async {
