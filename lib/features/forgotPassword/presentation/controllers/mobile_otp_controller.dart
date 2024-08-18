@@ -16,7 +16,8 @@ class MobileOtpController extends GetxController {
   void verifyOtp() {
     // Simulate OTP verification
     Get.snackbar(
-        'OTP Verified', 'You have successfully verified your mobile number.');
+        'OTP Verified', 'You have successfully verified your mobile number.',
+        colorText: AppColors.colorWhite, backgroundColor: AppColors.green);
     Get.to(() => const ForgotPasswordView());
   }
 }

@@ -13,6 +13,7 @@ class MobileOtpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.colorWhite,
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
