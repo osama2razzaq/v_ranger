@@ -5,7 +5,6 @@ import 'package:v_ranger/core/common_widgets/custom_text_field.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/values.dart';
-import 'package:v_ranger/features/forgotPassword/presentation/views/forgot_password_view.dart';
 import 'package:v_ranger/features/forgotPassword/presentation/views/opt_verification_view.dart';
 import 'package:v_ranger/features/login/presentation/controllers/location_controller.dart';
 import 'package:v_ranger/features/login/presentation/controllers/login_controller.dart';
@@ -197,9 +196,7 @@ class LoginView extends StatelessWidget with SnackBarHelper {
   Widget _buildForgotTextButton(VoidCallback onTap, String? buttonText) {
     return Padding(
       padding: const EdgeInsets.only(
-          right: AppValues.margin_20,
-          top: AppValues.margin_6,
-          bottom: AppValues.margin_15),
+          top: AppValues.margin_10, bottom: AppValues.margin_15),
       child: GestureDetector(
         onTap: onTap,
         child: SizedBox(

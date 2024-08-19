@@ -1,87 +1,92 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/core/base/api_service.dart';
+import 'package:v_ranger/core/utils/snack_bar_helper.dart';
+
 import 'package:v_ranger/features/forgotPassword/presentation/views/forgot_password_view.dart';
 
-class MobileOtpController extends GetxController {
+class MobileOtpController extends GetxController with SnackBarHelper {
+  final TextEditingController mobileTextController = TextEditingController();
+  final TextEditingController otpTextController = TextEditingController();
   var isOtpSent = false.obs;
+  final ApiService apiService = ApiService();
 
-  void sendOtp() {
-    // Simulate sending OTP
-    isOtpSent.value = true;
-    Get.snackbar('OTP Sent', 'OTP has been sent to your mobile number.',
-        colorText: AppColors.colorWhite, backgroundColor: AppColors.green);
+  Future<void> postSendOtp() async {
+    if (mobileTextController.text.isNotEmpty) {
+      try {
+        final response =
+            await apiService.postSendOTP(mobileTextController.text);
+
+        if (response?.statusCode == 200) {
+          // Parse successful response
+          final responseData = jsonDecode(response!.body);
+          final message = responseData['message'];
+          isOtpSent.value = true;
+          showNormalSnackBar(message);
+        } else {
+          // Parse error response
+          final responseData = jsonDecode(response!.body);
+          if (responseData['errors'] != null) {
+            // Handle validation errors
+            final validationErrors = responseData['errors'];
+            final errorMessage = validationErrors.isNotEmpty
+                ? validationErrors.values.first.join(', ')
+                : 'Unknown error';
+            showErrorSnackBar("Error: $errorMessage");
+          } else {
+            // Handle general error
+            final errorMessage = responseData['message'] ?? 'Unknown error';
+            showErrorSnackBar("Error: $errorMessage");
+          }
+        }
+      } catch (e) {
+        // Handle any errors that occur during the API call
+        showErrorSnackBar("An error occurred: $e");
+      }
+    } else {
+      showErrorSnackBar("Mobile number cannot be empty");
+    }
   }
 
-  void verifyOtp() {
-    // Simulate OTP verification
-    Get.snackbar(
-        'OTP Verified', 'You have successfully verified your mobile number.',
-        colorText: AppColors.colorWhite, backgroundColor: AppColors.green);
-    Get.to(() => const ForgotPasswordView());
+  Future<void> postVerifyOTP() async {
+    if (otpTextController.text.isNotEmpty) {
+      try {
+        final response = await apiService.postVerifyOTP(
+            mobileTextController.text, otpTextController.text);
+
+        if (response?.statusCode == 200) {
+          // Parse successful response
+          final responseData = jsonDecode(response!.body);
+          final message = responseData['message'];
+          Get.to(() => ForgotPasswordView(
+                mobileNo: mobileTextController.text,
+                otpCode: otpTextController.text,
+              ));
+          showNormalSnackBar(message);
+        } else {
+          // Parse error response
+          final responseData = jsonDecode(response!.body);
+          if (responseData['errors'] != null) {
+            // Handle validation errors
+            final validationErrors = responseData['errors'];
+            final errorMessage = validationErrors.isNotEmpty
+                ? validationErrors.values.first.join(', ')
+                : 'Unknown error';
+            showErrorSnackBar("Error: $errorMessage");
+          } else {
+            // Handle general error
+            final errorMessage = responseData['message'] ?? 'Unknown error';
+            showErrorSnackBar("Error: $errorMessage");
+          }
+        }
+      } catch (e) {
+        // Handle any errors that occur during the API call
+        showErrorSnackBar("An error occurred: $e");
+      }
+    } else {
+      showErrorSnackBar("Mobile number cannot be empty");
+    }
   }
-}
-
-class MobileOtpScreen extends StatelessWidget {
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController otpController = TextEditingController();
-  final MobileOtpController controller = Get.put(MobileOtpController());
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Enter Mobile Number'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: mobileController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'Mobile Number',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.sendOtp,
-              child: Text('Send OTP'),
-            ),
-            SizedBox(height: 40),
-            Obx(() {
-              return controller.isOtpSent.value
-                  ? Column(
-                      children: [
-                        TextField(
-                          controller: otpController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Enter OTP',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: controller.verifyOtp,
-                          child: Text('Verify OTP'),
-                        ),
-                      ],
-                    )
-                  : SizedBox.shrink();
-            }),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(GetMaterialApp(
-    home: MobileOtpScreen(),
-  ));
 }

@@ -34,4 +34,8 @@ abstract class ApiConstants {
   static const softDeleteBatch = '/updatebatch';
   static const storesurvey = '/storesurvey';
   static const driversleaderboard = '/driversleaderboard';
+  static const forgotpassword = '/forgotpassword';
+  static const verifyresetcode = '/verifyresetcode';
+  static const resetpassword = '/resetpassword';
+  static const changepassword = '/changepassword';
 }

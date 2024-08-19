@@ -428,4 +428,57 @@ class ApiService {
       return null;
     }
   }
+
+  Future<http.Response?> postSendOTP(String phoneNumber) async {
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.forgotpassword}');
+
+    final response = await http.post(
+      url,
+      body: {
+        'phone_number': phoneNumber,
+      },
+    );
+    return response;
+  }
+
+  Future<http.Response?> postVerifyOTP(
+      String phoneNumber, String resetCode) async {
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.verifyresetcode}');
+
+    final response = await http.post(
+      url,
+      body: {
+        'phone_number': phoneNumber,
+        'reset_code': resetCode,
+      },
+    );
+    return response;
+  }
+
+  Future<http.Response?> postResetPassword(
+      String phoneNumber, String resetCode, String newPassword) async {
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.resetpassword}');
+    print(
+      phoneNumber,
+    );
+    print(
+      resetCode,
+    );
+    print(
+      newPassword,
+    );
+
+    final response = await http.post(
+      url,
+      body: {
+        'phone_number': phoneNumber,
+        'reset_code': resetCode,
+        'new_password': newPassword,
+      },
+    );
+    return response;
+  }
 }

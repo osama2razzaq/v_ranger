@@ -7,12 +7,16 @@ import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/forgotPassword/presentation/controllers/forgot_password_controller.dart';
 
 class ForgotPasswordView extends StatelessWidget {
-  const ForgotPasswordView({super.key});
+  final String mobileNo;
+  final String otpCode;
+  ForgotPasswordView(
+      {super.key, required this.mobileNo, required this.otpCode});
 
   @override
   Widget build(BuildContext context) {
     final ForgotPasswordController controller =
         Get.put(ForgotPasswordController());
+
     return Scaffold(
         backgroundColor: AppColors.colorWhite,
         appBar: AppBar(
@@ -37,46 +41,43 @@ class ForgotPasswordView extends StatelessWidget {
                     customTextField(
                         labelText: 'New Password',
                         hintText: 'Enter new password',
-                        // controller:
-                        //     surveyFormController.occupierPhoneNumberController,
-                        // focusNode: surveyFormController.occupierPhoneNumberFocus,
-                        // nextFocusNode: surveyFormController.occupierEmailFocus,
                         context: context,
-                        onChanged: (value) => ()),
+                        controller: controller.newPasswordTextController),
                     customTextField(
                         labelText: 'Confirm Password',
                         hintText: 'Enter confirm password',
-                        // controller: surveyFormController.occupierPhoneNumberController,
-                        // focusNode: surveyFormController.occupierPhoneNumberFocus,
-                        // nextFocusNode: surveyFormController.occupierEmailFocus,
                         context: context,
-                        onChanged: (value) => ())
+                        controller: controller.confirmPasswordTextController),
                   ],
                 ),
-                _buildLoginButton(buttonName: 'Submit', context: context),
+                _buildSubmitButton(
+                    buttonName: 'Submit',
+                    context: context,
+                    controller: controller),
               ],
             ),
           ),
         ));
   }
 
-  Widget _buildLoginButton(
-      {required String buttonName, BuildContext? context}) {
-    return Container(
+  Widget _buildSubmitButton(
+      {required String buttonName,
+      BuildContext? context,
+      required ForgotPasswordController controller}) {
+    return SizedBox(
       width: MediaQuery.of(context!).size.width,
       child: SingleButton(
-          bgColor: AppColors.primaryColor,
-          buttonName: buttonName,
-          onTap: () =>
-              {} // controller.login, //{Get.offAllNamed(Routes.dashboard)},
-          ),
+        bgColor: AppColors.primaryColor,
+        buttonName: buttonName,
+        onTap: () => controller.submit(mobileNo, otpCode),
+      ),
     );
   }
 
   Widget customTextField(
       {String? labelText,
       String? hintText,
-      // required TextEditingController controller,
+      required TextEditingController controller,
       Function(String)? onChanged,
       BuildContext? context}) {
     return Padding(
@@ -90,22 +91,14 @@ class ForgotPasswordView extends StatelessWidget {
               child: Text(labelText, style: PromptStyle.profileSubTitle),
             ),
           SizedBox(
-            //    height: 50,
             child: TextField(
-              // focusNode: focusNode,
               onChanged: onChanged,
-              onSubmitted: (value) {
-                // if (nextFocusNode != null) {
-                //   focusNode.unfocus();
-                //   FocusScope.of(context!).requestFocus(nextFocusNode);
-                // }
-              },
-
+              controller: controller,
               keyboardType: TextInputType.multiline, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
               style: PromptStyle.dropDownInerText,
-
+              obscureText: true, // Mask the password input
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),

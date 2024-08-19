@@ -6,8 +6,8 @@ import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/forgotPassword/presentation/controllers/mobile_otp_controller.dart';
 
 class MobileOtpScreen extends StatelessWidget {
-  final TextEditingController mobileTextController = TextEditingController();
-  final TextEditingController otpTextController = TextEditingController();
+  MobileOtpScreen({super.key});
+
   final MobileOtpController otpController = Get.put(MobileOtpController());
 
   @override
@@ -36,7 +36,7 @@ class MobileOtpScreen extends StatelessWidget {
                     context: context,
                     labelText: 'Mobile Number',
                     hintText: 'Enter mobile number',
-                    controller: mobileTextController,
+                    controller: otpController.mobileTextController,
                     isOTP: true),
                 const SizedBox(height: 20),
                 Obx(() {
@@ -47,7 +47,7 @@ class MobileOtpScreen extends StatelessWidget {
                                 context: context,
                                 labelText: 'OTP Number',
                                 hintText: 'Enter otp',
-                                controller: otpTextController,
+                                controller: otpController.otpTextController,
                                 isOTP: false),
                             const SizedBox(height: 20),
                           ],
@@ -63,7 +63,7 @@ class MobileOtpScreen extends StatelessWidget {
                       child: SingleButton(
                           buttonName: 'Verify OTP',
                           onTap: () {
-                            otpController.verifyOtp();
+                            otpController.postVerifyOTP();
                           }),
                     )
                   : Container();
@@ -94,23 +94,24 @@ class MobileOtpScreen extends StatelessWidget {
           SizedBox(
             //    height: 50,
             child: TextField(
-              textInputAction: TextInputAction.send,
+              //  textInputAction: TextInputAction.send,
               onChanged: onChanged,
 
-              keyboardType: TextInputType.number, // Ensures t
+              keyboardType: TextInputType.phone, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
               style: PromptStyle.dropDownInerText,
-
+              controller: controller,
               decoration: InputDecoration(
                 suffixIcon: isOTP == true
                     ? IconButton(
+                        // ignore: prefer_const_constructors
                         icon: Icon(
                           Icons.send,
                           color: AppColors.primaryColor,
                         ),
                         onPressed: () {
-                          otpController.sendOtp();
+                          otpController.postSendOtp();
                         },
                       )
                     : null,

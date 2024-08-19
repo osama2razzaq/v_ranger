@@ -105,11 +105,4 @@ class LoginController extends GetxController with SnackBarHelper {
       showErrorSnackBar("Email or password cannot be empty");
     }
   }
-
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
 }
