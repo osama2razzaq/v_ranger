@@ -11,6 +11,7 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
   final LocationController locationController = Get.put(LocationController());
   final RxBool lifeCardUpdateController = false.obs;
   final ApiService apiService = ApiService();
+  var selectedBatchIds = <int>{}.obs; // Store selected batch IDs
   // Observable variables for counts
   var pendingCount = 0.obs;
   var completedCount = 0.obs;
@@ -25,6 +26,30 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
 
   void onClose() {
     super.onClose(); // Call super.onClose() to ensure proper disposal
+  }
+
+  // Toggle selection
+  void toggleBatchSelection(int batchId) {
+    if (selectedBatchIds.contains(batchId)) {
+      selectedBatchIds.remove(batchId); // Unselect
+    } else {
+      selectedBatchIds.add(batchId); // Select
+    }
+  }
+
+  // Check if all items are selected
+  bool isAllSelected() {
+    return selectedBatchIds.length == data.value!.data!.pendingDetails!.length;
+  }
+
+  // Toggle select/deselect all items
+  void toggleAllSelection() {
+    if (isAllSelected()) {
+      selectedBatchIds.clear();
+    } else {
+      selectedBatchIds.addAll(
+          data.value!.data!.pendingDetails!.map((batch) => batch.id!).toList());
+    }
   }
 
   Future<void> fetchBatchDetailsList(String batchId, String search,
