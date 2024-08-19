@@ -42,50 +42,53 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
         ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
-        title:
-            // TextField(
-            //         controller: _searchController,
-            //         autofocus: true,
-            //         decoration: const InputDecoration(
-            //           hintText: "Search...",
-            //           hintStyle: TextStyle(color: Colors.white70),
-            //           border: InputBorder.none,
-            //         ),
-            //         style: const TextStyle(color: Colors.white),
-            //         onChanged: (text) {
-            //           setState(() {
-            //             _searchText = text;
-            //           });
-            //         },
-            //       )
-            //     :
-            Text(
-          "Batches",
-          style: PromptStyle.appBarTitleStyle,
-        ),
-        // actions: <Widget>[
-        //   _isSearching
-        //       ? IconButton(
-        //           color: Colors.white,
-        //           icon: const Icon(Icons.clear),
-        //           onPressed: () {
-        //             setState(() {
-        //               _isSearching = false;
-        //               _searchController.clear();
-        //               _searchText = "";
-        //             });
-        //           },
-        //         )
-        //       : IconButton(
-        //           color: Colors.white,
-        //           icon: const Icon(Icons.search),
-        //           onPressed: () {
-        //             setState(() {
-        //               _isSearching = true;
-        //             });
-        //           },
-        //         ),
-        // ],
+        title: Obx(() {
+          return controller.isSearching.value
+              ? TextField(
+                  autocorrect: false,
+                  cursorColor: AppColors.colorWhite,
+                  controller: TextEditingController()
+                    ..text = controller.searchText.value
+                    ..selection = TextSelection.collapsed(
+                        offset: controller.searchText.value.length),
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: "Search...",
+                    hintStyle: TextStyle(color: Colors.white70),
+                    border: InputBorder.none,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: (text) {
+                    controller.setSearchText(
+                      text,
+                      widget.batchId.toString(),
+                    );
+                  },
+                )
+              : Text(
+                  "Batches",
+                  style: PromptStyle.appBarTitleStyle,
+                );
+        }),
+        actions: <Widget>[
+          Obx(() {
+            return controller.isSearching.value
+                ? IconButton(
+                    color: Colors.white,
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      controller.stopSearch();
+                    },
+                  )
+                : IconButton(
+                    color: Colors.white,
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      controller.startSearch();
+                    },
+                  );
+          }),
+        ],
       ),
       body: SafeArea(
         child: DefaultTabController(

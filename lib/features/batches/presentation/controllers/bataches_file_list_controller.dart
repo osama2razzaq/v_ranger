@@ -15,7 +15,9 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
   var pendingCount = 0.obs;
   var completedCount = 0.obs;
   var abortCount = 0.obs;
-  RxString onSearch = 'false'.obs;
+  var searchText = "".obs;
+  var isSearching = false.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -53,7 +55,7 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
       final message = responseData['message'] ?? 'Unknown error';
       fetchBatchDetailsList(
           batchId!,
-          onSearch.value,
+          searchText.value,
           locationController.currentLocation.value!.latitude.toString(),
           locationController.currentLocation.value!.longitude.toString());
       showNormalSnackBar(message);
@@ -70,6 +72,21 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
     abortCount.value = data.value?.data!.abortedCount! as int;
   }
 
-  var searchText = "".obs;
-  var isSearching = false.obs;
+  void startSearch() {
+    isSearching.value = true;
+  }
+
+  void stopSearch() {
+    isSearching.value = false;
+    searchText.value = "";
+  }
+
+  void setSearchText(String text, String batchId) {
+    searchText.value = text;
+    fetchBatchDetailsList(
+        batchId,
+        searchText.value,
+        locationController.currentLocation.value!.latitude.toString(),
+        locationController.currentLocation.value!.longitude.toString());
+  }
 }
