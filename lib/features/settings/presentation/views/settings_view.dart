@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
+import 'package:v_ranger/features/change_password/presentation/views/change_password_view.dart';
 import 'package:v_ranger/features/settings/presentation/controllers/settings_controller.dart';
 
 class SettingsView extends StatelessWidget {
@@ -42,7 +43,9 @@ class SettingsView extends StatelessWidget {
               context,
               Icons.lock,
               'Change Password',
-              () {},
+              () {
+                Get.to(() => ChangePasswordView());
+              },
             ),
             _settingItem(
               context,

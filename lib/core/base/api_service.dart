@@ -481,4 +481,40 @@ class ApiService {
     );
     return response;
   }
+
+  Future<http.Response?> postChangePassword(
+      String oldPassword, String newPassword) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.changepassword}');
+    final body = {
+      'driver_id': driveId,
+      'old_password': oldPassword,
+      'new_password': newPassword,
+    };
+
+    final bodyJson = jsonEncode(body);
+
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 }
