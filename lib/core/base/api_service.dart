@@ -28,13 +28,18 @@ class ApiService {
 
   Future<http.Response> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? driveId = prefs.getInt('driveId');
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.logout}');
-
+    final body = {
+      'driver_id': driveId,
+    };
+    final bodyJson = jsonEncode(body);
     final response = await http.post(
       url,
+      body: bodyJson,
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token"
@@ -138,7 +143,8 @@ class ApiService {
     }
   }
 
-  Future<BatchDetailsList?> fetchBatchDetailsList(String batchId) async {
+  Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
+      String driverLatitude, String driverLongitude) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
@@ -146,7 +152,14 @@ class ApiService {
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
-    final body = {'driver_id': driveId.toString(), 'batch_id': batchId};
+
+    final body = {
+      'driver_id': driveId.toString(),
+      'batch_id': batchId,
+      'search': search,
+      'driver_latitude': driverLatitude,
+      'driver_longitude': driverLongitude,
+    };
     final bodyJson = jsonEncode(body);
     try {
       final response = await http.post(

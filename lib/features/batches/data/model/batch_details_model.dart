@@ -33,6 +33,8 @@ class BatchDetailsList {
         "message": message,
         "data": data?.toJson(),
       };
+
+  BatchDetailsList? copyWith({required data}) {}
 }
 
 class Data {

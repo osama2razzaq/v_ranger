@@ -39,7 +39,7 @@ class BatchesListController extends GetxController with SnackBarHelper {
       final result = await apiService.softDeletebatch(batchId!, action!);
       final responseData = jsonDecode(result!.body);
       final message = responseData['message'] ?? 'Unknown error';
-      fetchBatchesData('');
+      fetchBatchesData(batchId);
       showNormalSnackBar(message);
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
