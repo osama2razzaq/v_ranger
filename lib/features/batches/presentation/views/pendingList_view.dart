@@ -198,6 +198,14 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                             : AppColors.yellow,
                                       ),
                                     ),
+                                    Text(
+                                      "Distance : ${batch.distance.toStringAsFixed(2)} KM",
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.grey200),
+                                    ),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width /
                                           1.3,

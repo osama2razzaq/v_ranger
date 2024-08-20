@@ -104,7 +104,7 @@ class PendingDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
-  String? distance;
+  dynamic distance;
 
   PendingDetail({
     this.id,
@@ -180,7 +180,7 @@ class CompletedDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
-  String? distance;
+  dynamic distance;
 
   CompletedDetail({
     this.id,
@@ -257,7 +257,7 @@ class AbortedDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
-  String? distance;
+  dynamic distance;
 
   AbortedDetail(
       {this.id,

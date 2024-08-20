@@ -106,7 +106,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                               child: Image.file(
                                 File(image.path),
                                 fit: BoxFit.cover,
-                                height: 190,
+                                // height: 190,
                                 width: double.infinity,
                               ),
                             ),

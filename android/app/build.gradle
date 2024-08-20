@@ -14,12 +14,12 @@ if (localPropertiesFile.exists()) {
 
 def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
 if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
+    flutterVersionCode = "3"
 }
 
 def flutterVersionName = localProperties.getProperty("flutter.versionName")
 if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
+    flutterVersionName = "1.0.1"
 }
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
@@ -45,8 +45,8 @@ android {
         applicationId = "com.vranger.v_ranger"
         minSdkVersion 21  // Set the minSdkVersion explicitly
         targetSdkVersion 33  // Set the targetSdkVersion explicitly
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 3
+        versionName "1.0.1"
     }
    
    signingConfigs { 
