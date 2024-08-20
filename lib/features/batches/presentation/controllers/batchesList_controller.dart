@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
@@ -14,7 +15,7 @@ class BatchesListController extends GetxController with SnackBarHelper {
   var pendingCount = 0.obs;
   var completedCount = 0.obs;
   var abortCount = 0.obs;
-
+  RxBool isLoading = false.obs;
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -35,12 +36,14 @@ class BatchesListController extends GetxController with SnackBarHelper {
     String? batchId,
     String? action,
   ) async {
+    isLoading.value = true;
     try {
       final result = await apiService.softDeletebatch(batchId!, action!);
       final responseData = jsonDecode(result!.body);
       final message = responseData['message'] ?? 'Unknown error';
       fetchBatchesData(batchId);
       showNormalSnackBar(message);
+      isLoading.value = true;
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error

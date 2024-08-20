@@ -104,6 +104,7 @@ class PendingDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
+  String? distance;
 
   PendingDetail({
     this.id,
@@ -121,6 +122,7 @@ class PendingDetail {
     this.status,
     this.batchfileLongitude,
     this.pinnedAt,
+    this.distance,
   });
 
   factory PendingDetail.fromJson(Map<String, dynamic> json) => PendingDetail(
@@ -139,6 +141,7 @@ class PendingDetail {
         status: json["status"],
         batchfileLongitude: json["batchfile_longitude"],
         pinnedAt: json["pinned_at"],
+        distance: json["distance"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -157,6 +160,7 @@ class PendingDetail {
         "status": status,
         "batchfile_longitude": batchfileLongitude,
         "pinned_at": pinnedAt,
+        "distance": distance
       };
 }
 
@@ -176,6 +180,7 @@ class CompletedDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
+  String? distance;
 
   CompletedDetail({
     this.id,
@@ -193,6 +198,7 @@ class CompletedDetail {
     this.status,
     this.batchfileLongitude,
     this.pinnedAt,
+    this.distance,
   });
 
   factory CompletedDetail.fromJson(Map<String, dynamic> json) =>
@@ -212,6 +218,7 @@ class CompletedDetail {
         status: json["status"],
         batchfileLongitude: json["batchfile_longitude"],
         pinnedAt: json["pinned_at"],
+        distance: json["distance"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -230,6 +237,7 @@ class CompletedDetail {
         "status": status,
         "batchfile_longitude": batchfileLongitude,
         "pinned_at": pinnedAt,
+        "distance": distance
       };
 }
 
@@ -249,24 +257,25 @@ class AbortedDetail {
   String? status;
   String? batchfileLongitude;
   dynamic pinnedAt;
+  String? distance;
 
-  AbortedDetail({
-    this.id,
-    this.batchId,
-    this.name,
-    this.icNo,
-    this.accountNo,
-    this.billNo,
-    this.amount,
-    this.address,
-    this.districtLa,
-    this.tamanMmid,
-    this.assignedto,
-    this.batchfileLatitude,
-    this.status,
-    this.batchfileLongitude,
-    this.pinnedAt,
-  });
+  AbortedDetail(
+      {this.id,
+      this.batchId,
+      this.name,
+      this.icNo,
+      this.accountNo,
+      this.billNo,
+      this.amount,
+      this.address,
+      this.districtLa,
+      this.tamanMmid,
+      this.assignedto,
+      this.batchfileLatitude,
+      this.status,
+      this.batchfileLongitude,
+      this.pinnedAt,
+      this.distance});
 
   factory AbortedDetail.fromJson(Map<String, dynamic> json) => AbortedDetail(
         id: json["id"],
@@ -284,6 +293,7 @@ class AbortedDetail {
         status: json["status"],
         batchfileLongitude: json["batchfile_longitude"],
         pinnedAt: json["pinned_at"],
+        distance: json["distance"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -302,5 +312,6 @@ class AbortedDetail {
         "status": status,
         "batchfile_longitude": batchfileLongitude,
         "pinned_at": pinnedAt,
+        "distance": distance,
       };
 }

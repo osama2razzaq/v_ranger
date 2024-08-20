@@ -385,7 +385,7 @@ class ApiService {
       );
       final request = http.MultipartRequest('POST', url)
         ..fields['batch_id'] = batchId
-        ..fields['batch_detail_id'] = jsonEncode(stringList)
+        ..fields['batch_detail_id'] = jsonEncode(batchDetailIds)
         ..fields['user_id'] = driveId.toString()
         ..fields['has_water_meter'] = hasWaterMeter?.toString() ?? ''
         ..fields['water_meter_no'] = waterMeterNo ?? ''

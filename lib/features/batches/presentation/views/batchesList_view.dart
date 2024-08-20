@@ -65,14 +65,14 @@ class BatchesListView extends StatelessWidget with SnackBarHelper {
         ],
       ),
       body: Obx(() {
-        if (controller.data.value == null) {
+        if (controller.isLoading.value == true) {
           return const Center(
               child: CircularProgressIndicator(
             color: AppColors.primaryColor,
           ));
-        }
+        } else {}
 
-        if (controller.filteredData.isEmpty) {
+        if (controller.filteredData.isEmpty || controller.data.value == null) {
           return const Center(child: Text("No batches found"));
         }
 

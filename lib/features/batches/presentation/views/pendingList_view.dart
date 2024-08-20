@@ -190,10 +190,12 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                     Text(
                                       batch.name.toString(),
                                       softWrap: true,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700,
-                                        color: AppColors.yellow,
+                                        color: isSelected
+                                            ? AppColors.scoreBgColor2
+                                            : AppColors.yellow,
                                       ),
                                     ),
                                     SizedBox(

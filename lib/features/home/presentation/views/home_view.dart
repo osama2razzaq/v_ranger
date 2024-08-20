@@ -25,6 +25,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    controller.fetchAndHandleDashboardData();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primaryColor,

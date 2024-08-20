@@ -12,14 +12,15 @@ class HomeController extends GetxController with SnackBarHelper {
   @override
   Future<void> onInit() async {
     super.onInit();
+  }
 
+  // Function to fetch and handle dashboard data
+  Future<void> fetchAndHandleDashboardData() async {
     try {
       final result = await apiService.fetchDashboardData();
-
       data.value = result;
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
-
       data.value = null; // Clear data on error
     }
   }
