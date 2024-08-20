@@ -21,11 +21,14 @@ import 'package:v_ranger/features/login/presentation/controllers/location_contro
 class SurveyDetailsPage extends StatelessWidget {
   final BatachesFileListController controller;
   final bool isEdit;
+  final bool isBulkUpdate;
   final int index;
+
   SurveyDetailsPage(
       {Key? key,
       required this.controller,
       required this.isEdit,
+      required this.isBulkUpdate,
       required this.index})
       : super(key: key);
 
@@ -60,6 +63,7 @@ class SurveyDetailsPage extends StatelessWidget {
                   onTap: () {
                     Get.to(() => SurveyFormPage(
                           controller: controller,
+                          isBulkUpdate: isBulkUpdate,
                           index: index,
                           isEdit: isEdit,
                         ));
@@ -301,6 +305,7 @@ class SurveyDetailsPage extends StatelessWidget {
                   controller: controller,
                   index: index,
                   isEdit: isEdit,
+                  isBulkUpdate: isBulkUpdate,
                 ))
           },
         ),

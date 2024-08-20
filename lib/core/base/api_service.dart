@@ -345,7 +345,7 @@ class ApiService {
 
   Future<http.Response?> postSurvey({
     required String batchId,
-    required String batchDetailId,
+    required List<String> batchDetailIds,
     bool? hasWaterMeter,
     String? waterMeterNo,
     bool? hasWaterBill,
@@ -378,9 +378,14 @@ class ApiService {
 
       final url =
           Uri.parse('${ApiConstants.baseUrl}${ApiConstants.storesurvey}');
+      List<String> stringList =
+          batchDetailIds.map((id) => id.toString()).toList();
+      print(
+        "token::: $token",
+      );
       final request = http.MultipartRequest('POST', url)
         ..fields['batch_id'] = batchId
-        ..fields['batch_detail_id'] = batchDetailId
+        ..fields['batch_detail_id'] = jsonEncode(stringList)
         ..fields['user_id'] = driveId.toString()
         ..fields['has_water_meter'] = hasWaterMeter?.toString() ?? ''
         ..fields['water_meter_no'] = waterMeterNo ?? ''
@@ -428,7 +433,7 @@ class ApiService {
 
       final response = await request.send();
       final responseBody = await http.Response.fromStream(response);
-
+      print("request:::: ${request.fields}");
       if (response.statusCode == 200) {
         print(responseBody.body);
         return responseBody;

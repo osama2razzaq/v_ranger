@@ -45,6 +45,7 @@ class CompletedList extends StatelessWidget {
                         Get.to(() => SurveyDetailsPage(
                               controller: controller,
                               index: index,
+                              isBulkUpdate: false,
                               isEdit: true,
                             ));
                       },

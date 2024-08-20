@@ -12,12 +12,13 @@ import 'package:v_ranger/features/batches/presentation/controllers/bataches_file
 class SurveyUploadImagePage extends StatelessWidget {
   final BatachesFileListController controller;
   final bool isEdit;
-
+  final bool isBulkUpdate;
   final int index;
   SurveyUploadImagePage(
       {super.key,
       required this.controller,
       required this.isEdit,
+      required this.isBulkUpdate,
       required this.index});
 
   final UploadSurveyController surveyFormController =
@@ -191,6 +192,25 @@ class SurveyUploadImagePage extends StatelessWidget {
                 buttonName: buttonName,
                 onTap: () {
                   if (!surveyFormController.isLoading.value) {
+                    List<String> batchDetailIds = [];
+
+                    if (isBulkUpdate) {
+                      // Send selectedBatchIds if isBulkUpdate is true
+                      batchDetailIds = controller.selectedBatchIds
+                          .map((id) => id.toString())
+                          .toList();
+                    } else {
+                      if (isEdit == true) {
+                        batchDetailIds.add(controller
+                            .data.value!.data!.completedDetails![index].id
+                            .toString());
+                      } else {
+                        batchDetailIds.add(controller
+                            .data.value!.data!.pendingDetails![index].id
+                            .toString());
+                      }
+                    }
+
                     surveyFormController.postSurvey(
                       isEdit == true
                           ? controller.data.value!.data!
@@ -199,13 +219,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                           : controller
                               .data.value!.data!.pendingDetails![index].batchId
                               .toString(),
-                      isEdit == true
-                          ? controller
-                              .data.value!.data!.completedDetails![index].id
-                              .toString()
-                          : controller
-                              .data.value!.data!.pendingDetails![index].id
-                              .toString(),
+                      batchDetailIds, // Passing the list of batchDetailIds
                     );
                   }
                 },

@@ -11,12 +11,14 @@ import 'package:v_ranger/features/batches/presentation/controllers/bataches_file
 class SurveyFormPage extends StatelessWidget {
   final BatachesFileListController controller;
   final bool isEdit;
+  final bool isBulkUpdate;
 
   final int index;
   SurveyFormPage(
       {Key? key,
       required this.controller,
       required this.isEdit,
+      required this.isBulkUpdate,
       required this.index})
       : super(key: key);
   final SurveyFormController surveyFormController =
@@ -54,6 +56,7 @@ class SurveyFormPage extends StatelessWidget {
                           controller: controller,
                           index: index,
                           isEdit: isEdit,
+                          isBulkUpdate: isBulkUpdate,
                         ));
                   },
                 ),
@@ -405,6 +408,7 @@ class SurveyFormPage extends StatelessWidget {
             Get.to(() => SurveyUploadImagePage(
                   controller: controller,
                   index: index,
+                  isBulkUpdate: isBulkUpdate,
                   isEdit: isEdit,
                 ))
           },

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
+import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_details_view.dart';
 
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
-class PendingList extends StatelessWidget {
+class PendingList extends StatelessWidget with SnackBarHelper {
   final BatachesFileListController controller;
 
-  const PendingList({Key? key, required this.controller}) : super(key: key);
+  PendingList({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +69,14 @@ class PendingList extends StatelessWidget {
                           child: SingleButton(
                               bgColor: AppColors.primaryColor,
                               buttonName: 'Next',
-                              onTap: () =>
-                                  {} // controller.login, //{Get.offAllNamed(Routes.dashboard)},
+                              onTap: () => {
+                                    print(controller.selectedBatchIds),
+                                    Get.to(() => SurveyDetailsPage(
+                                        controller: controller,
+                                        index: 1,
+                                        isEdit: false,
+                                        isBulkUpdate: true))
+                                  } // controller.login, //{Get.offAllNamed(Routes.dashboard)},
                               ),
                         )
                 ],
@@ -83,7 +90,7 @@ class PendingList extends StatelessWidget {
                   final batch = pendingList[index];
                   final isSelected =
                       controller.selectedBatchIds.contains(batch.id);
-
+                  print("isSelected == ${isSelected}");
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Slidable(
@@ -136,11 +143,16 @@ class PendingList extends StatelessWidget {
                           controller.toggleBatchSelection(batch.id!);
                         },
                         onTap: () {
-                          Get.to(() => SurveyDetailsPage(
+                          if (isSelected) {
+                            showErrorSnackBar(
+                                "Please proceed with the next button.");
+                          } else {
+                            Get.to(() => SurveyDetailsPage(
                                 controller: controller,
                                 index: index,
                                 isEdit: false,
-                              ));
+                                isBulkUpdate: false));
+                          }
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),
@@ -176,7 +188,7 @@ class PendingList extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      batch.assignedto.toString(),
+                                      batch.name.toString(),
                                       softWrap: true,
                                       style: const TextStyle(
                                         fontSize: 12,

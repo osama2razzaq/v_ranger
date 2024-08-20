@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +14,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
   final SurveyFormController surveyFormController =
       Get.find<SurveyFormController>();
+
   final ImagePicker _picker = ImagePicker();
   var images = <File>[].obs;
   var isLoading = false.obs;
@@ -112,13 +112,15 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
 
   Future<void> postSurvey(
     String batchId,
-    String batchDetailId,
+    List<String> batchDetailIds,
   ) async {
     DateTime now = DateTime.now();
 
     // Format the date and time
     String formattedDate = DateFormat('dd/MM/yy').format(now);
     String formattedTime = DateFormat('HH:mm').format(now);
+
+    print("batchDetailIdslisr $batchDetailIds");
     if (images.isEmpty) {
       showErrorSnackBar('You must upload at least 1 image');
     } else {
@@ -126,7 +128,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         isLoading.value = true; //
         final response = await apiService.postSurvey(
           batchId: batchId,
-          batchDetailId: batchDetailId,
+          batchDetailIds: batchDetailIds,
           hasWaterMeter: surveyFormController.isWaterMeterVisible.value,
           waterMeterNo: surveyFormController.inputWaterMeter.value,
           hasWaterBill: surveyFormController.isWaterBillVisible.value,
