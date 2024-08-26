@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
@@ -126,19 +127,23 @@ class SurveyFormPage extends StatelessWidget {
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select Ownership--',
-                  items: surveyFormController.ownershipItems,
-                  headerText: 'Ownership',
-                  selectedValue: surveyFormController.selectedOwnership,
-                ),
+                    labelText: '--Select Ownership--',
+                    items: surveyFormController.ownershipItems,
+                    headerText: 'Ownership',
+                    selectedValue: surveyFormController.selectedOwnership,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select Occupancy Status--',
-                  items: surveyFormController.occupancyStatusItems,
-                  headerText: 'Occupancy Status',
-                  selectedValue: surveyFormController.selectedOccupancyStatus,
-                ),
+                    labelText: '--Select Occupancy Status--',
+                    items: surveyFormController.occupancyStatusItems,
+                    headerText: 'Occupancy Status',
+                    selectedValue: surveyFormController.selectedOccupancyStatus,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               customTextField(
                 labelText: 'Occupier Name',
@@ -179,35 +184,44 @@ class SurveyFormPage extends StatelessWidget {
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select Nature Of Business--',
-                  items: surveyFormController.natureOfBusinessItems,
-                  headerText: 'Nature Of Business Code',
-                  selectedValue: surveyFormController.selectedNatureOfBusiness,
-                ),
+                    labelText: '--Select Nature Of Business--',
+                    items: surveyFormController.natureOfBusinessItems,
+                    headerText: 'Nature Of Business Code',
+                    selectedValue:
+                        surveyFormController.selectedNatureOfBusiness,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select DR Code--',
-                  items: surveyFormController.drCodeItems,
-                  headerText: 'DR Code',
-                  selectedValue: surveyFormController.selectedDrCode,
-                ),
+                    labelText: '--Select DR Code--',
+                    items: surveyFormController.drCodeItems,
+                    headerText: 'DR Code',
+                    selectedValue: surveyFormController.selectedDrCode,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select Property List--',
-                  items: surveyFormController.propertyTypeItems,
-                  headerText: 'Property Type',
-                  selectedValue: surveyFormController.selectedPropertyType,
-                ),
+                    labelText: '--Select Property List--',
+                    items: surveyFormController.propertyTypeItems,
+                    headerText: 'Property Type',
+                    selectedValue: surveyFormController.selectedPropertyType,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               Obx(
                 () => customDropdown(
-                  labelText: '--Select Classification--',
-                  items: surveyFormController.classificationItems,
-                  headerText: 'Classification',
-                  selectedValue: surveyFormController.selectedClassification,
-                ),
+                    labelText: '--Select Classification--',
+                    items: surveyFormController.classificationItems,
+                    headerText: 'Classification',
+                    selectedValue: surveyFormController.selectedClassification,
+                    textEditingController:
+                        surveyFormController.textEditingController,
+                    context: context),
               ),
               customTextField(
                 labelText: 'Add (Remarks)',
@@ -230,6 +244,8 @@ class SurveyFormPage extends StatelessWidget {
     required String? labelText,
     required List<String>? items,
     required Rx<String?> selectedValue,
+    required TextEditingController? textEditingController,
+    required BuildContext context,
   }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -246,31 +262,81 @@ class SurveyFormPage extends StatelessWidget {
             ),
           Container(
             height: 50,
-            padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
             decoration: BoxDecoration(
                 border: Border.all(color: AppColors.boaderColor, width: 2),
                 borderRadius: BorderRadius.circular(12)),
-            child: DropdownButtonFormField<String>(
-              dropdownColor: Colors.white,
-              decoration: const InputDecoration(border: InputBorder.none),
-              hint: Text(
-                labelText!,
-                style: PromptStyle.hintTextStyle,
-              ),
-              items: items?.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    maxLines: 2,
-                    value,
-                    style: PromptStyle.dropDownInerText,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<String>(
+                isExpanded: true,
+                hint: Text(
+                  'Select Item',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).hintColor,
                   ),
-                );
-              }).toList(),
-              onChanged: (newValue) {
-                selectedValue.value = newValue; // Update the selected value
-              },
-              isExpanded: true,
+                ),
+                items: items!
+                    .map((item) => DropdownMenuItem(
+                          value: item,
+                          child: Text(
+                            item,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                value: selectedValue.value,
+                onChanged: (value) {
+                  selectedValue.value = value;
+                },
+
+                dropdownSearchData: DropdownSearchData(
+                  searchController: textEditingController,
+                  searchInnerWidgetHeight: 50,
+                  searchInnerWidget: Container(
+                    height: 50,
+                    padding: const EdgeInsets.only(
+                      top: 8,
+                      bottom: 4,
+                      right: 8,
+                      left: 8,
+                    ),
+                    child: TextFormField(
+                      expands: true,
+                      maxLines: null,
+                      controller: textEditingController,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                        hintText: 'Search for an item...',
+                        hintStyle: const TextStyle(fontSize: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  searchMatchFn: (item, searchValue) {
+                    // Convert both item value and searchValue to lowercase for case-insensitive comparison
+                    return item.value
+                        .toString()
+                        .toLowerCase()
+                        .contains(searchValue.toLowerCase());
+                  },
+                ),
+                //This to clear the search value when you close the menu
+                onMenuStateChange: (isOpen) {
+                  if (!isOpen) {
+                    surveyFormController.textEditingController.clear();
+                  }
+                },
+              ),
             ),
           ),
         ],

@@ -16,6 +16,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   final occupierEmailController = TextEditingController();
   final shopNameController = TextEditingController();
   final addRemarkController = TextEditingController();
+  final textEditingController = TextEditingController();
 
   // lists for FocusNode for go to next TextField
   final FocusNode waterBillFocus = FocusNode();
