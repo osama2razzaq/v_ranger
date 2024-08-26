@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +42,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: AppColors.primaryColor, // Set your desired color here
     ));
+
     return GetMaterialApp(
       title: '',
       debugShowCheckedModeBanner: false,

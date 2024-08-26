@@ -52,7 +52,7 @@ class SettingsView extends StatelessWidget {
               Icons.logout,
               'Logout',
               () {
-                controller.showPermissionAlert();
+                controller.showLogoutAlert();
               },
             ),
           ],

@@ -19,7 +19,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   var images = <File>[].obs;
   var isLoading = false.obs;
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(String? accountId) async {
     isLoading.value = true; // Show loader
     try {
       if (images.length < 5) {
@@ -36,7 +36,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
           if (originalImage != null) {
             // Get the current timestamp
             String timestamp =
-                DateFormat('dd/MM/yy HH:mm').format(DateTime.now());
+                DateFormat('dd/MM/yy HH:mm a').format(DateTime.now());
 
             // Set rectangle and text position
             int paddingFromBottom = 50; // Padding from the bottom
@@ -58,21 +58,39 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
                 y2: lineY,
                 thickness: 130,
                 color: img.ColorFloat16.rgb(0, 0, 0));
+
+            // Calculate the positions for the timestamp (left) and accountId (right)
             int textHeight = 20; // Approximate height based on font size
-            int textWidth = timestamp.length * 20;
-            int textX = (originalImage.width - textWidth) ~/ 2;
+            int timestampX = 20; // 20 pixels from the left edge
             int textY = rectY1 +
                 (rectHeight - textHeight) ~/ 2 +
                 textHeight; // Centered vertically
 
-            // Draw the timestamp text inside the rectangle (white text)
+            // Position for accountId on the right
+            int accountIdWidth = accountId != null ? accountId.length * 20 : 0;
+            int accountIdX = originalImage.width -
+                accountIdWidth -
+                100; // 20 pixels from the right edge
+
+            // Draw the timestamp text on the left (white text)
             img.drawString(
               originalImage,
               font: bitMapFont,
-              x: textX,
+              x: timestampX,
               y: textY,
               timestamp,
             );
+
+            // Draw the accountId text on the right (white text)
+            if (accountId != null) {
+              img.drawString(
+                originalImage,
+                font: bitMapFont,
+                x: accountIdX,
+                y: textY,
+                accountId,
+              );
+            }
 
             // Convert the image back to bytes
             Uint8List modifiedImageBytes =

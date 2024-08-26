@@ -211,7 +211,7 @@ class SurveyDetailsPage extends StatelessWidget {
                           'N/A'),
               FutureBuilder<double>(
                 future: getDistance(
-                    "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''},${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
+                    "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''} ${(!isEdit ? pendingDetails?.districtLa : completedDetails?.districtLa) ?? ''} ${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return _detailItem('Distance', 'Calculating...');

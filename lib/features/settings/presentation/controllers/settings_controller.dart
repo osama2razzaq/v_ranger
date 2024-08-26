@@ -63,6 +63,12 @@ class SettingsController extends GetxController with SnackBarHelper {
         await prefs.setInt('error_status_code', response.statusCode);
         await prefs.setString(
             'error_message', responseData['message'] ?? 'Unknown error');
+
+        await prefs.remove('access_token');
+        await prefs.remove('driveId');
+        Get.delete<SettingsController>();
+        Get.offAllNamed(Routes.login);
+        locationController.stopLocationUpdates;
       }
     } catch (e) {
       // Handle any errors that occur during the API call
@@ -75,7 +81,7 @@ class SettingsController extends GetxController with SnackBarHelper {
     }
   }
 
-  Future<void> showPermissionAlert() async {
+  Future<void> showLogoutAlert() async {
     await Get.dialog(
       AlertDialog(
         title: const Center(

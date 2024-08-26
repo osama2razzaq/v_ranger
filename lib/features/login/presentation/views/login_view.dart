@@ -38,7 +38,7 @@ class LoginView extends StatelessWidget with SnackBarHelper {
   Widget buildConntainer(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    return Container(
+    return SizedBox(
       height: deviceHeight / 1.2,
       child: Stack(
         clipBehavior: Clip.none,

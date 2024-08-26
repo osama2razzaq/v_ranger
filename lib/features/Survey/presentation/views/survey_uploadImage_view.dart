@@ -65,8 +65,15 @@ class SurveyUploadImagePage extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {
                           // Implement the logic to add a new item to the list
-                          surveyFormController
-                              .pickImage(); // Replace with your actual method
+                          surveyFormController.pickImage(isEdit
+                              ? controller.data.value!.data!
+                                  .completedDetails![index].accountNo!
+                              : controller
+                                  .data
+                                  .value!
+                                  .data!
+                                  .pendingDetails![index]
+                                  .accountNo!); // Replace with your actual method
                         },
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
@@ -80,7 +87,17 @@ class SurveyUploadImagePage extends StatelessWidget {
                               ),
                               child: Center(
                                 child: GestureDetector(
-                                  onTap: surveyFormController.pickImage,
+                                  onTap: () {
+                                    surveyFormController.pickImage(isEdit
+                                        ? controller.data.value!.data!
+                                            .completedDetails![index].accountNo!
+                                        : controller
+                                            .data
+                                            .value!
+                                            .data!
+                                            .pendingDetails![index]
+                                            .accountNo!); // Replace with your actual method
+                                  },
                                   child: const Center(
                                     child: Icon(
                                       Icons.camera_alt,
