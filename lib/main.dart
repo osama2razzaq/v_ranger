@@ -24,10 +24,15 @@ void main() async {
   // Initialize the AuthService
   final authService = AuthService();
   final token = await authService.getAccessToken();
+  final isFingerprintEnabled = await authService.getisFingerprintEnabled();
 
   // Determine the initial route based on the token
 
-  final initialRoute = token != null ? Routes.dashboard : Routes.login;
+  final initialRoute = (token != null && isFingerprintEnabled == true)
+      ? Routes.fingerprintAuth
+      : (token != null && isFingerprintEnabled == false)
+          ? Routes.dashboard
+          : Routes.login;
 
   runApp(MyApp(initialRoute: initialRoute));
 }

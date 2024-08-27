@@ -54,6 +54,7 @@ class SettingsController extends GetxController with SnackBarHelper {
         isFingerprintEnabled.value = true;
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isFingerprintEnabled', true);
+
         showNormalSnackBar("Fingerprint authentication enabled.");
       } else {
         showErrorSnackBar("Fingerprint authentication failed.");
@@ -71,12 +72,51 @@ class SettingsController extends GetxController with SnackBarHelper {
     showNormalSnackBar("Fingerprint authentication disabled.");
   }
 
-  // Toggle fingerprint authentication
-  Future<void> toggleFingerprint(bool enable) async {
-    if (enable) {
-      await enableFingerprint();
+  Future<void> toggleFingerprint(bool isEnabled) async {
+    if (isEnabled) {
+      try {
+        bool canCheckBiometrics = await auth.canCheckBiometrics;
+        bool isAuthenticated = await auth.authenticate(
+          localizedReason: 'Please authenticate to enable fingerprint',
+        );
+        if (canCheckBiometrics && isAuthenticated) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isFingerprintEnabled', true);
+          showNormalSnackBar("Fingerprint authentication enabled sucessfully.");
+          // Show confirmation dialog
+        } else {
+          showErrorSnackBar('Fingerprint authentication failed.');
+        }
+      } catch (e) {
+        showErrorSnackBar('An error occurred: $e');
+      }
     } else {
-      await disableFingerprint();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isFingerprintEnabled', false);
+    }
+    isFingerprintEnabled.value = isEnabled;
+  }
+
+  Future<void> verifyFingerprint() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool fingerprintEnabled = prefs.getBool('isFingerprintEnabled') ?? false;
+
+    if (fingerprintEnabled) {
+      try {
+        bool canCheckBiometrics = await auth.canCheckBiometrics;
+        bool isAuthenticated = await auth.authenticate(
+          localizedReason: 'Please authenticate to access the app',
+        );
+
+        if (!canCheckBiometrics || !isAuthenticated) {
+          Get.offAllNamed(Routes.login);
+        } else {
+          Get.offAllNamed(Routes.dashboard);
+        }
+      } catch (e) {
+        showErrorSnackBar('An error occurred during authentication: $e');
+        Get.offAllNamed(Routes.login);
+      }
     }
   }
 
@@ -89,8 +129,14 @@ class SettingsController extends GetxController with SnackBarHelper {
         // Parse successful response
 
         final prefs = await SharedPreferences.getInstance();
+
         await prefs.remove('access_token');
         await prefs.remove('driveId');
+        await prefs.remove('isFingerprintEnabled');
+        await prefs.remove('name');
+        await prefs.remove('username');
+        await prefs.remove('phone_number');
+
         Get.delete<SettingsController>();
         Get.offAllNamed(Routes.login);
         locationController.stopLocationUpdates;

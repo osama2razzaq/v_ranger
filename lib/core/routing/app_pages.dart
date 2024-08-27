@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:v_ranger/core/utils/fingerprint_auth.dart';
+import 'package:v_ranger/features/login/presentation/views/fingerprint_auth_view.dart';
 import 'package:v_ranger/features/dashboard/presentation/views/dashboard_view.dart';
 import 'package:v_ranger/features/login/presentation/views/login_view.dart';
 

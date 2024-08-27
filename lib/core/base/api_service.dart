@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
@@ -10,7 +9,6 @@ import 'package:v_ranger/features/batches/data/model/batches_model.dart';
 import 'package:v_ranger/features/dashboard/data/Model/dashboard_model.dart';
 import 'package:v_ranger/features/leaderboard/data/Model/leaderboard_details_model.dart';
 import 'package:v_ranger/features/profile/data/model/profile_model.dart';
-import 'package:v_ranger/features/settings/presentation/controllers/settings_controller.dart';
 
 class ApiService {
   Future<http.Response> login(

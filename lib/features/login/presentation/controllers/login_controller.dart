@@ -62,10 +62,16 @@ class LoginController extends GetxController with SnackBarHelper {
           final accessToken = responseData['access_token'];
           final driveId = responseData['details']['id'];
 
-          // Save access token and user details locally
+          final username = responseData['details']['username'];
+          final name = responseData['details']['name'];
+          final phoneNumber = responseData['details']['phone_number'];
+
           final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('access_token', accessToken);
           await prefs.setInt('driveId', driveId);
+          await prefs.setString('access_token', accessToken);
+          await prefs.setString('username', username);
+          await prefs.setString('name', name);
+          await prefs.setString('phone_number', phoneNumber);
 
           Get.offAllNamed(Routes.dashboard);
           showNormalSnackBar("Login successful");

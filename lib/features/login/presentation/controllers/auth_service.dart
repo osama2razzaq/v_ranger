@@ -7,4 +7,9 @@ class AuthService extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('access_token');
   }
+
+  Future<bool?> getisFingerprintEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isFingerprintEnabled');
+  }
 }
