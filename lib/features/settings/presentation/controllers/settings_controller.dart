@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
@@ -13,7 +14,9 @@ class SettingsController extends GetxController with SnackBarHelper {
   // Observables for email and password
   var email = ''.obs;
   var password = ''.obs;
-
+  final LocalAuthentication auth =
+      LocalAuthentication(); // Initialize local auth
+  var isFingerprintEnabled = false.obs;
   // TextEditingController for the input fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -25,7 +28,57 @@ class SettingsController extends GetxController with SnackBarHelper {
       ApiService(); // Replace with your actual base URL
 
   // Device token (for demonstration purposes, this should be retrieved from your device)
-  final String deviceToken = '131131';
+  final String deviceToken = '';
+  void onInit() {
+    super.onInit();
+    checkFingerprintStatus(); // Check initial fingerprint status on init
+  }
+
+// Check if fingerprint is enabled
+  Future<void> checkFingerprintStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    isFingerprintEnabled.value = prefs.getBool('isFingerprintEnabled') ?? false;
+  }
+
+  // Enable fingerprint authentication
+  Future<void> enableFingerprint() async {
+    try {
+      bool isAuthenticated = await auth.authenticate(
+        localizedReason: 'Please authenticate to enable fingerprint login',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+        ),
+      );
+
+      if (isAuthenticated) {
+        isFingerprintEnabled.value = true;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isFingerprintEnabled', true);
+        showNormalSnackBar("Fingerprint authentication enabled.");
+      } else {
+        showErrorSnackBar("Fingerprint authentication failed.");
+      }
+    } catch (e) {
+      showErrorSnackBar("An error occurred: $e");
+    }
+  }
+
+  // Disable fingerprint authentication
+  Future<void> disableFingerprint() async {
+    isFingerprintEnabled.value = false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isFingerprintEnabled', false);
+    showNormalSnackBar("Fingerprint authentication disabled.");
+  }
+
+  // Toggle fingerprint authentication
+  Future<void> toggleFingerprint(bool enable) async {
+    if (enable) {
+      await enableFingerprint();
+    } else {
+      await disableFingerprint();
+    }
+  }
 
   // Method to handle login
   void logout() async {
@@ -120,6 +173,58 @@ class SettingsController extends GetxController with SnackBarHelper {
             },
             child: const Text(
               'No',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible:
+          false, // Prevent dismissing the dialog by tapping outside
+    );
+  }
+
+  Future<void> showPermissionAlert() async {
+    await Get.dialog(
+      AlertDialog(
+        title: const Center(
+          child: Text('Location Permission',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black,
+                fontSize: 18,
+              )),
+        ),
+        content:
+            const Text('Location permissions are required. Please grant them.',
+                style: TextStyle(
+                  fontFamily: AppStrings.fontFamilyPrompt,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.black,
+                  fontSize: 12,
+                )),
+        actions: [
+          TextButton(
+            onPressed: () async {},
+            child: const Text(
+              'Open Settings',
+              style: TextStyle(
+                fontFamily: AppStrings.fontFamilyPrompt,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(); // Dismiss the dialog
+            },
+            child: const Text(
+              'Cancel',
               style: TextStyle(
                 fontFamily: AppStrings.fontFamilyPrompt,
                 fontWeight: FontWeight.w600,
