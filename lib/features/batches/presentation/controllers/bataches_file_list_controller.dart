@@ -12,6 +12,7 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
   final RxBool lifeCardUpdateController = false.obs;
   final ApiService apiService = ApiService();
   var selectedBatchIds = <int>{}.obs; // Store selected batch IDs
+  final RxBool isReversed = false.obs;
   // Observable variables for counts
   var pendingCount = 0.obs;
   var completedCount = 0.obs;

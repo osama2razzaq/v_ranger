@@ -23,16 +23,19 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
 
   @override
   Widget build(BuildContext context) {
+    controller.fetchBatchDetailsList(widget.batchId.toString(), '', '', '');
     if (controller.locationController.currentLocation.value == null) {
       controller.locationController.getLocation();
+    } else {
+      controller.fetchBatchDetailsList(
+          widget.batchId.toString(),
+          '',
+          controller.locationController.currentLocation.value!.latitude
+              .toString(),
+          controller.locationController.currentLocation.value!.longitude
+              .toString());
     }
-    controller.fetchBatchDetailsList(
-        widget.batchId.toString(),
-        '',
-        controller.locationController.currentLocation.value!.latitude
-            .toString(),
-        controller.locationController.currentLocation.value!.longitude
-            .toString());
+
     int initialIndex = widget.isCompleted == true ? 1 : 0;
     return Scaffold(
       backgroundColor: AppColors.colorWhite,

@@ -1,9 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
+import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_details_view.dart';
 
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
@@ -25,6 +28,10 @@ class PendingList extends StatelessWidget with SnackBarHelper {
         return const Center(child: Text('No pending batches'));
       } else {
         var pendingList = controller.data.value!.data!.pendingDetails;
+
+        var reversedPendingList = controller.isReversed.value == true
+            ? pendingList!.reversed.toList()
+            : pendingList;
 
         return Column(
           children: [
@@ -61,7 +68,36 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                     },
                   ),
                   controller.selectedBatchIds.isEmpty
-                      ? Container()
+                      ? Container(
+                          margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Sort by Distance',
+                                style: TextStyle(
+                                  fontFamily: AppStrings.fontFamilyPrompt,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                    color: AppColors.black,
+                                    controller.isReversed.value
+                                        ? Icons.arrow_upward
+                                        : Icons.arrow_downward),
+                                onPressed: () {
+                                  // Toggle the sorting order
+
+                                  controller.isReversed.value =
+                                      !controller.isReversed.value;
+                                  // Sort the data based on the current order
+                                },
+                              ),
+                            ],
+                          ),
+                        )
                       : Container(
                           height: 40,
                           width: 120,
@@ -85,9 +121,9 @@ class PendingList extends StatelessWidget with SnackBarHelper {
             Expanded(
               child: ListView.builder(
                 shrinkWrap: false,
-                itemCount: pendingList!.length,
+                itemCount: reversedPendingList!.length,
                 itemBuilder: (context, index) {
-                  final batch = pendingList[index];
+                  final batch = reversedPendingList[index];
                   final isSelected =
                       controller.selectedBatchIds.contains(batch.id);
                   print("isSelected == ${isSelected}");
@@ -199,9 +235,11 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                       ),
                                     ),
                                     Text(
-                                      "Distance : ${batch.distance.toStringAsFixed(2)} KM",
+                                      batch.distance == ""
+                                          ? "Distance : .."
+                                          : "Distance : ${batch.distance.toStringAsFixed(2)} KM",
                                       softWrap: true,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.grey200),

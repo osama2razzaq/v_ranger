@@ -6,4 +6,5 @@ abstract class Routes {
   static const leaderboard = '/leaderboard';
   static const profile = '/profile';
   static const settings = '/settings';
+  static const String fingerprintAuth = '/fingerprint-auth';
 }
