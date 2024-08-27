@@ -32,6 +32,7 @@ class PendingList extends StatelessWidget with SnackBarHelper {
         var reversedPendingList = controller.isReversed.value == true
             ? pendingList!.reversed.toList()
             : pendingList;
+        print("count:: ${reversedPendingList!.length}");
 
         return Column(
           children: [
@@ -236,8 +237,8 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                     ),
                                     Text(
                                       batch.distance == ""
-                                          ? "Distance : .."
-                                          : "Distance : ${batch.distance.toStringAsFixed(2)} KM",
+                                          ? "Distance : Calculating.."
+                                          : "Distance : ${batch.distance} KM",
                                       softWrap: true,
                                       style: const TextStyle(
                                           fontSize: 12,

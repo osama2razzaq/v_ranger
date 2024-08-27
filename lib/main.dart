@@ -30,7 +30,7 @@ void main() async {
 
   final initialRoute = (token != null && isFingerprintEnabled == true)
       ? Routes.fingerprintAuth
-      : (token != null && isFingerprintEnabled == false)
+      : (token != null && isFingerprintEnabled == null)
           ? Routes.dashboard
           : Routes.login;
 

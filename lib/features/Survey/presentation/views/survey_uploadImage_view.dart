@@ -34,7 +34,7 @@ class SurveyUploadImagePage extends StatelessWidget {
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
-          "Survey Form",
+          "Upload Photo",
           style: PromptStyle.appBarTitleStyle,
         ),
       ),

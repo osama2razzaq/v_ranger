@@ -5,12 +5,14 @@ import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/login/presentation/controllers/fingerprint_auth_controller.dart';
+import 'package:v_ranger/features/settings/presentation/controllers/settings_controller.dart';
 
 class FingerprintAuthPage extends StatelessWidget {
   FingerprintAuthPage({super.key});
 
   final FingerprintAuthController controller =
       Get.put(FingerprintAuthController());
+  final SettingsController settingsController = Get.put(SettingsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +85,7 @@ class FingerprintAuthPage extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Get.offAllNamed(Routes.login);
+                  settingsController.logout();
                 },
                 child: Text(
                   'Log In with Password',

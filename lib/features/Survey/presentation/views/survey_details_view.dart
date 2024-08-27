@@ -43,7 +43,7 @@ class SurveyDetailsPage extends StatelessWidget {
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
-          "Survey",
+          "Survey Details",
           style: PromptStyle.appBarTitleStyle,
         ),
       ),
@@ -257,7 +257,7 @@ class SurveyDetailsPage extends StatelessWidget {
             onTap: () {
               Get.to(() => MapScreen(
                     destinationAddress:
-                        "${isEdit ? pendingDetails!.address! : completedDetails!.address!},${isEdit ? pendingDetails!.tamanMmid : completedDetails!.tamanMmid}",
+                        "${isEdit == true ? completedDetails!.address! : pendingDetails!.address!},${isEdit == true ? completedDetails!.tamanMmid : pendingDetails!.tamanMmid}",
                   ));
             },
             colors: [Colors.white, Colors.white!],
@@ -279,7 +279,7 @@ class SurveyDetailsPage extends StatelessWidget {
                       : double.parse(completedDetails!.batchfileLongitude!),
                   context);
             },
-            colors: [
+            colors: const [
               AppColors.gradientStartColor, // Start color
               AppColors.gradientMiddleColor,
               AppColors.gradientEndColor, // End color
