@@ -27,6 +27,12 @@ class SurveyFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use Obx to call populateFieldsFromApi when needed
+    if (isEdit) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        surveyFormController.populateFieldsFromApi(controller, index);
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -366,6 +372,7 @@ class SurveyFormPage extends StatelessWidget {
             child: TextField(
               // focusNode: focusNode,
               onChanged: onChanged,
+              controller: controller,
               onSubmitted: (value) {
                 // if (nextFocusNode != null) {
                 //   focusNode.unfocus();

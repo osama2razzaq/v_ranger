@@ -49,7 +49,7 @@ class AbortList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          batch.id.toString(),
+                          batch.fileid.toString(),
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,

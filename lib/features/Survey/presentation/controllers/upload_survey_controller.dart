@@ -9,6 +9,7 @@ import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_co
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_watermark/image_watermark.dart';
+import 'package:http/http.dart' as http;
 
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
@@ -18,6 +19,21 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   final ImagePicker _picker = ImagePicker();
   var images = <File>[].obs;
   var isLoading = false.obs;
+
+  Future<Uint8List?> downloadImage(String imageUrl) async {
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        return response.bodyBytes;
+      } else {
+        print('Failed to load image. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error occurred while downloading image: $e');
+      return null;
+    }
+  }
 
   Future<void> pickImage(String? accountId) async {
     isLoading.value = true; // Show loader
@@ -172,6 +188,9 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
               : null,
           occupancy: surveyFormController.occupancyStatusItems.isNotEmpty
               ? surveyFormController.selectedOccupancyStatus.value
+              : null,
+          classification: surveyFormController.classificationItems.isNotEmpty
+              ? surveyFormController.selectedClassification.value
               : null,
           remark: surveyFormController.inputAddRemark.value,
           visitDate: formattedDate,

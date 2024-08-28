@@ -363,6 +363,7 @@ class ApiService {
     String? drCode,
     String? propertyCode,
     String? occupancy,
+    String? classification,
     String? remark,
     String? visitDate, // Corrected parameter name to match field
     String? visitTime, // Corrected parameter name to match field
@@ -403,6 +404,7 @@ class ApiService {
         ..fields['dr_code'] = drCode ?? ''
         ..fields['property_code'] = propertyCode ?? ''
         ..fields['occupancy'] = occupancy ?? ''
+        ..fields['classification'] = classification ?? ''
         ..fields['remark'] = remark ?? ''
         ..fields['visitdate'] = visitDate ?? ''
         ..fields['visittime'] = visitTime ?? '';

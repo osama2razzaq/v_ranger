@@ -91,6 +91,7 @@ class Data {
 class PendingDetail {
   int? id;
   int? batchId;
+  int? fileid;
   String? name;
   String? icNo;
   String? accountNo;
@@ -109,6 +110,7 @@ class PendingDetail {
   PendingDetail({
     this.id,
     this.batchId,
+    this.fileid,
     this.name,
     this.icNo,
     this.accountNo,
@@ -128,6 +130,7 @@ class PendingDetail {
   factory PendingDetail.fromJson(Map<String, dynamic> json) => PendingDetail(
         id: json["id"],
         batchId: json["batch_id"],
+        fileid: json["fileid"],
         name: json["name"],
         icNo: json["ic_no"],
         accountNo: json["account_no"],
@@ -147,6 +150,7 @@ class PendingDetail {
   Map<String, dynamic> toJson() => {
         "id": id,
         "batch_id": batchId,
+        "fileid": fileid,
         "name": name,
         "ic_no": icNo,
         "account_no": accountNo,
@@ -167,6 +171,7 @@ class PendingDetail {
 class CompletedDetail {
   int? id;
   int? batchId;
+  int? fileid;
   String? name;
   String? icNo;
   String? accountNo;
@@ -186,6 +191,7 @@ class CompletedDetail {
   CompletedDetail({
     this.id,
     this.batchId,
+    this.fileid,
     this.name,
     this.icNo,
     this.accountNo,
@@ -207,6 +213,7 @@ class CompletedDetail {
       CompletedDetail(
         id: json["id"],
         batchId: json["batch_id"],
+        fileid: json["fileid"],
         name: json["name"],
         icNo: json["ic_no"],
         accountNo: json["account_no"],
@@ -229,6 +236,7 @@ class CompletedDetail {
   Map<String, dynamic> toJson() => {
         "id": id,
         "batch_id": batchId,
+        "fileid": fileid,
         "name": name,
         "ic_no": icNo,
         "account_no": accountNo,
@@ -267,6 +275,7 @@ class Survey {
   String? drCode;
   String? propertyCode;
   String? occupancy;
+  String? classification;
   String? remark;
   String? visitdate;
   String? visittime;
@@ -298,6 +307,7 @@ class Survey {
     this.drCode,
     this.propertyCode,
     this.occupancy,
+    this.classification,
     this.remark,
     this.visitdate,
     this.visittime,
@@ -330,6 +340,7 @@ class Survey {
         drCode: json["dr_code"],
         propertyCode: json["property_code"],
         occupancy: json["occupancy"],
+        classification: json["classification"],
         remark: json["remark"],
         visitdate: json["visitdate"],
         visittime: json["visittime"],
@@ -362,6 +373,7 @@ class Survey {
         "dr_code": drCode,
         "property_code": propertyCode,
         "occupancy": occupancy,
+        "classification": classification,
         "remark": remark,
         "visitdate": visitdate,
         "visittime": visittime,
@@ -378,6 +390,7 @@ class Survey {
 class AbortedDetail {
   int? id;
   int? batchId;
+  int? fileid;
   String? name;
   String? icNo;
   String? accountNo;
@@ -396,6 +409,7 @@ class AbortedDetail {
   AbortedDetail(
       {this.id,
       this.batchId,
+      this.fileid,
       this.name,
       this.icNo,
       this.accountNo,
@@ -414,6 +428,7 @@ class AbortedDetail {
   factory AbortedDetail.fromJson(Map<String, dynamic> json) => AbortedDetail(
         id: json["id"],
         batchId: json["batch_id"],
+        fileid: json["fileid"],
         name: json["name"],
         icNo: json["ic_no"],
         accountNo: json["account_no"],
@@ -433,6 +448,7 @@ class AbortedDetail {
   Map<String, dynamic> toJson() => {
         "id": id,
         "batch_id": batchId,
+        "fileid": fileid,
         "name": name,
         "ic_no": icNo,
         "account_no": accountNo,

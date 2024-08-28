@@ -3,9 +3,20 @@ import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
+import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_controller.dart';
 
 class SurveyFormController extends GetxController with SnackBarHelper {
   final Rx<DropdownModel?> dropDownData = Rx<DropdownModel?>(null);
+
+  // lists for FocusNode for go to next TextField
+  final FocusNode waterBillFocus = FocusNode();
+  final FocusNode waterMeterFocus = FocusNode();
+  final FocusNode correctAddressFocus = FocusNode();
+  final FocusNode occupierNameFocus = FocusNode();
+  final FocusNode occupierPhoneNumberFocus = FocusNode();
+  final FocusNode occupierEmailFocus = FocusNode();
+  final FocusNode shopNameFocus = FocusNode();
+  final FocusNode addRemarkFocus = FocusNode();
 
   // Controllers for text fields
   final waterBillController = TextEditingController();
@@ -17,16 +28,6 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   final shopNameController = TextEditingController();
   final addRemarkController = TextEditingController();
   final textEditingController = TextEditingController();
-
-  // lists for FocusNode for go to next TextField
-  final FocusNode waterBillFocus = FocusNode();
-  final FocusNode waterMeterFocus = FocusNode();
-  final FocusNode correctAddressFocus = FocusNode();
-  final FocusNode occupierNameFocus = FocusNode();
-  final FocusNode occupierPhoneNumberFocus = FocusNode();
-  final FocusNode occupierEmailFocus = FocusNode();
-  final FocusNode shopNameFocus = FocusNode();
-  final FocusNode addRemarkFocus = FocusNode();
 
   // Observable lists for dropdowns
   var ownershipItems = <String>[].obs;
@@ -79,6 +80,42 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     super.onClose();
   }
 
+  final RxBool isFieldsPopulated = false.obs;
+  void populateFieldsFromApi(controller, int index) {
+    if (!isFieldsPopulated.value) {
+      final surveyDetail =
+          controller.data.value!.data!.completedDetails![index].survey!;
+
+      waterBillController.text = surveyDetail.waterBillNo ?? '';
+      waterMeterController.text = surveyDetail.waterMeterNo ?? '';
+      correctAddressController.text = surveyDetail.correctAddress ?? '';
+      occupierNameController.text = surveyDetail.contactPersonName ?? '';
+      occupierPhoneNumberController.text = surveyDetail.contactPersonName ?? '';
+      occupierEmailController.text = surveyDetail.email ?? '';
+      shopNameController.text = surveyDetail.shopName ?? '';
+      addRemarkController.text = surveyDetail.remark ?? '';
+
+      selectedOwnership.value = surveyDetail.ownership;
+      selectedOccupancyStatus.value = surveyDetail.occupancy;
+      selectedNatureOfBusiness.value = surveyDetail.natureOfBusinessCode;
+      selectedDrCode.value = surveyDetail.drCode;
+      selectedPropertyType.value = surveyDetail.propertyCode;
+      selectedClassification.value = surveyDetail.classification;
+
+      // Set visibility flags if necessary
+      isWaterBillVisible.value = bool.parse(controller
+          .data.value!.data!.completedDetails![index].survey!.hasWaterBill
+          .toString());
+      isWaterMeterVisible.value = bool.parse(controller
+          .data.value!.data!.completedDetails![index].survey!.hasWaterMeter
+          .toString());
+      isCorrectAddressVisible.value = bool.parse(controller
+          .data.value!.data!.completedDetails![index].survey!.isCorrectAddress
+          .toString());
+      isFieldsPopulated.value = true;
+    }
+  }
+
   Future<void> fetchDropdownList() async {
     try {
       final result = await apiService.fetchDropDownData();
@@ -110,7 +147,6 @@ class SurveyFormController extends GetxController with SnackBarHelper {
               ?.map((item) => item.classificationName!)
               .toList() ??
           [];
-      print("fetchDropdownList:: $result");
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error
