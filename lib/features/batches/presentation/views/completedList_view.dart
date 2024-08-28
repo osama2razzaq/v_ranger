@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/features/Survey/presentation/views/survey_details_view.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
@@ -14,10 +15,7 @@ class CompletedList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.data.value == null) {
-        return const Center(
-            child: CircularProgressIndicator(
-          color: AppColors.primaryColor,
-        ));
+        return const Center(child: FormLoader());
       } else if (controller.data.value!.data!.completedDetails!.isEmpty) {
         return const Center(child: Text('No completed batches'));
       } else {

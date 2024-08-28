@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +10,7 @@ import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_co
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_watermark/image_watermark.dart';
-import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
@@ -19,20 +20,12 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   final ImagePicker _picker = ImagePicker();
   var images = <File>[].obs;
   var isLoading = false.obs;
-
-  Future<Uint8List?> downloadImage(String imageUrl) async {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      } else {
-        print('Failed to load image. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error occurred while downloading image: $e');
-      return null;
-    }
+  var isPhotoLoading = false.obs;
+  var imageUrls = <String, String>{}.obs;
+  final RxBool isPhotoPopulated = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
   }
 
   Future<void> pickImage(String? accountId) async {
@@ -135,9 +128,50 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     images.removeAt(index);
   }
 
-  @override
-  void onInit() {
-    super.onInit();
+  Future<File> urlToFile(String imageUrl) async {
+    final dio = Dio();
+    try {
+      // Get the temporary directory of the device
+      var tempDir = await getTemporaryDirectory();
+
+      // Create a file path in the temporary directory
+      String filePath = '${tempDir.path}/${imageUrl.split('/').last}';
+
+      // Download the file from the URL
+
+      await dio.download(imageUrl, filePath);
+
+      // Return the File
+      return File(filePath);
+    } catch (e) {
+      throw Exception("Error downloading file: $e");
+    }
+  }
+
+  Future<void> convertUrlToFile(String? photo1, String? photo2, String? photo3,
+      String? photo4, String? photo5) async {
+    List<String?> photos = [photo1, photo2, photo3, photo4, photo5];
+    isPhotoLoading.value = true;
+    for (String? photo in photos) {
+      if (photo != null && photo.isNotEmpty) {
+        File imageFile = await urlToFile(photo);
+        images.add(imageFile); // Adding to your observable list
+        isPhotoLoading.value = false;
+      }
+    }
+  }
+
+  void populatePhotosFromApi(controller, int index) {
+    if (!isPhotoPopulated.value) {
+      final surveyDetail =
+          controller.data.value!.data!.completedDetails![index].survey!;
+
+      convertUrlToFile(surveyDetail.photo1, surveyDetail.photo2,
+          surveyDetail.photo3, surveyDetail.photo4, surveyDetail.photo5);
+      // Exit the loop once the first non-null photo is found and processed
+
+      isPhotoPopulated.value = true;
+    }
   }
 
   void onClose() {

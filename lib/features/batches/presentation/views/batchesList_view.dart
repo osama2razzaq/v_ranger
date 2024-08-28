@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
@@ -66,10 +67,8 @@ class BatchesListView extends StatelessWidget with SnackBarHelper {
       ),
       body: Obx(() {
         if (controller.isLoading.value == true) {
-          return const Center(
-              child: CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          ));
+          return const Center(child: FormLoader());
+          ;
         } else {}
 
         if (controller.filteredData.isEmpty || controller.data.value == null) {

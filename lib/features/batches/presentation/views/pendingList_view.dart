@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
@@ -20,10 +21,7 @@ class PendingList extends StatelessWidget with SnackBarHelper {
   Widget build(BuildContext context) {
     return Obx(() {
       if (controller.data.value == null) {
-        return const Center(
-            child: CircularProgressIndicator(
-          color: AppColors.primaryColor,
-        ));
+        return const Center(child: FormLoader());
       } else if (controller.data.value!.data!.pendingDetails!.isEmpty) {
         return const Center(child: Text('No pending batches'));
       } else {

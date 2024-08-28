@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/circular_progressbar.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/common_widgets/progress_bar.dart';
 import 'package:v_ranger/core/values/app_assets.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
@@ -33,10 +34,7 @@ class LeaderboardView extends StatelessWidget {
         child: Obx(() {
           if (controller.data.value == null) {
             // Show a loading spinner or some placeholder
-            return const Center(
-                child: CircularProgressIndicator(
-              color: AppColors.primaryColor,
-            ));
+            return const Center(child: FormLoader());
           }
 
           final requestedDriver = controller.data.value!.requestedDriver;

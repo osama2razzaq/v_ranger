@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:v_ranger/core/values/app_assets.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_strings.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
@@ -99,11 +99,7 @@ class ProfileView extends StatelessWidget {
       final profile = controller.data.value;
 
       if (profile == null) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: AppColors.primaryColor,
-          ),
-        );
+        return const Center(child: FormLoader());
       }
 
 // Hide first two and last two characters of the IC number
