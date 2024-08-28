@@ -181,6 +181,7 @@ class CompletedDetail {
   String? batchfileLongitude;
   dynamic pinnedAt;
   dynamic distance;
+  Survey? survey; // Add the survey field here
 
   CompletedDetail({
     this.id,
@@ -199,6 +200,7 @@ class CompletedDetail {
     this.batchfileLongitude,
     this.pinnedAt,
     this.distance,
+    this.survey, // Include in constructor
   });
 
   factory CompletedDetail.fromJson(Map<String, dynamic> json) =>
@@ -219,6 +221,9 @@ class CompletedDetail {
         batchfileLongitude: json["batchfile_longitude"],
         pinnedAt: json["pinned_at"],
         distance: json["distance"],
+        survey: json["survey"] == null
+            ? null
+            : Survey.fromJson(json["survey"]), // Parsing survey
       );
 
   Map<String, dynamic> toJson() => {
@@ -237,7 +242,136 @@ class CompletedDetail {
         "status": status,
         "batchfile_longitude": batchfileLongitude,
         "pinned_at": pinnedAt,
-        "distance": distance
+        "distance": distance,
+        "survey": survey?.toJson(), // Serialize survey
+      };
+}
+
+class Survey {
+  int? id;
+  int? batchId;
+  int? batchDetailId;
+  int? userId;
+  String? hasWaterMeter;
+  String? waterMeterNo;
+  String? hasWaterBill;
+  String? waterBillNo;
+  String? isCorrectAddress;
+  String? correctAddress;
+  String? ownership;
+  String? contactPersonName;
+  String? contactNumber;
+  String? email;
+  String? natureOfBusinessCode;
+  String? shopName;
+  String? drCode;
+  String? propertyCode;
+  String? occupancy;
+  String? remark;
+  String? visitdate;
+  String? visittime;
+  String? photo1;
+  String? photo2;
+  String? photo3;
+  String? photo4;
+  String? photo5;
+  String? createdAt;
+  String? updatedAt;
+
+  Survey({
+    this.id,
+    this.batchId,
+    this.batchDetailId,
+    this.userId,
+    this.hasWaterMeter,
+    this.waterMeterNo,
+    this.hasWaterBill,
+    this.waterBillNo,
+    this.isCorrectAddress,
+    this.correctAddress,
+    this.ownership,
+    this.contactPersonName,
+    this.contactNumber,
+    this.email,
+    this.natureOfBusinessCode,
+    this.shopName,
+    this.drCode,
+    this.propertyCode,
+    this.occupancy,
+    this.remark,
+    this.visitdate,
+    this.visittime,
+    this.photo1,
+    this.photo2,
+    this.photo3,
+    this.photo4,
+    this.photo5,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory Survey.fromJson(Map<String, dynamic> json) => Survey(
+        id: json["id"],
+        batchId: json["batch_id"],
+        batchDetailId: json["batch_detail_id"],
+        userId: json["user_id"],
+        hasWaterMeter: json["has_water_meter"],
+        waterMeterNo: json["water_meter_no"],
+        hasWaterBill: json["has_water_bill"],
+        waterBillNo: json["water_bill_no"],
+        isCorrectAddress: json["is_correct_address"],
+        correctAddress: json["correct_address"],
+        ownership: json["ownership"],
+        contactPersonName: json["contact_person_name"],
+        contactNumber: json["contact_number"],
+        email: json["email"],
+        natureOfBusinessCode: json["nature_of_business_code"],
+        shopName: json["shop_name"],
+        drCode: json["dr_code"],
+        propertyCode: json["property_code"],
+        occupancy: json["occupancy"],
+        remark: json["remark"],
+        visitdate: json["visitdate"],
+        visittime: json["visittime"],
+        photo1: json["photo1"],
+        photo2: json["photo2"],
+        photo3: json["photo3"],
+        photo4: json["photo4"],
+        photo5: json["photo5"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "batch_id": batchId,
+        "batch_detail_id": batchDetailId,
+        "user_id": userId,
+        "has_water_meter": hasWaterMeter,
+        "water_meter_no": waterMeterNo,
+        "has_water_bill": hasWaterBill,
+        "water_bill_no": waterBillNo,
+        "is_correct_address": isCorrectAddress,
+        "correct_address": correctAddress,
+        "ownership": ownership,
+        "contact_person_name": contactPersonName,
+        "contact_number": contactNumber,
+        "email": email,
+        "nature_of_business_code": natureOfBusinessCode,
+        "shop_name": shopName,
+        "dr_code": drCode,
+        "property_code": propertyCode,
+        "occupancy": occupancy,
+        "remark": remark,
+        "visitdate": visitdate,
+        "visittime": visittime,
+        "photo1": photo1,
+        "photo2": photo2,
+        "photo3": photo3,
+        "photo4": photo4,
+        "photo5": photo5,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
       };
 }
 

@@ -149,10 +149,10 @@ class LeaderboardView extends StatelessWidget {
                 // Header row
                 return Container(
                   color: Colors.transparent,
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
                   child: Row(
                     children: <Widget>[
-                      _buildHeaderItem('No', flex: 1),
+                      _buildHeaderItem('No', flex: 0),
                       _buildHeaderItem('Score', flex: 1),
                       _buildHeaderItem('Fullname', flex: 1),
                       _buildHeaderItem('Assign', flex: 1),
