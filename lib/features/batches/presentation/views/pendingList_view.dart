@@ -14,8 +14,8 @@ import 'package:v_ranger/features/batches/presentation/controllers/bataches_file
 
 class PendingList extends StatelessWidget with SnackBarHelper {
   final BatachesFileListController controller;
-
-  PendingList({super.key, required this.controller});
+  final String? batchId;
+  PendingList({super.key, required this.controller, required this.batchId});
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +89,22 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                 onPressed: () {
                                   // Toggle the sorting order
 
+                                  if (controller.locationController
+                                          .currentLocation.value ==
+                                      null) {
+                                    controller.locationController.getLocation();
+                                  } else {
+                                    controller.fetchBatchDetailsList(
+                                        batchId.toString(),
+                                        '',
+                                        controller.locationController
+                                            .currentLocation.value!.latitude
+                                            .toString(),
+                                        controller.locationController
+                                            .currentLocation.value!.longitude
+                                            .toString());
+                                  }
+
                                   controller.isReversed.value =
                                       !controller.isReversed.value;
                                   // Sort the data based on the current order
@@ -138,9 +154,7 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                 left: Radius.circular(10)),
                             onPressed: (context) {
                               controller.updateBatchPin(
-                                controller.data.value!.data!
-                                    .pendingDetails![index].batchId
-                                    .toString(),
+                                batchId,
                                 controller
                                     .data.value!.data!.pendingDetails![index].id
                                     .toString(),
@@ -157,9 +171,7 @@ class PendingList extends StatelessWidget with SnackBarHelper {
                                 right: Radius.circular(10)),
                             onPressed: (context) {
                               controller.updateBatchPin(
-                                controller.data.value!.data!
-                                    .pendingDetails![index].batchId
-                                    .toString(),
+                                batchId,
                                 controller
                                     .data.value!.data!.pendingDetails![index].id
                                     .toString(),

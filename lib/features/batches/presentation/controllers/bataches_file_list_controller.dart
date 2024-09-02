@@ -79,11 +79,8 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
       final result = await apiService.updateBatchPin(batchfileId!, action!);
       final responseData = jsonDecode(result!.body);
       final message = responseData['message'] ?? 'Unknown error';
-      fetchBatchDetailsList(
-          batchId!,
-          searchText.value,
-          locationController.currentLocation.value!.latitude.toString(),
-          locationController.currentLocation.value!.longitude.toString());
+      print("batchId:::: $batchId");
+      fetchBatchDetailsList(batchId!, searchText.value, '', '');
       showNormalSnackBar(message);
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
@@ -109,10 +106,6 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
 
   void setSearchText(String text, String batchId) {
     searchText.value = text;
-    fetchBatchDetailsList(
-        batchId,
-        searchText.value,
-        locationController.currentLocation.value!.latitude.toString(),
-        locationController.currentLocation.value!.longitude.toString());
+    fetchBatchDetailsList(batchId, searchText.value, '', '');
   }
 }
