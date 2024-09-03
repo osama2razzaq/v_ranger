@@ -113,6 +113,8 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return profileModelFromJson(response.body);
+      } else if (response.statusCode == 401) {
+        return null;
       } else {
         return null;
       }
@@ -287,6 +289,8 @@ class ApiService {
       print("response::: ${response.body}");
       if (response.statusCode == 200) {
         return leaderBoardDetailsFromJson(response.body);
+      } else if (response.statusCode == 401) {
+        return null;
       } else {
         return null;
       }
