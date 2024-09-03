@@ -184,9 +184,11 @@ class SurveyDetailsPage extends StatelessWidget {
                       : completedDetails?.name?.toString() ?? 'N/A'),
               _detailItem(
                   'IC Number',
-                  !isEdit
-                      ? pendingDetails?.icNo?.toString() ?? 'N/A'
-                      : completedDetails?.icNo?.toString() ?? 'N/A'),
+                  controller.isSensitive.value
+                      ? '********'
+                      : !isEdit
+                          ? pendingDetails?.icNo?.toString() ?? 'N/A'
+                          : completedDetails?.icNo?.toString() ?? 'N/A'),
               _detailItem(
                   'Address',
                   !isEdit

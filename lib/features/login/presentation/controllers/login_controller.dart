@@ -6,6 +6,7 @@ import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class LoginController extends GetxController with SnackBarHelper {
   // Observables for email and password
@@ -59,20 +60,8 @@ class LoginController extends GetxController with SnackBarHelper {
         if (response.statusCode == 200) {
           // Parse successful response
           final responseData = jsonDecode(response.body);
-          final accessToken = responseData['access_token'];
-          final driveId = responseData['details']['id'];
 
-          final username = responseData['details']['username'];
-          final name = responseData['details']['name'];
-          final phoneNumber = responseData['details']['phone_number'];
-
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setInt('driveId', driveId);
-          await prefs.setString('access_token', accessToken);
-          await prefs.setString('username', username);
-          await prefs.setString('name', name);
-          await prefs.setString('phone_number', phoneNumber);
-
+          await saveLoginData(responseData);
           Get.offAllNamed(Routes.dashboard);
           showNormalSnackBar("Login successful");
         } else {
@@ -110,5 +99,14 @@ class LoginController extends GetxController with SnackBarHelper {
     } else {
       showErrorSnackBar("Email or password cannot be empty");
     }
+  }
+
+  Future<void> saveLoginData(Map<String, dynamic> jsonResponse) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Save access_token and details
+    prefs.setString('access_token', jsonResponse['access_token']);
+    prefs.setString('token_type', jsonResponse['token_type']);
+    prefs.setString('details', jsonEncode(jsonResponse['details']));
   }
 }

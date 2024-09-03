@@ -28,13 +28,14 @@ class ApiService {
 
   Future<http.Response> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? driveId = prefs.getInt('driveId');
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.logout}');
     final body = {
-      'driver_id': driveId,
+      'driver_id': driverId,
     };
     final bodyJson = jsonEncode(body);
     final response = await http.post(
@@ -53,12 +54,16 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId');
 
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
+
     final body = {
-      'driver_id': driveId,
+      'driver_id': driverId,
     };
+    print("body123 $body");
     final bodyJson = jsonEncode(body);
     try {
       final response = await http.post(
@@ -86,12 +91,14 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId');
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driverprofile}');
     final body = {
-      'driver_id': driveId.toString(),
+      'driver_id': driverId.toString(),
     };
     final bodyJson = jsonEncode(body);
     try {
@@ -118,10 +125,12 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
 
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.batches}');
-    final body = {'driver_id': driveId.toString(), 'batch_id': batchId};
+    final body = {'driver_id': driverId.toString(), 'batch_id': batchId};
     final bodyJson = jsonEncode(body);
 
     print("bodyJson== $bodyJson");
@@ -150,13 +159,15 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
 
     final body = {
-      'driver_id': driveId.toString(),
+      'driver_id': driverId.toString(),
       'batch_id': batchId,
       'search': search,
       'driver_latitude': driverLatitude,
@@ -215,12 +226,14 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.updatelocation}');
     final body = {
-      'driver_id': driveId,
+      'driver_id': driverId,
       'latitude': latitude,
       'longitude': longitude,
     };
@@ -251,12 +264,14 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driversleaderboard}');
     final body = {
-      'driver_id': driveId.toString(),
+      'driver_id': driverId.toString(),
     };
     final bodyJson = jsonEncode(body);
 
@@ -508,11 +523,13 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-    int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.changepassword}');
     final body = {
-      'driver_id': driveId,
+      'driver_id': driverId,
       'old_password': oldPassword,
       'new_password': newPassword,
     };

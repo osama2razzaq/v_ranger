@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:local_auth/local_auth.dart';
@@ -38,13 +40,12 @@ class FingerprintAuthController extends GetxController with SnackBarHelper {
 
   Future<void> getUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
 
-    final _username = prefs.get('username');
-    final _name = prefs.get('name');
-    final _phoneNumber = prefs.get('phone_number');
-    username.value = _username.toString();
-    phoneNo.value = _phoneNumber.toString();
-    name.value = _name.toString();
+    username.value = details['username'].toString();
+    phoneNo.value = details['phone_number'].toString();
+    name.value = details['name'].toString();
   }
 
   Future<void> verifyFingerprint() async {

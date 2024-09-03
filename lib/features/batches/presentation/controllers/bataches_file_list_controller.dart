@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/batches/data/model/batch_details_model.dart';
@@ -13,6 +14,8 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
   var selectedBatchIds = <int>{}.obs; // Store selected batch IDs
   final RxBool isReversed = false.obs;
+  final RxBool isSensitive = false.obs;
+
   // Observable variables for counts
   var pendingCount = 0.obs;
   var completedCount = 0.obs;
@@ -22,6 +25,7 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
 
   @override
   Future<void> onInit() async {
+    checkSensitiveValue();
     super.onInit();
   }
 
@@ -67,6 +71,30 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
+    }
+  }
+
+  Future<bool> checkSensitiveValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? detailsString = prefs.getString('details');
+
+    // Check if the detailsString is not null before proceeding
+    if (detailsString == null) {
+      throw Exception('Details string not found in SharedPreferences.');
+    }
+
+    Map<String, dynamic> details = jsonDecode(detailsString);
+    String sensitiveValue = details['sensitive'].toString();
+
+    // Check if sensitiveValue is "yes" or "no"
+    if (sensitiveValue.toLowerCase() == "yes") {
+      isSensitive.value = true;
+      return true;
+    } else if (sensitiveValue.toLowerCase() == "no") {
+      isSensitive.value = false;
+      return false;
+    } else {
+      throw Exception('Invalid value for sensitive: $sensitiveValue');
     }
   }
 
