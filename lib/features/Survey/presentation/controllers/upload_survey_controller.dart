@@ -18,6 +18,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       Get.find<SurveyFormController>();
 
   final ImagePicker _picker = ImagePicker();
+  bool? isBulkUpdate;
   var images = <File>[].obs;
   var isLoading = false.obs;
   var isPhotoLoading = false.obs;
@@ -91,14 +92,17 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
             );
 
             // Draw the accountId text on the right (white text)
-            if (accountId != null) {
-              img.drawString(
-                originalImage,
-                font: bitMapFont,
-                x: accountIdX,
-                y: textY,
-                accountId,
-              );
+            if (isBulkUpdate == true) {
+            } else {
+              if (accountId != null) {
+                img.drawString(
+                  originalImage,
+                  font: bitMapFont,
+                  x: accountIdX,
+                  y: textY,
+                  accountId,
+                );
+              }
             }
 
             // Convert the image back to bytes

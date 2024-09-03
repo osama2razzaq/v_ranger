@@ -32,6 +32,7 @@ class SurveyUploadImagePage extends StatelessWidget {
         surveyFormController.populatePhotosFromApi(controller, index);
       });
     }
+    surveyFormController.isBulkUpdate = isBulkUpdate;
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -138,7 +139,7 @@ class SurveyUploadImagePage extends StatelessWidget {
                                       child: Image.file(
                                         File(image.path),
                                         fit: BoxFit.cover,
-                                        height: 190,
+                                        //  height: 190,
                                         width: double.infinity,
                                       ),
                                     ),
