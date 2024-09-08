@@ -14,13 +14,13 @@ class SurveyUploadImagePage extends StatelessWidget {
   final BatachesFileListController controller;
   final bool isEdit;
   final bool isBulkUpdate;
-  final int index;
+  final int fileIndex;
   SurveyUploadImagePage(
       {super.key,
       required this.controller,
       required this.isEdit,
       required this.isBulkUpdate,
-      required this.index});
+      required this.fileIndex});
 
   final UploadSurveyController surveyFormController =
       Get.put(UploadSurveyController());
@@ -29,7 +29,7 @@ class SurveyUploadImagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        surveyFormController.populatePhotosFromApi(controller, index);
+        surveyFormController.populatePhotosFromApi(controller, fileIndex);
       });
     }
     surveyFormController.isBulkUpdate = isBulkUpdate;
@@ -74,13 +74,17 @@ class SurveyUploadImagePage extends StatelessWidget {
                                 onTap: () {
                                   // Implement the logic to add a new item to the list
                                   surveyFormController.pickImage(isEdit
-                                      ? controller.data.value!.data!
-                                          .completedDetails![index].accountNo!
+                                      ? controller
+                                          .data
+                                          .value!
+                                          .data!
+                                          .completedDetails![fileIndex]
+                                          .accountNo!
                                       : controller
                                           .data
                                           .value!
                                           .data!
-                                          .pendingDetails![index]
+                                          .pendingDetails![fileIndex]
                                           .accountNo!); // Replace with your actual method
                                 },
                                 child: Padding(
@@ -104,13 +108,14 @@ class SurveyUploadImagePage extends StatelessWidget {
                                                     .data
                                                     .value!
                                                     .data!
-                                                    .completedDetails![index]
+                                                    .completedDetails![
+                                                        fileIndex]
                                                     .accountNo!
                                                 : controller
                                                     .data
                                                     .value!
                                                     .data!
-                                                    .pendingDetails![index]
+                                                    .pendingDetails![fileIndex]
                                                     .accountNo!); // Replace with your actual method
                                           },
                                           child: const Center(
@@ -235,11 +240,11 @@ class SurveyUploadImagePage extends StatelessWidget {
                     } else {
                       if (isEdit == true) {
                         batchDetailIds.add(controller
-                            .data.value!.data!.completedDetails![index].id
+                            .data.value!.data!.completedDetails![fileIndex].id
                             .toString());
                       } else {
                         batchDetailIds.add(controller
-                            .data.value!.data!.pendingDetails![index].id
+                            .data.value!.data!.pendingDetails![fileIndex].id
                             .toString());
                       }
                     }
@@ -247,10 +252,10 @@ class SurveyUploadImagePage extends StatelessWidget {
                     surveyFormController.postSurvey(
                       isEdit == true
                           ? controller.data.value!.data!
-                              .completedDetails![index].batchId
+                              .completedDetails![fileIndex].batchId
                               .toString()
-                          : controller
-                              .data.value!.data!.pendingDetails![index].batchId
+                          : controller.data.value!.data!
+                              .pendingDetails![fileIndex].batchId
                               .toString(),
                       batchDetailIds, // Passing the list of batchDetailIds
                     );

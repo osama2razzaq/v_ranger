@@ -155,7 +155,7 @@ class SurveyDetailsPage extends StatelessWidget {
                 TravelModes.driving // Assuming travelMode should be a String
             );
 
-        // Convert the distance to double
+        // Convert the distance to doubledriverIdA
         double distance = double.tryParse(distanceString) ?? -1;
         return distance;
       }
@@ -170,8 +170,8 @@ class SurveyDetailsPage extends StatelessWidget {
               _detailItem(
                   'Account ID',
                   !isEdit
-                      ? pendingDetails?.id?.toString() ?? 'N/A'
-                      : completedDetails?.id?.toString() ?? 'N/A'),
+                      ? pendingDetails?.fileid?.toString() ?? 'N/A'
+                      : completedDetails?.fileid?.toString() ?? 'N/A'),
               _detailItem(
                   'Account No',
                   !isEdit

@@ -395,7 +395,9 @@ class ApiService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('access_token');
-      int? driveId = prefs.getInt('driveId'); // Adjust the key as necessary
+      String? detailsString = prefs.getString('details');
+      Map<String, dynamic> details = jsonDecode(detailsString!);
+      String driverId = details['id'].toString(); // Extract driver_id
       if (token == null) throw Exception('No access token found.');
 
       final url =
@@ -407,7 +409,7 @@ class ApiService {
       final request = http.MultipartRequest('POST', url)
         ..fields['batch_id'] = batchId
         ..fields['batch_detail_id'] = jsonEncode(batchDetailIds)
-        ..fields['user_id'] = driveId.toString()
+        ..fields['user_id'] = driverId.toString()
         ..fields['has_water_meter'] = hasWaterMeter?.toString() ?? ''
         ..fields['water_meter_no'] = waterMeterNo ?? ''
         ..fields['has_water_bill'] = hasWaterBill?.toString() ?? ''
@@ -454,8 +456,11 @@ class ApiService {
       request.headers['Authorization'] = 'Bearer $token';
 
       final response = await request.send();
+      print(response);
       final responseBody = await http.Response.fromStream(response);
-      print("request:::: ${request.fields}");
+      print("request::::1 ${request.fields}");
+      print("request::::1 ${request.files}");
+
       if (response.statusCode == 200) {
         print(responseBody.body);
         return responseBody;

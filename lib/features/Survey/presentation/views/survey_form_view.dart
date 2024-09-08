@@ -61,7 +61,7 @@ class SurveyFormPage extends StatelessWidget {
                   onTap: () {
                     Get.to(() => SurveyUploadImagePage(
                           controller: controller,
-                          index: index,
+                          fileIndex: index,
                           isEdit: isEdit,
                           isBulkUpdate: isBulkUpdate,
                         ));
@@ -480,7 +480,7 @@ class SurveyFormPage extends StatelessWidget {
           onTap: () => {
             Get.to(() => SurveyUploadImagePage(
                   controller: controller,
-                  index: index,
+                  fileIndex: index,
                   isBulkUpdate: isBulkUpdate,
                   isEdit: isEdit,
                 ))
