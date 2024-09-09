@@ -104,18 +104,37 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
                 );
               }
             }
+            // Compress and resize the image to be under 2MB
+            int maxFileSize = 2 * 1024 * 1024; // 2 MB in bytes
+            int quality = 85; // Initial quality
+            Uint8List compressedImageBytes = Uint8List.fromList(
+                img.encodeJpg(originalImage, quality: quality));
 
-            // Convert the image back to bytes
-            Uint8List modifiedImageBytes =
-                Uint8List.fromList(img.encodeJpg(originalImage));
+            while (compressedImageBytes.length > maxFileSize && quality > 10) {
+              quality -= 5; // Reduce quality by 5 each iteration
+              compressedImageBytes = Uint8List.fromList(
+                  img.encodeJpg(originalImage, quality: quality));
+            }
 
-            // Save the modified image back to a file
-            final String modifiedImagePath = '${imageFile.path}_modified.jpg';
-            final File modifiedImageFile = File(modifiedImagePath);
-            await modifiedImageFile.writeAsBytes(modifiedImageBytes);
+            // Save the compressed image back to a file
+            final String compressedImagePath =
+                '${imageFile.path}_compressed.jpg';
+            final File compressedImageFile = File(compressedImagePath);
+            await compressedImageFile.writeAsBytes(compressedImageBytes);
 
-            // Add the modified image to the list
-            images.add(modifiedImageFile);
+            // Add the compressed image to the list
+            images.add(compressedImageFile);
+            // // Convert the image back to bytes
+            // Uint8List modifiedImageBytes =
+            //     Uint8List.fromList(img.encodeJpg(originalImage));
+
+            // // Save the modified image back to a file
+            // final String modifiedImagePath = '${imageFile.path}_modified.jpg';
+            // final File modifiedImageFile = File(modifiedImagePath);
+            // await modifiedImageFile.writeAsBytes(modifiedImageBytes);
+
+            // // Add the modified image to the list
+            // images.add(modifiedImageFile);
           }
         }
       } else {
