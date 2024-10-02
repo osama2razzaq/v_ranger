@@ -4,7 +4,6 @@ import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/features/Survey/data/Model/Statusdropdown.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
-import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_controller.dart';
 
 class SurveyFormController extends GetxController with SnackBarHelper {
   final Rx<DropdownModel?> dropDownData = Rx<DropdownModel?>(null);
@@ -125,10 +124,8 @@ class SurveyFormController extends GetxController with SnackBarHelper {
       dropDrStatusDownData.value = result;
       // Assuming that result contains lists for the dropdowns
 
-      drCodeItems.value = result?.drcode
-              ?.map((item) => "${item.statuscode!} - ${item.description!}")
-              .toList() ??
-          [];
+      drCodeItems.value =
+          result?.drcode?.map((item) => "${item.statuscode!}").toList() ?? [];
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error
