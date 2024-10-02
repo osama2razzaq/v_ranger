@@ -162,14 +162,16 @@ class LeaderboardView extends StatelessWidget {
               }
 
               final driver = otherDrivers[index - 1];
-              int assign = driver.statusCounts?.assigned ?? 0;
+              // int assign = driver.statusCounts?.assigned ?? 0;
+              int assign =
+                  int.tryParse(driver.statusCounts?.assigned ?? '0') ?? 0;
               int complete =
                   int.tryParse(driver.statusCounts?.completed ?? '0') ?? 0;
               int pending =
                   int.tryParse(driver.statusCounts?.pending ?? '0') ?? 0;
               int percentage =
                   assign != 0 ? ((complete / assign) * 100).round() : 0;
-
+              print("percentage== $percentage");
               return Container(
                 padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
                 margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -193,8 +195,8 @@ class LeaderboardView extends StatelessWidget {
                         percentage, complete, assign),
                     _buildDataItem(driver.driverName ?? '', flex: 2),
                     _buildDataItem('$assign', flex: 1),
-                    _buildDataItem('${complete}', flex: 1),
-                    _buildDataItem('${pending}', flex: 1),
+                    _buildDataItem('$complete', flex: 1),
+                    _buildDataItem('$pending', flex: 1),
                   ],
                 ),
               );
@@ -234,7 +236,7 @@ class LeaderboardView extends StatelessWidget {
       flex: flex,
       child: Container(
         child: MyCircularPercentIndicator(
-          totalValue: assign,
+          totalValue: assign != 0 ? assign : 100,
           leftValue: complete,
           color: getColorBasedOnPercentage(percentage),
         ),

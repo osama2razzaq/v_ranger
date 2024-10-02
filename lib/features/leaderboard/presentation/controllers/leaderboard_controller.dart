@@ -17,10 +17,11 @@ class LeaderboardController extends GetxController with SnackBarHelper {
   Future<void> fetchLeaderboardData() async {
     try {
       final result = await apiService.fetchDriversleaderBoard();
+      print(result);
       if (result == null) {
         // Handle unauthorized access by logging out
-        settingsController.logout();
-        showNormalSnackBar('Session expired. Please log in again.');
+        // settingsController.logout();
+        // showNormalSnackBar('Session expired. Please log in again.');
       } else {
         data.value = result;
       }

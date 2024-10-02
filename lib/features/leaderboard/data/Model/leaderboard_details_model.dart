@@ -43,7 +43,7 @@ class LeaderBoardDetails {
 }
 
 class OtherDriver {
-  int? driverId;
+  String? driverId;
   String? driverName;
   StatusCounts? statusCounts;
 
@@ -70,7 +70,7 @@ class OtherDriver {
 
 class StatusCounts {
   String? pending;
-  int? assigned;
+  String? assigned;
   String? completed;
 
   StatusCounts({

@@ -266,6 +266,7 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
+    print(token);
     String? detailsString = prefs.getString('details');
     Map<String, dynamic> details = jsonDecode(detailsString!);
     String driverId = details['id'].toString(); // Extract driver_id

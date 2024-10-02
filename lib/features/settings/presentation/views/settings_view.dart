@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:v_ranger/core/values/app_colors.dart';
 import 'package:v_ranger/core/values/app_text_style.dart';
 import 'package:v_ranger/features/change_password/presentation/views/change_password_view.dart';
@@ -33,12 +34,6 @@ class SettingsView extends StatelessWidget {
               'Notifications',
               () {},
             ),
-            // _settingItem(
-            //   context,
-            //   Icons.fingerprint,
-            //   'Fingerprint Enable',
-            //   () {},
-            // ),
             _fingerprintToggleItem(context),
             _settingItem(
               context,
@@ -46,6 +41,14 @@ class SettingsView extends StatelessWidget {
               'Change Password',
               () {
                 Get.to(() => ChangePasswordView());
+              },
+            ),
+            _settingItem(
+              context,
+              Icons.privacy_tip,
+              'Privacy Policy', // New Privacy Policy item
+              () {
+                _launchPrivacyPolicy();
               },
             ),
             _settingItem(
@@ -58,6 +61,15 @@ class SettingsView extends StatelessWidget {
             ),
           ],
         ))));
+  }
+
+  void _launchPrivacyPolicy() async {
+    const url = 'https://itgtel.com/privacy-policy/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _fingerprintToggleItem(BuildContext context) {

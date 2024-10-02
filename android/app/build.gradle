@@ -44,9 +44,9 @@ android {
     defaultConfig {
         applicationId = "com.vranger.v_ranger"
         minSdkVersion 23  // Set the minSdkVersion explicitly
-        targetSdkVersion 33  // Set the targetSdkVersion explicitly
-        versionCode 3
-        versionName "1.0.1"
+        targetSdkVersion 34  // Set the targetSdkVersion explicitly
+        versionCode 5
+        versionName "1.0.0"
     }
    
    signingConfigs { 

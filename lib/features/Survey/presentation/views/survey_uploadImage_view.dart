@@ -118,12 +118,18 @@ class SurveyUploadImagePage extends StatelessWidget {
                                                     .pendingDetails![fileIndex]
                                                     .accountNo!); // Replace with your actual method
                                           },
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons.camera_alt,
-                                              color: Colors.grey,
-                                              size: 40,
+                                          child: Center(
+                                            child: Image.asset(
+                                              'assets/icons/add_Image.png',
+                                              width: 40.0,
+                                              height: 40.0,
                                             ),
+
+                                            //  Icon(
+                                            //   Icons.camera_alt,
+                                            //   color: Colors.grey,
+                                            //   size: 40,
+                                            // ),
                                           ),
                                         ),
                                       ),
