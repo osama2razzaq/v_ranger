@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
+import 'package:v_ranger/features/Survey/data/Model/Statusdropdown.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_controller.dart';
 
 class SurveyFormController extends GetxController with SnackBarHelper {
   final Rx<DropdownModel?> dropDownData = Rx<DropdownModel?>(null);
+  final Rx<Statusdropdown?> dropDrStatusDownData = Rx<Statusdropdown?>(null);
 
   // lists for FocusNode for go to next TextField
   final FocusNode waterBillFocus = FocusNode();
@@ -64,6 +66,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   @override
   void onInit() {
     fetchDropdownList();
+    fetchDrDropdownList();
 
     super.onInit();
   }
@@ -116,6 +119,22 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     }
   }
 
+  Future<void> fetchDrDropdownList() async {
+    try {
+      final result = await apiService.fetchStatusDropdownData();
+      dropDrStatusDownData.value = result;
+      // Assuming that result contains lists for the dropdowns
+
+      drCodeItems.value = result?.drcode
+              ?.map((item) => "${item.statuscode!} - ${item.description!}")
+              .toList() ??
+          [];
+    } catch (e) {
+      showNormalSnackBar('Failed to load data: $e');
+      dropDownData.value = null; // Clear data on error
+    }
+  }
+
   Future<void> fetchDropdownList() async {
     try {
       final result = await apiService.fetchDropDownData();
@@ -132,10 +151,6 @@ class SurveyFormController extends GetxController with SnackBarHelper {
       natureOfBusinessItems.value = result?.natureOfBussinessCode
               ?.map((item) =>
                   "${item.code!} - ${item.natureOfBussinessCodeName!}")
-              .toList() ??
-          [];
-      drCodeItems.value = result?.drCode
-              ?.map((item) => "${item.code!} - ${item.drCodeName!}")
               .toList() ??
           [];
 

@@ -39,4 +39,5 @@ abstract class ApiConstants {
   static const verifyresetcode = '/verifyresetcode';
   static const resetpassword = '/resetpassword';
   static const changepassword = '/changepassword';
+  static const statusdropdown = '/statusdropdown';
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
+import 'package:v_ranger/features/Survey/data/Model/Statusdropdown.dart';
 import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 import 'package:v_ranger/features/batches/data/model/batch_details_model.dart';
 import 'package:v_ranger/features/batches/data/model/batches_model.dart';
@@ -215,6 +216,42 @@ class ApiService {
 
       if (response.statusCode == 200) {
         return dropdownModelFromJson(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Statusdropdown?> fetchStatusDropdownData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token =
+        prefs.getString('access_token'); // Adjust the key as necessary
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString(); // Extract driver_id
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.statusdropdown}');
+    final body = {
+      'driver_id': driverId,
+    };
+
+    final bodyJson = jsonEncode(body);
+
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": 'Bearer $token'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return statusdropdownFromJson(response.body);
       } else {
         return null;
       }
