@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/base/api_service.dart';
 import 'package:v_ranger/core/routing/app_routes.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
@@ -24,9 +27,11 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   var isPhotoLoading = false.obs;
   var imageUrls = <String, String>{}.obs;
   final RxBool isPhotoPopulated = false.obs;
+  DateTime now = DateTime.now();
   @override
   void onInit() {
     super.onInit();
+    startNetworkMonitoring(); // Start monitoring network status
   }
 
   Future<void> pickImage(String? accountId) async {
@@ -184,6 +189,18 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     }
   }
 
+  void startNetworkMonitoring() {
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      if (results.isNotEmpty &&
+          results.any((result) => result != ConnectivityResult.none)) {
+        // Device is online, try to post any pending surveys
+        postPendingSurveys();
+      }
+    });
+  }
+
   void populatePhotosFromApi(controller, int index) {
     if (!isPhotoPopulated.value) {
       final surveyDetail =
@@ -205,8 +222,6 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     String batchId,
     List<String> batchDetailIds,
   ) async {
-    DateTime now = DateTime.now();
-
     // Format the date and time
     String formattedDate = DateFormat('dd/MM/yy').format(now);
     String formattedTime = DateFormat('HH:mm').format(now);
@@ -269,6 +284,134 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       } finally {
         isLoading.value = false; // End loading
       }
+    }
+  }
+
+  Future<void> saveSurveyLocally(
+      String batchId, List<String> batchDetailIds) async {
+    String formattedDate = DateFormat('dd/MM/yy').format(now);
+    String formattedTime = DateFormat('HH:mm').format(now);
+    List<String> imagePaths = images.map((file) => file.path).toList();
+
+    // Create a survey map
+    Map<String, dynamic> surveyData = {
+      'batchId': batchId,
+      'batchDetailIds': batchDetailIds,
+      'hasWaterMeter': surveyFormController.isWaterMeterVisible.value,
+      'waterMeterNo': surveyFormController.inputWaterMeter.value,
+      'hasWaterBill': surveyFormController.isWaterBillVisible.value,
+      'waterBillNo': surveyFormController.inputWaterBill.value,
+      'isCorrectAddress': surveyFormController.isCorrectAddressVisible.value,
+      'correctAddress': surveyFormController.inputCorrectAddress.value,
+      'ownership': surveyFormController.selectedOwnership.value,
+      'contactPersonName': surveyFormController.inputOccupierName.value,
+      'contactNumber': surveyFormController.inputOccupierPhoneNumber.value,
+      'email': surveyFormController.inputOccupierEmail.value,
+      'natureOfBusinessCode':
+          surveyFormController.selectedNatureOfBusiness.value,
+      'shopName': surveyFormController.inputShopName.value,
+      'drCode': surveyFormController.selectedDrCode.value,
+      'propertyCode': surveyFormController.selectedPropertyType.value,
+      'occupancy': surveyFormController.selectedOccupancyStatus.value,
+      'classification': surveyFormController.selectedClassification.value,
+      'remark': surveyFormController.inputAddRemark.value,
+      'visitDate': formattedDate,
+      'visitTime': formattedTime,
+      'imagePaths': imagePaths, // Add the image paths here
+      // Images can be added if needed
+    };
+
+    // Fetch locally stored surveys
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedSurveys = prefs.getStringList('pending_surveys') ?? [];
+
+    // Add the new survey to the list
+    savedSurveys.add(jsonEncode(surveyData));
+
+    // Save updated survey list
+    await prefs.setStringList('pending_surveys', savedSurveys);
+
+    print('Survey saved locally.');
+  }
+
+  Future<void> postPendingSurveys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedSurveys = prefs.getStringList('pending_surveys') ?? [];
+
+    if (savedSurveys.isNotEmpty) {
+      List<String> surveysToRemove =
+          []; // List to collect successfully posted surveys
+
+      for (String survey in savedSurveys) {
+        // Convert the JSON-encoded string back to a Map
+        Map<String, dynamic> surveyData = jsonDecode(survey);
+
+        // Extract necessary fields for posting
+        String batchId = surveyData['batchId'];
+        List<String> batchDetailIds =
+            List<String>.from(surveyData['batchDetailIds']);
+
+        // Extract image paths (handle case where it's not a list)
+        List<String> imagePaths = [];
+        if (surveyData['imagePaths'] is List) {
+          imagePaths = List<String>.from(surveyData['imagePaths']);
+        } else if (surveyData['imagePaths'] is String) {
+          imagePaths = [surveyData['imagePaths']];
+        }
+
+        // Reconstruct File objects from the image paths
+        File? photo1 = imagePaths.isNotEmpty ? File(imagePaths[0]) : null;
+        File? photo2 = imagePaths.length > 1 ? File(imagePaths[1]) : null;
+        File? photo3 = imagePaths.length > 2 ? File(imagePaths[2]) : null;
+        File? photo4 = imagePaths.length > 3 ? File(imagePaths[3]) : null;
+        File? photo5 = imagePaths.length > 4 ? File(imagePaths[4]) : null;
+
+        // Post the survey to the server using your `postSurvey` method
+        final response = await apiService.postSurvey(
+          batchId: batchId,
+          batchDetailIds: batchDetailIds,
+          hasWaterMeter: surveyData['hasWaterMeter'],
+          waterMeterNo: surveyData['waterMeterNo'],
+          hasWaterBill: surveyData['hasWaterBill'],
+          waterBillNo: surveyData['waterBillNo'],
+          isCorrectAddress: surveyData['isCorrectAddress'],
+          correctAddress: surveyData['correctAddress'],
+          ownership: surveyData['ownership'],
+          contactPersonName: surveyData['contactPersonName'],
+          contactNumber: surveyData['contactNumber'],
+          email: surveyData['email'],
+          natureOfBusinessCode: surveyData['natureOfBusinessCode'],
+          shopName: surveyData['shopName'],
+          drCode: surveyData['drCode'],
+          propertyCode: surveyData['propertyCode'],
+          occupancy: surveyData['occupancy'],
+          classification: surveyData['classification'],
+          remark: surveyData['remark'],
+          visitDate: surveyData['visitDate'],
+          visitTime: surveyData['visitTime'],
+          photo1: photo1,
+          photo2: photo2,
+          photo3: photo3,
+          photo4: photo4,
+          photo5: photo5,
+        );
+
+        // If successfully posted, collect the survey to be removed later
+        if (response != null && response.statusCode == 201) {
+          print('Survey with images successfully posted.');
+          surveysToRemove.add(survey);
+        } else {
+          print('Failed to post survey. Keeping it in local storage.');
+        }
+      }
+
+      // Remove the successfully posted surveys from the list after iteration
+      savedSurveys.removeWhere((survey) => surveysToRemove.contains(survey));
+
+      // Save the updated list to SharedPreferences
+      await prefs.setStringList('pending_surveys', savedSurveys);
+    } else {
+      print('No pending surveys to post.');
     }
   }
 }

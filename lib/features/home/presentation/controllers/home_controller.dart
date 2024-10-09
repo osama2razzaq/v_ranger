@@ -21,13 +21,13 @@ class HomeController extends GetxController with SnackBarHelper {
       final result = await apiService.fetchDashboardData();
       if (result == null) {
         // Handle unauthorized access by logging out
-        settingsController.logout();
-        showNormalSnackBar('Session expired. Please log in again.');
+        // settingsController.logout();
+        // showNormalSnackBar('Session expired. Please log in again.');
       } else {
         data.value = result;
       }
     } catch (e) {
-      showNormalSnackBar('Failed to load data: $e');
+      //  showNormalSnackBar('Failed to load data: $e');
       data.value = null; // Clear data on error
     }
   }

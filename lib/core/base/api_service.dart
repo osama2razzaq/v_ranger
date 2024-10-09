@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/values/api_constants.dart';
@@ -55,17 +56,30 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
-
     String? detailsString = prefs.getString('details');
     Map<String, dynamic> details = jsonDecode(detailsString!);
     String driverId = details['id'].toString(); // Extract driver_id
-    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
 
+    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
     final body = {
       'driver_id': driverId,
     };
     print("body123 $body");
     final bodyJson = jsonEncode(body);
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+    // If there's no internet, return cached data
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('dashboard_data'); // Cached data
+      if (cachedData != null) {
+        // Return the cached data if available
+        return dashboardModelFromJson(cachedData);
+      } else {
+        return null; // No internet and no cached data
+      }
+    }
+
+    // If connected to the internet, fetch from API
     try {
       final response = await http.post(
         url,
@@ -77,16 +91,55 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        // Save API response to local storage
+        prefs.setString('dashboard_data', response.body); // Cache the data
         return dashboardModelFromJson(response.body);
       } else if (response.statusCode == 401) {
-        return null;
+        return null; // Unauthorized case
       } else {
         return null;
       }
     } catch (e) {
-      return null;
+      return null; // Return null on exception
     }
   }
+
+  // Future<DashboardModel?> fetchDashboardData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token =
+  //       prefs.getString('access_token'); // Adjust the key as necessary
+
+  //   String? detailsString = prefs.getString('details');
+  //   Map<String, dynamic> details = jsonDecode(detailsString!);
+  //   String driverId = details['id'].toString(); // Extract driver_id
+  //   final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
+
+  //   final body = {
+  //     'driver_id': driverId,
+  //   };
+  //   print("body123 $body");
+  //   final bodyJson = jsonEncode(body);
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: bodyJson,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token"
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return dashboardModelFromJson(response.body);
+  //     } else if (response.statusCode == 401) {
+  //       return null;
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   Future<ProfileModel?> fetchProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/dashedline_painter.dart';
@@ -227,34 +228,42 @@ class SurveyUploadImagePage extends StatelessWidget {
       {required String buttonName}) {
     return Center(
       child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-          width: MediaQuery.of(context).size.width,
-          child: Obx(() {
-            if (!surveyFormController.isLoading.value) {
-              return SingleButton(
-                bgColor: AppColors.primaryColor,
-                buttonName: buttonName,
-                onTap: () {
-                  if (!surveyFormController.isLoading.value) {
-                    List<String> batchDetailIds = [];
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+        width: MediaQuery.of(context).size.width,
+        child: Obx(() {
+          if (!surveyFormController.isLoading.value) {
+            return SingleButton(
+              bgColor: AppColors.primaryColor,
+              buttonName: buttonName,
+              onTap: () async {
+                if (!surveyFormController.isLoading.value) {
+                  List<String> batchDetailIds = [];
 
-                    if (isBulkUpdate) {
-                      // Send selectedBatchIds if isBulkUpdate is true
-                      batchDetailIds = controller.selectedBatchIds
-                          .map((id) => id.toString())
-                          .toList();
+                  // Prepare batchDetailIds based on whether it's bulkUpdate or single
+                  if (isBulkUpdate) {
+                    batchDetailIds = controller.selectedBatchIds
+                        .map((id) => id.toString())
+                        .toList();
+                  } else {
+                    if (isEdit == true) {
+                      batchDetailIds.add(controller
+                          .data.value!.data!.completedDetails![fileIndex].id
+                          .toString());
                     } else {
-                      if (isEdit == true) {
-                        batchDetailIds.add(controller
-                            .data.value!.data!.completedDetails![fileIndex].id
-                            .toString());
-                      } else {
-                        batchDetailIds.add(controller
-                            .data.value!.data!.pendingDetails![fileIndex].id
-                            .toString());
-                      }
+                      batchDetailIds.add(controller
+                          .data.value!.data!.pendingDetails![fileIndex].id
+                          .toString());
                     }
+                  }
 
+                  // Check internet connectivity
+                  var connectivityResults =
+                      await Connectivity().checkConnectivity();
+                  bool isOnline = connectivityResults.isNotEmpty &&
+                      connectivityResults
+                          .any((result) => result != ConnectivityResult.none);
+                  if (isOnline) {
+                    // If online, proceed to submit the survey
                     surveyFormController.postSurvey(
                       isEdit == true
                           ? controller.data.value!.data!
@@ -265,14 +274,32 @@ class SurveyUploadImagePage extends StatelessWidget {
                               .toString(),
                       batchDetailIds, // Passing the list of batchDetailIds
                     );
+                  } else {
+                    // If offline, save the survey data locally
+                    await surveyFormController.saveSurveyLocally(
+                      isEdit == true
+                          ? controller.data.value!.data!
+                              .completedDetails![fileIndex].batchId
+                              .toString()
+                          : controller.data.value!.data!
+                              .pendingDetails![fileIndex].batchId
+                              .toString(),
+                      batchDetailIds,
+                    );
+
+                    // Show a snackbar or dialog to notify the user
+                    surveyFormController.showNormalSnackBar(
+                        'No internet connection. Survey saved locally and will be uploaded once online.');
                   }
-                },
-                isLoading: surveyFormController.isLoading.value,
-              );
-            } else {
-              return const Center(child: FormLoader());
-            }
-          })),
+                }
+              },
+              isLoading: surveyFormController.isLoading.value,
+            );
+          } else {
+            return const Center(child: FormLoader());
+          }
+        }),
+      ),
     );
   }
 }
