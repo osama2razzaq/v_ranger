@@ -18,7 +18,9 @@ import 'package:path_provider/path_provider.dart';
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
   final SurveyFormController surveyFormController =
-      Get.find<SurveyFormController>();
+      Get.put(SurveyFormController());
+  // final SurveyFormController surveyFormController =
+  //     Get.find<SurveyFormController>();
 
   final ImagePicker _picker = ImagePicker();
   bool? isBulkUpdate;
@@ -31,7 +33,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   @override
   void onInit() {
     super.onInit();
-    startNetworkMonitoring(); // Start monitoring network status
+    //  startNetworkMonitoring(); // Start monitoring network status
   }
 
   Future<void> pickImage(String? accountId) async {
@@ -189,17 +191,17 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     }
   }
 
-  void startNetworkMonitoring() {
-    Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
-      if (results.isNotEmpty &&
-          results.any((result) => result != ConnectivityResult.none)) {
-        // Device is online, try to post any pending surveys
-        postPendingSurveys();
-      }
-    });
-  }
+  // void startNetworkMonitoring() {
+  //   Connectivity()
+  //       .onConnectivityChanged
+  //       .listen((List<ConnectivityResult> results) {
+  //     if (results.isNotEmpty &&
+  //         results.any((result) => result != ConnectivityResult.none)) {
+  //       // Device is online, try to post any pending surveys
+  //       postPendingSurveys();
+  //     }
+  //   });
+  // }
 
   void populatePhotosFromApi(controller, int index) {
     if (!isPhotoPopulated.value) {
@@ -330,7 +332,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
 
     // Save updated survey list
     await prefs.setStringList('pending_surveys', savedSurveys);
-
+    Get.offAllNamed(Routes.dashboard);
     print('Survey saved locally.');
   }
 
@@ -411,7 +413,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       // Save the updated list to SharedPreferences
       await prefs.setStringList('pending_surveys', savedSurveys);
     } else {
-      print('No pending surveys to post.');
+      showErrorSnackBar('No pending surveys to post.');
     }
   }
 }

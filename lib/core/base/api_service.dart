@@ -104,20 +104,66 @@ class ApiService {
     }
   }
 
-  // Future<DashboardModel?> fetchDashboardData() async {
+  Future<ProfileModel?> fetchProfileData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+    String? detailsString = prefs.getString('details');
+    Map<String, dynamic> details = jsonDecode(detailsString!);
+    String driverId = details['id'].toString();
+
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driverprofile}');
+    final body = {'driver_id': driverId};
+    final bodyJson = jsonEncode(body);
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If there's no internet, return cached data
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('profile_data'); // Cached data
+      if (cachedData != null) {
+        return profileModelFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If connected to the internet, fetch from API
+    try {
+      final response = await http.post(
+        url,
+        body: bodyJson,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        prefs.setString('profile_data', response.body); // Cache the data
+        return profileModelFromJson(response.body);
+      } else if (response.statusCode == 401) {
+        return null;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+  // Future<ProfileModel?> fetchProfileData() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   String? token =
   //       prefs.getString('access_token'); // Adjust the key as necessary
-
   //   String? detailsString = prefs.getString('details');
   //   Map<String, dynamic> details = jsonDecode(detailsString!);
   //   String driverId = details['id'].toString(); // Extract driver_id
-  //   final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dashboard}');
 
+  //   final url =
+  //       Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driverprofile}');
   //   final body = {
-  //     'driver_id': driverId,
+  //     'driver_id': driverId.toString(),
   //   };
-  //   print("body123 $body");
   //   final bodyJson = jsonEncode(body);
   //   try {
   //     final response = await http.post(
@@ -130,7 +176,7 @@ class ApiService {
   //     );
 
   //     if (response.statusCode == 200) {
-  //       return dashboardModelFromJson(response.body);
+  //       return profileModelFromJson(response.body);
   //     } else if (response.statusCode == 401) {
   //       return null;
   //     } else {
@@ -141,139 +187,257 @@ class ApiService {
   //   }
   // }
 
-  Future<ProfileModel?> fetchProfileData() async {
+  // Future<BatchesModel?> fetchBatchesData(String batchId) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token =
+  //       prefs.getString('access_token'); // Adjust the key as necessary
+  //   String? detailsString = prefs.getString('details');
+  //   Map<String, dynamic> details = jsonDecode(detailsString!);
+  //   String driverId = details['id'].toString(); // Extract driver_id
+
+  //   final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.batches}');
+  //   final body = {'driver_id': driverId.toString(), 'batch_id': batchId};
+  //   final bodyJson = jsonEncode(body);
+
+  //   print("bodyJson== $bodyJson");
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: bodyJson,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token"
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return batchesModelFromJson(response.body);
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+  Future<BatchesModel?> fetchBatchesData(String batchId) async {
+    // Retrieve SharedPreferences instance
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
+
+    // Get the access token and driver details
+    String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
-    Map<String, dynamic> details = jsonDecode(detailsString!);
-    String driverId = details['id'].toString(); // Extract driver_id
 
-    final url =
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driverprofile}');
-    final body = {
-      'driver_id': driverId.toString(),
-    };
-    final bodyJson = jsonEncode(body);
-    try {
-      final response = await http.post(
-        url,
-        body: bodyJson,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return profileModelFromJson(response.body);
-      } else if (response.statusCode == 401) {
-        return null;
-      } else {
-        return null;
-      }
-    } catch (e) {
+    // Ensure detailsString is not null before proceeding
+    if (detailsString == null) {
+      print("Details string is null.");
       return null;
     }
-  }
 
-  Future<BatchesModel?> fetchBatchesData(String batchId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
-    String? detailsString = prefs.getString('details');
-    Map<String, dynamic> details = jsonDecode(detailsString!);
+    Map<String, dynamic> details = jsonDecode(detailsString);
     String driverId = details['id'].toString(); // Extract driver_id
 
+    // Prepare the API endpoint
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.batches}');
-    final body = {'driver_id': driverId.toString(), 'batch_id': batchId};
+
+    // Prepare request body
+    final body = {
+      'driver_id': driverId,
+      'batch_id': batchId,
+    };
     final bodyJson = jsonEncode(body);
 
-    print("bodyJson== $bodyJson");
+    // Check for internet connectivity
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If there's no internet, return cached data
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('batches_data'); // Cached data
+      if (cachedData != null) {
+        return batchesModelFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If connected to the internet, fetch from API
     try {
       final response = await http.post(
         url,
         body: bodyJson,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer $token",
         },
       );
 
+      // Handle the response
       if (response.statusCode == 200) {
+        prefs.setString('batches_data', response.body); // Cache the data
         return batchesModelFromJson(response.body);
       } else {
-        return null;
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return null; // Handle other errors
       }
     } catch (e) {
-      return null;
+      print("Exception occurred: $e");
+      return null; // Handle network or parsing errors
     }
   }
 
   Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
       String driverLatitude, String driverLongitude) async {
+    // Retrieve SharedPreferences instance
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
+
+    // Get the access token and driver details
+    String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
-    Map<String, dynamic> details = jsonDecode(detailsString!);
+
+    // Ensure detailsString is not null before proceeding
+    if (detailsString == null) {
+      print("Details string is null.");
+      return null;
+    }
+
+    Map<String, dynamic> details = jsonDecode(detailsString);
     String driverId = details['id'].toString(); // Extract driver_id
 
+    // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
 
+    // Prepare request body
     final body = {
-      'driver_id': driverId.toString(),
+      'driver_id': driverId,
       'batch_id': batchId,
       'search': search,
       'driver_latitude': driverLatitude,
       'driver_longitude': driverLongitude,
     };
     final bodyJson = jsonEncode(body);
+
+    // Check for internet connectivity
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If there's no internet, return cached data
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('batch_details_data'); // Cached data
+      if (cachedData != null) {
+        return batchDetailsListFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If connected to the internet, fetch from API
     try {
       final response = await http.post(
         url,
         body: bodyJson,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer $token",
         },
       );
 
+      // Handle the response
       if (response.statusCode == 200) {
+        prefs.setString('batch_details_data', response.body); // Cache the data
         return batchDetailsListFromJson(response.body);
       } else {
-        return null;
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return null; // Handle other errors
       }
     } catch (e) {
-      return null;
+      print("Exception occurred: $e");
+      return null; // Handle network or parsing errors
     }
   }
 
-  Future<DropdownModel?> fetchDropDownData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
+  // Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
+  //     String driverLatitude, String driverLongitude) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token =
+  //       prefs.getString('access_token'); // Adjust the key as necessary
+  //   String? detailsString = prefs.getString('details');
+  //   Map<String, dynamic> details = jsonDecode(detailsString!);
+  //   String driverId = details['id'].toString(); // Extract driver_id
 
+  //   final url =
+  //       Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
+
+  //   final body = {
+  //     'driver_id': driverId.toString(),
+  //     'batch_id': batchId,
+  //     'search': search,
+  //     'driver_latitude': driverLatitude,
+  //     'driver_longitude': driverLongitude,
+  //   };
+  //   final bodyJson = jsonEncode(body);
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: bodyJson,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token"
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       return batchDetailsListFromJson(response.body);
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+  Future<DropdownModel?> fetchDropDownData() async {
+    // Retrieve SharedPreferences instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Get the access token
+    String? token = prefs.getString('access_token');
+
+    // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getdropdowns}');
 
+    // Check for internet connectivity
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If there's no internet, return cached data
+    if (connectivityResult == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('dropdown_data'); // Cached data
+      if (cachedData != null) {
+        return dropdownModelFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If connected to the internet, fetch from API
     try {
       final response = await http.get(
         url,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer $token",
         },
       );
 
+      // Handle the response
       if (response.statusCode == 200) {
+        prefs.setString('dropdown_data', response.body); // Cache the data
         return dropdownModelFromJson(response.body);
       } else {
-        return null;
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return null; // Handle other errors
       }
     } catch (e) {
-      return null;
+      print("Exception occurred: $e");
+      return null; // Handle network or parsing errors
     }
   }
 
@@ -353,42 +517,108 @@ class ApiService {
   }
 
   Future<LeaderBoardDetails?> fetchDriversleaderBoard() async {
+    // Retrieve SharedPreferences instance
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
-    print(token);
+
+    // Get the access token and driver details
+    String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
-    Map<String, dynamic> details = jsonDecode(detailsString!);
+
+    // Ensure detailsString is not null before proceeding
+    if (detailsString == null) {
+      print("Details string is null.");
+      return null;
+    }
+
+    Map<String, dynamic> details = jsonDecode(detailsString);
     String driverId = details['id'].toString(); // Extract driver_id
 
+    // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driversleaderboard}');
-    final body = {
-      'driver_id': driverId.toString(),
-    };
+
+    // Prepare request body
+    final body = {'driver_id': driverId};
     final bodyJson = jsonEncode(body);
 
+    // Check for internet connectivity
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If there's no internet, return cached data
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData = prefs.getString('leaderboard_data'); // Cached data
+      if (cachedData != null) {
+        return leaderBoardDetailsFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If connected to the internet, fetch from API
     try {
       final response = await http.post(
         url,
         body: bodyJson,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer $token",
         },
       );
-      print("response::: ${response.body}");
+
+      // Handle the response
       if (response.statusCode == 200) {
+        prefs.setString('leaderboard_data', response.body); // Cache the data
         return leaderBoardDetailsFromJson(response.body);
       } else if (response.statusCode == 401) {
-        return null;
+        print("Unauthorized access. Token might be invalid.");
+        return null; // Handle token expiration or invalid token
       } else {
-        return null;
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return null; // Handle other errors
       }
     } catch (e) {
-      return null;
+      print("Exception occurred: $e");
+      return null; // Handle network or parsing errors
     }
   }
+
+  // Future<LeaderBoardDetails?> fetchDriversleaderBoard() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token =
+  //       prefs.getString('access_token'); // Adjust the key as necessary
+  //   print(token);
+  //   String? detailsString = prefs.getString('details');
+  //   Map<String, dynamic> details = jsonDecode(detailsString!);
+  //   String driverId = details['id'].toString(); // Extract driver_id
+
+  //   final url =
+  //       Uri.parse('${ApiConstants.baseUrl}${ApiConstants.driversleaderboard}');
+  //   final body = {
+  //     'driver_id': driverId.toString(),
+  //   };
+  //   final bodyJson = jsonEncode(body);
+
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: bodyJson,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token"
+  //       },
+  //     );
+  //     print("response::: ${response.body}");
+  //     if (response.statusCode == 200) {
+  //       return leaderBoardDetailsFromJson(response.body);
+  //     } else if (response.statusCode == 401) {
+  //       return null;
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   Future<http.Response?> updateBatchPin(
       String batchDetailId, String action) async {
