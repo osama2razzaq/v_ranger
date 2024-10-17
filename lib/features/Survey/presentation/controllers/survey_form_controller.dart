@@ -64,10 +64,9 @@ class SurveyFormController extends GetxController with SnackBarHelper {
 
   @override
   void onInit() {
+    super.onInit();
     fetchDropdownList();
     fetchDrDropdownList();
-
-    super.onInit();
   }
 
   void onClose() {

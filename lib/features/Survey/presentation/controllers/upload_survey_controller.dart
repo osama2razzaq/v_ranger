@@ -413,7 +413,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
       // Save the updated list to SharedPreferences
       await prefs.setStringList('pending_surveys', savedSurveys);
     } else {
-      showErrorSnackBar('No pending surveys to post.');
+      // showErrorSnackBar('No pending surveys to post.');
     }
   }
 }
