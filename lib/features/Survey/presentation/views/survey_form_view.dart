@@ -27,6 +27,7 @@ class SurveyFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    surveyFormController.fetchDrDropdownList();
     // Use Obx to call populateFieldsFromApi when needed
     if (isEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
