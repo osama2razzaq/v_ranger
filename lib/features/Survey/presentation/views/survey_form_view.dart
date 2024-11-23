@@ -274,76 +274,91 @@ class SurveyFormPage extends StatelessWidget {
             decoration: BoxDecoration(
                 border: Border.all(color: AppColors.boaderColor, width: 2),
                 borderRadius: BorderRadius.circular(12)),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton2<String>(
-                isExpanded: true,
-                hint: Text(
-                  'Select Item',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).hintColor,
-                  ),
-                ),
-                items: items!
-                    .map((item) => DropdownMenuItem(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ))
-                    .toList(),
-                value: selectedValue.value,
-                onChanged: (value) {
-                  selectedValue.value = value;
-                },
-
-                dropdownSearchData: DropdownSearchData(
-                  searchController: textEditingController,
-                  searchInnerWidgetHeight: 50,
-                  searchInnerWidget: Container(
-                    height: 50,
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                      bottom: 4,
-                      right: 8,
-                      left: 8,
-                    ),
-                    child: TextFormField(
-                      expands: true,
-                      maxLines: null,
-                      controller: textEditingController,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 8,
-                        ),
-                        hintText: 'Search for an item...',
-                        hintStyle: const TextStyle(fontSize: 12),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton2<String>(
+                      isExpanded: true,
+                      hint: Text(
+                        'Select Item',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
+                      items: items!
+                          .map((item) => DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                      value: selectedValue.value,
+                      onChanged: (value) {
+                        selectedValue.value = value;
+                      },
+                      dropdownSearchData: DropdownSearchData(
+                        searchController: textEditingController,
+                        searchInnerWidgetHeight: 50,
+                        searchInnerWidget: Container(
+                          height: 50,
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 4,
+                            right: 8,
+                            left: 8,
+                          ),
+                          child: TextFormField(
+                            expands: true,
+                            maxLines: null,
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              hintText: 'Search for an item...',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        searchMatchFn: (item, searchValue) {
+                          // Convert both item value and searchValue to lowercase for case-insensitive comparison
+                          return item.value
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchValue.toLowerCase());
+                        },
+                      ),
+                      onMenuStateChange: (isOpen) {
+                        if (!isOpen) {
+                          textEditingController?.clear();
+                        }
+                      },
                     ),
                   ),
-                  searchMatchFn: (item, searchValue) {
-                    // Convert both item value and searchValue to lowercase for case-insensitive comparison
-                    return item.value
-                        .toString()
-                        .toLowerCase()
-                        .contains(searchValue.toLowerCase());
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.clear,
+                    size: 15,
+                  ),
+                  onPressed: () {
+                    selectedValue.value = null; // Clear the selected value
+                    textEditingController
+                        ?.clear(); // Clear search input if needed
                   },
                 ),
-                //This to clear the search value when you close the menu
-                onMenuStateChange: (isOpen) {
-                  if (!isOpen) {
-                    surveyFormController.textEditingController.clear();
-                  }
-                },
-              ),
+              ],
             ),
           ),
         ],
