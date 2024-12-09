@@ -204,16 +204,17 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   // }
 
   void populatePhotosFromApi(controller, int index) {
-    if (!isPhotoPopulated.value) {
-      final surveyDetail =
-          controller.data.value!.data!.completedDetails![index].survey!;
+    // if (!isPhotoPopulated.value) {
+    images.clear();
+    final surveyDetail =
+        controller.data.value!.data!.completedDetails![index].survey!;
 
-      convertUrlToFile(surveyDetail.photo1, surveyDetail.photo2,
-          surveyDetail.photo3, surveyDetail.photo4, surveyDetail.photo5);
-      // Exit the loop once the first non-null photo is found and processed
+    convertUrlToFile(surveyDetail.photo1, surveyDetail.photo2,
+        surveyDetail.photo3, surveyDetail.photo4, surveyDetail.photo5);
+    // Exit the loop once the first non-null photo is found and processed
 
-      isPhotoPopulated.value = true;
-    }
+    //  isPhotoPopulated.value = true;
+    // }
   }
 
   void onClose() {

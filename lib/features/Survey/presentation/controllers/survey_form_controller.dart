@@ -83,38 +83,40 @@ class SurveyFormController extends GetxController with SnackBarHelper {
 
   final RxBool isFieldsPopulated = false.obs;
   void populateFieldsFromApi(controller, int index) {
-    if (!isFieldsPopulated.value) {
-      final surveyDetail =
-          controller.data.value!.data!.completedDetails![index].survey!;
+    // if (!isFieldsPopulated.value) {
+    final surveyDetail =
+        controller.data.value!.data!.completedDetails![index].survey!;
 
-      waterBillController.text = surveyDetail.waterBillNo ?? '';
-      waterMeterController.text = surveyDetail.waterMeterNo ?? '';
-      correctAddressController.text = surveyDetail.correctAddress ?? '';
-      occupierNameController.text = surveyDetail.contactPersonName ?? '';
-      occupierPhoneNumberController.text = surveyDetail.contactPersonName ?? '';
-      occupierEmailController.text = surveyDetail.email ?? '';
-      shopNameController.text = surveyDetail.shopName ?? '';
-      addRemarkController.text = surveyDetail.remark ?? '';
+    waterBillController.text = surveyDetail.waterBillNo ?? '';
+    waterMeterController.text = surveyDetail.waterMeterNo ?? '';
+    correctAddressController.text = surveyDetail.correctAddress ?? '';
+    occupierNameController.text = surveyDetail.contactPersonName ?? '';
+    occupierPhoneNumberController.text = surveyDetail.contactPersonName ?? '';
+    occupierEmailController.text = surveyDetail.email ?? '';
+    shopNameController.text = surveyDetail.shopName ?? '';
+    addRemarkController.text = surveyDetail.remark ?? '';
 
-      selectedOwnership.value = surveyDetail.ownership;
-      selectedOccupancyStatus.value = surveyDetail.occupancy;
-      selectedNatureOfBusiness.value = surveyDetail.natureOfBusinessCode;
-      selectedDrCode.value = surveyDetail.drCode;
-      selectedPropertyType.value = surveyDetail.propertyCode;
-      selectedClassification.value = surveyDetail.classification;
+    selectedOwnership.value = surveyDetail.ownership;
+    selectedOccupancyStatus.value = surveyDetail.occupancy;
+    selectedNatureOfBusiness.value = surveyDetail.natureOfBusinessCode;
+    selectedDrCode.value = surveyDetail.drCode;
+    selectedPropertyType.value = surveyDetail.propertyCode;
+    selectedClassification.value = surveyDetail.classification;
 
-      // Set visibility flags if necessary
-      isWaterBillVisible.value = bool.parse(controller
-          .data.value!.data!.completedDetails![index].survey!.hasWaterBill
-          .toString());
-      isWaterMeterVisible.value = bool.parse(controller
-          .data.value!.data!.completedDetails![index].survey!.hasWaterMeter
-          .toString());
-      isCorrectAddressVisible.value = bool.parse(controller
-          .data.value!.data!.completedDetails![index].survey!.isCorrectAddress
-          .toString());
-      isFieldsPopulated.value = true;
-    }
+    // Set visibility flags if necessary
+    isWaterBillVisible.value = bool.parse(controller
+        .data.value!.data!.completedDetails![index].survey!.hasWaterBill
+        .toString());
+    isWaterMeterVisible.value = bool.parse(controller
+        .data.value!.data!.completedDetails![index].survey!.hasWaterMeter
+        .toString());
+    isCorrectAddressVisible.value = bool.parse(controller
+        .data.value!.data!.completedDetails![index].survey!.isCorrectAddress
+        .toString());
+    isFieldsPopulated.value = true;
+    // } else {
+    //   print("object");
+    //}
   }
 
   Future<void> fetchDrDropdownList() async {
@@ -129,6 +131,44 @@ class SurveyFormController extends GetxController with SnackBarHelper {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error
     }
+  }
+
+  void clearForm() {
+    // Clear text fields
+    waterBillController.clear();
+    waterMeterController.clear();
+    correctAddressController.clear();
+    occupierNameController.clear();
+    occupierPhoneNumberController.clear();
+    occupierEmailController.clear();
+    shopNameController.clear();
+    addRemarkController.clear();
+
+    // Reset dropdowns
+    selectedOwnership.value = null;
+    selectedOccupancyStatus.value = null;
+    selectedNatureOfBusiness.value = null;
+    selectedDrCode.value = null;
+    selectedPropertyType.value = null;
+    selectedClassification.value = null;
+
+    // Reset visibility flags
+    isWaterBillVisible.value = false;
+    isWaterMeterVisible.value = false;
+    isCorrectAddressVisible.value = false;
+
+    // Reset any other input variables
+    inputWaterBill.value = null;
+    inputWaterMeter.value = null;
+    inputCorrectAddress.value = null;
+    inputOccupierName.value = null;
+    inputOccupierPhoneNumber.value = null;
+    inputOccupierEmail.value = null;
+    inputShopName.value = null;
+    inputAddRemark.value = null;
+
+    // Additional cleanup, if necessary
+    isFieldsPopulated.value = false;
   }
 
   Future<void> fetchDropdownList() async {
