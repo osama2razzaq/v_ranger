@@ -280,6 +280,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         if (response?.statusCode == 201) {
           showNormalSnackBar('Survey submitted successfully');
           images.clear();
+          surveyFormController.clearForm(); // Clear form data
           Get.offAllNamed(Routes.dashboard);
         }
       } catch (e) {
@@ -333,6 +334,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
 
     // Save updated survey list
     await prefs.setStringList('pending_surveys', savedSurveys);
+    surveyFormController.clearForm();
     Get.offAllNamed(Routes.dashboard);
     print('Survey saved locally.');
   }
