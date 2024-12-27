@@ -115,12 +115,14 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                           ),
                           const SizedBox(width: 4),
                           Obx(() => CircleAvatar(
-                                radius: 9,
+                                radius: 12,
                                 backgroundColor: Colors.orange,
-                                child: Text(
-                                  '${controller.pendingCount}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                child: FittedBox(
+                                  child: Text(
+                                    '${controller.pendingCount}',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 9),
+                                  ),
                                 ),
                               )),
                         ],
@@ -128,7 +130,7 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                     ),
                     Tab(
                       child: Row(
-                        //  mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Completed',
@@ -136,12 +138,14 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                           ),
                           const SizedBox(width: 4),
                           Obx(() => CircleAvatar(
-                                radius: 8,
+                                radius: 12,
                                 backgroundColor: Colors.green,
-                                child: Text(
-                                  '${controller.completedCount}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10),
+                                child: FittedBox(
+                                  child: Text(
+                                    '${controller.completedCount}',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
                                 ),
                               )),
                         ],
@@ -157,12 +161,14 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                           ),
                           const SizedBox(width: 4),
                           Obx(() => CircleAvatar(
-                                radius: 9,
+                                radius: 12,
                                 backgroundColor: Colors.red,
-                                child: Text(
-                                  '${controller.abortCount}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                child: FittedBox(
+                                  child: Text(
+                                    '${controller.abortCount}',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
                                 ),
                               )),
                         ],

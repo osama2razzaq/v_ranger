@@ -112,7 +112,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
               }
             }
             // Compress and resize the image to be under 2MB
-            int maxFileSize = 2 * 1024 * 1024; // 2 MB in bytes
+            int maxFileSize = 1 * 1024 * 1024; // 2 MB in bytes
             int quality = 85; // Initial quality
             Uint8List compressedImageBytes = Uint8List.fromList(
                 img.encodeJpg(originalImage, quality: quality));
