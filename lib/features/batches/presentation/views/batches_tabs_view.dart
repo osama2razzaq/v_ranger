@@ -144,7 +144,7 @@ class _BatchesTabsViewState extends State<BatchesTabsView> {
                                   child: Text(
                                     '${controller.completedCount}',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 10),
+                                        color: Colors.white, fontSize: 9),
                                   ),
                                 ),
                               )),

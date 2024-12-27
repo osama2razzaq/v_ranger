@@ -116,7 +116,9 @@ class LeaderboardView extends StatelessWidget {
   }
 
   Widget _buildPrgressbar(RequestedDriver? requestedDriver) {
-    final totalCount = requestedDriver!.statusCounts?.assigned;
+    final totalCount = requestedDriver!.statusCounts?.assigned == "0"
+        ? "1"
+        : requestedDriver.statusCounts?.assigned;
     final count = requestedDriver.statusCounts?.completed;
     return ProgressBar(
       count: int.parse(count!),
