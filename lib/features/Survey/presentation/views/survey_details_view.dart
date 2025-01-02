@@ -137,30 +137,30 @@ class SurveyDetailsPage extends StatelessWidget {
       return 12742 * asin(sqrt(a)); // 12742 = 2 * EarthRadius (in kilometers)
     }
 
-    Future<double> getDistance(String address) async {
-      List<Location> locations = await locationFromAddress(address);
-      if (locationController.currentLocation.value != null &&
-          locations.isNotEmpty) {
-        ByRoadDistanceCalculator distanceCalculator =
-            ByRoadDistanceCalculator();
-        String distanceString = await distanceCalculator.getDistance(
-            'AIzaSyBfk2lf9GDygZA8S95qs4Q94pRYrEjls8M',
-            startLatitude: // Your API key
-                locationController.currentLocation.value!.latitude!,
-            startLongitude:
-                locationController.currentLocation.value!.longitude!,
-            destinationLatitude: locations.first.latitude,
-            destinationLongitude: locations.first.longitude,
-            travelMode:
-                TravelModes.driving // Assuming travelMode should be a String
-            );
+    // Future<double> getDistance(String address) async {
+    //   List<Location> locations = await locationFromAddress(address);
+    //   if (locationController.currentLocation.value != null &&
+    //       locations.isNotEmpty) {
+    //     ByRoadDistanceCalculator distanceCalculator =
+    //         ByRoadDistanceCalculator();
+    //     String distanceString = await distanceCalculator.getDistance(
+    //         'AIzaSyBfk2lf9GDygZA8S95qs4Q94pRYrEjls8M',
+    //         startLatitude: // Your API key
+    //             locationController.currentLocation.value!.latitude!,
+    //         startLongitude:
+    //             locationController.currentLocation.value!.longitude!,
+    //         destinationLatitude: locations.first.latitude,
+    //         destinationLongitude: locations.first.longitude,
+    //         travelMode:
+    //             TravelModes.driving // Assuming travelMode should be a String
+    //         );
 
-        // Convert the distance to doubledriverIdA
-        double distance = double.tryParse(distanceString) ?? -1;
-        return distance;
-      }
-      return -1;
-    }
+    //     // Convert the distance to doubledriverIdA
+    //     double distance = double.tryParse(distanceString) ?? -1;
+    //     return distance;
+    //   }
+    //   return -1;
+    // }
 
     return Obx(() => Padding(
           padding: const EdgeInsets.all(16.0),
@@ -211,23 +211,23 @@ class SurveyDetailsPage extends StatelessWidget {
                       ? pendingDetails?.batchfileLongitude?.toString() ?? 'N/A'
                       : completedDetails?.batchfileLongitude?.toString() ??
                           'N/A'),
-              FutureBuilder<double>(
-                future: getDistance(
-                    "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''} ${(!isEdit ? pendingDetails?.districtLa : completedDetails?.districtLa) ?? ''} ${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return _detailItem('Distance', 'Calculating...');
-                  } else if (snapshot.hasError) {
-                    return _detailItem(
-                        'Distance', 'Error calculating distance');
-                  } else if (snapshot.hasData) {
-                    return _detailItem(
-                        'Distance', "${snapshot.data!.toStringAsFixed(2)} KM");
-                  } else {
-                    return _detailItem('Distance', 'Unknown');
-                  }
-                },
-              ),
+              // FutureBuilder<double>(
+              //   future: getDistance(
+              //       "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''} ${(!isEdit ? pendingDetails?.districtLa : completedDetails?.districtLa) ?? ''} ${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
+              //   builder: (context, snapshot) {
+              //     if (snapshot.connectionState == ConnectionState.waiting) {
+              //       return _detailItem('Distance', 'Calculating...');
+              //     } else if (snapshot.hasError) {
+              //       return _detailItem(
+              //           'Distance', 'Error calculating distance');
+              //     } else if (snapshot.hasData) {
+              //       return _detailItem(
+              //           'Distance', "${snapshot.data!.toStringAsFixed(2)} KM");
+              //     } else {
+              //       return _detailItem('Distance', 'Unknown');
+              //     }
+              //   },
+              // ),
               _buildMapsButtons(context),
             ],
           ),
@@ -257,10 +257,10 @@ class SurveyDetailsPage extends StatelessWidget {
             label: 'View In Maps',
             icon: Icons.map,
             onTap: () {
-              Get.to(() => MapScreen(
-                    destinationAddress:
-                        "${isEdit == true ? completedDetails!.address! : pendingDetails!.address!},${isEdit == true ? completedDetails!.tamanMmid : pendingDetails!.tamanMmid}",
-                  ));
+              // Get.to(() => MapScreen(
+              //       destinationAddress:
+              //           "${isEdit == true ? completedDetails!.address! : pendingDetails!.address!},${isEdit == true ? completedDetails!.tamanMmid : pendingDetails!.tamanMmid}",
+              //     ));
             },
             colors: [Colors.white, Colors.white!],
             borderColor: AppColors.primaryColor,

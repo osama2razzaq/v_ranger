@@ -161,7 +161,17 @@ class CustomTextField extends StatelessWidget {
               errorBorder: _errorBorder(),
               focusedErrorBorder: _focusedBorder(),
               errorStyle: PromptStyle.textfieldErrorStyle,
-              //  suffixIcon: !hidePasswordIcon ? _suffixWidget(value) : null,
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        value ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.primaryColor,
+                      ),
+                      onPressed: () {
+                        _passwordVisible.value = !value;
+                      },
+                    )
+                  : null,
               //  prefixIcon: iconPath != null ? _prefixWidget() : null,
               contentPadding: EdgeInsets.only(
                   left: iconPath != null

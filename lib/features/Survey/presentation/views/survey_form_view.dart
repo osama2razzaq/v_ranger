@@ -28,6 +28,13 @@ class SurveyFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     surveyFormController.fetchDrDropdownList();
+    // Trigger specific logic on page revisit
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print(Get.previousRoute);
+      if (Get.previousRoute == "/SurveyDetailsPage") {
+        surveyFormController.performActionOnRevisit();
+      }
+    });
     // Use Obx to call populateFieldsFromApi when needed
     if (isEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -21,8 +21,8 @@ abstract class ApiConstants {
   static const xAuthCodeHeader = 'X-Auth-Code';
 
   // // API lists
-  // static const baseUrl = 'http://124.217.247.246/api'; //UAT
-  static const baseUrl = 'https://vranger.com.my/api'; //PROD
+  static const baseUrl = 'http://124.217.247.246/api'; //UAT
+  // static const baseUrl = 'https://vranger.com.my/api'; //PROD
   static const login = '/login';
   static const logout = '/logout';
   static const driverprofile = '/driverprofile';

@@ -276,7 +276,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
           photo4: images.length > 3 ? images[3] : null,
           photo5: images.length > 4 ? images[4] : null,
         );
-        print("esponse.statusCode== ${response?.statusCode}");
+        print("response.statusCode== ${response?.statusCode}");
         if (response?.statusCode == 201) {
           showNormalSnackBar('Survey submitted successfully');
           images.clear();

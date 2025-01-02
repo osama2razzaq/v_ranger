@@ -133,6 +133,11 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     }
   }
 
+  void performActionOnRevisit() {
+    // Perform your specific action here, e.g., refresh data
+    print("Page revisited. Performing action...");
+  }
+
   void clearForm() {
     // Clear text fields
     waterBillController.clear();
