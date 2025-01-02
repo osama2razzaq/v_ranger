@@ -45,7 +45,7 @@ android {
         applicationId = "com.vranger.v_ranger"
         minSdkVersion 23  // Set the minSdkVersion explicitly
         targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 6
+        versionCode 7
         versionName "1.0.0"
     }
    

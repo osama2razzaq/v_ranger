@@ -24,10 +24,10 @@ class LoginView extends StatelessWidget with SnackBarHelper {
             children: [
               buildConntainer(context),
               _buildLoginButton(buttonName: "Login"),
-              _buildForgotTextButton(
-                () => Get.to(() => MobileOtpScreen()),
-                'Forgot Password',
-              ),
+              // _buildForgotTextButton(
+              //   () => Get.to(() => MobileOtpScreen()),
+              //   'Forgot Password',
+              // ),
             ],
           ),
         ),
