@@ -250,22 +250,22 @@ class SurveyDetailsPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CustomButton(
-            label: 'View In Maps',
-            icon: Icons.map,
-            onTap: () {
-              // Get.to(() => MapScreen(
-              //       destinationAddress:
-              //           "${isEdit == true ? completedDetails!.address! : pendingDetails!.address!},${isEdit == true ? completedDetails!.tamanMmid : pendingDetails!.tamanMmid}",
-              //     ));
-            },
-            colors: [Colors.white, Colors.white!],
-            borderColor: AppColors.primaryColor,
-            textColor: Colors.blue[900]!,
-          ),
+          // CustomButton(
+          //   label: 'View In Maps',
+          //   icon: Icons.map,
+          //   onTap: () {
+          //     // Get.to(() => MapScreen(
+          //     //       destinationAddress:
+          //     //           "${isEdit == true ? completedDetails!.address! : pendingDetails!.address!},${isEdit == true ? completedDetails!.tamanMmid : pendingDetails!.tamanMmid}",
+          //     //     ));
+          //   },
+          //   colors: [Colors.white, Colors.white!],
+          //   borderColor: AppColors.primaryColor,
+          //   textColor: Colors.blue[900]!,
+          // ),
           const SizedBox(width: 10),
           CustomButton(
             label: 'Direction',
@@ -273,12 +273,12 @@ class SurveyDetailsPage extends StatelessWidget {
             onTap: () {
               print('Direction tapped');
               navigateTo(
+                  // !isEdit
+                  //     ? double.parse(pendingDetails!.address!)
+                  //     : double.parse(completedDetails!.address!),
                   !isEdit
-                      ? double.parse(pendingDetails!.batchfileLatitude!)
-                      : double.parse(completedDetails!.batchfileLatitude!),
-                  !isEdit
-                      ? double.parse(pendingDetails!.batchfileLongitude!)
-                      : double.parse(completedDetails!.batchfileLongitude!),
+                      ? pendingDetails!.address!
+                      : completedDetails!.address!,
                   context);
             },
             colors: const [
@@ -337,7 +337,7 @@ class SurveyDetailsPage extends StatelessWidget {
   }
 }
 
-void navigateTo(double lat, double lng, BuildContext context) async {
+void navigateTo(String address, BuildContext context) async {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -366,7 +366,7 @@ void navigateTo(double lat, double lng, BuildContext context) async {
             title: const Text("Google Maps"),
             onTap: () {
               Navigator.of(context).pop(); // Close the dialog
-              launchGoogleMaps(lat, lng);
+              launchGoogleMaps(address);
             },
           ),
           ListTile(
@@ -378,7 +378,7 @@ void navigateTo(double lat, double lng, BuildContext context) async {
             title: const Text("Waze"),
             onTap: () {
               Navigator.of(context).pop(); // Close the dialog
-              launchWazeRoute(lat, lng);
+              launchWazeRoute(address);
             },
           ),
         ],
@@ -387,10 +387,9 @@ void navigateTo(double lat, double lng, BuildContext context) async {
   );
 }
 
-Future<void> launchWazeRoute(double lat, double lng) async {
-  var url = 'waze://?ll=${lat.toString()},${lng.toString()}';
-  var fallbackUrl =
-      'https://waze.com/ul?ll=${lat.toString()},${lng.toString()}&navigate=yes';
+Future<void> launchWazeRoute(String address) async {
+  var url = 'waze://?q=$address';
+  var fallbackUrl = 'https://waze.com/ul?q=$address&navigate=yes';
   try {
     bool launched = false;
     if (!kIsWeb) {
@@ -404,10 +403,9 @@ Future<void> launchWazeRoute(double lat, double lng) async {
   }
 }
 
-Future<void> launchGoogleMaps(double lat, double lng) async {
-  var url = 'google.navigation:q=${lat.toString()},${lng.toString()}';
-  var fallbackUrl =
-      'https://www.google.com/maps/search/?api=1&query=${lat.toString()},${lng.toString()}';
+Future<void> launchGoogleMaps(String address) async {
+  var url = 'google.navigation:q=$address';
+  var fallbackUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
   try {
     bool launched = false;
     if (!kIsWeb) {
@@ -420,6 +418,39 @@ Future<void> launchGoogleMaps(double lat, double lng) async {
     await url_launcher.launchUrl(Uri.parse(fallbackUrl));
   }
 }
+// Future<void> launchWazeRoute(double lat, double lng) async {
+//   var url = 'waze://?ll=${lat.toString()},${lng.toString()}';
+//   var fallbackUrl =
+//       'https://waze.com/ul?ll=${lat.toString()},${lng.toString()}&navigate=yes';
+//   try {
+//     bool launched = false;
+//     if (!kIsWeb) {
+//       launched = await url_launcher.launchUrl(Uri.parse(url));
+//     }
+//     if (!launched) {
+//       await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+//     }
+//   } catch (e) {
+//     await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+//   }
+// }
+
+// Future<void> launchGoogleMaps(double lat, double lng) async {
+//   var url = 'google.navigation:q=${lat.toString()},${lng.toString()}';
+//   var fallbackUrl =
+//       'https://www.google.com/maps/search/?api=1&query=${lat.toString()},${lng.toString()}';
+//   try {
+//     bool launched = false;
+//     if (!kIsWeb) {
+//       launched = await url_launcher.launchUrl(Uri.parse(url));
+//     }
+//     if (!launched) {
+//       await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+//     }
+//   } catch (e) {
+//     await url_launcher.launchUrl(Uri.parse(fallbackUrl));
+//   }
+// }
 
 class CustomButton extends StatelessWidget {
   final String label;

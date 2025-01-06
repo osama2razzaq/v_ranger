@@ -71,6 +71,8 @@ class SurveyFormController extends GetxController with SnackBarHelper {
 
   void onClose() {
     // Dispose all controllers when the controller is disposed
+
+    print("Controller data cleared");
     waterBillController.dispose();
     waterMeterController.dispose();
     correctAddressController.dispose();
@@ -78,7 +80,14 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     occupierPhoneNumberController.dispose();
     occupierEmailController.dispose();
     shopNameController.dispose();
+    clearForm();
     super.onClose();
+  }
+
+  void onWillPop() {
+    // Cleanup logic before going back
+    clearForm(); // Reset form fields
+    Get.back(); // Navigate back
   }
 
   final RxBool isFieldsPopulated = false.obs;
@@ -140,6 +149,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
 
   void clearForm() {
     // Clear text fields
+    print("clearForm");
     waterBillController.clear();
     waterMeterController.clear();
     correctAddressController.clear();

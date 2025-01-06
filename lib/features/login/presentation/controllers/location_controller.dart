@@ -95,14 +95,14 @@ class LocationController extends GetxController {
                 fontSize: 18,
               )),
         ),
-        content:
-            const Text('Location services are required. Please enable them.',
-                style: TextStyle(
-                  fontFamily: AppStrings.fontFamilyPrompt,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.black,
-                  fontSize: 12,
-                )),
+        content: const Text(
+            'This app requires location access to function properly, even when the app is not in use. This helps us track field visits and provide accurate data updates. Your location data will only be used for this purpose and will not be shared with third parties.',
+            style: TextStyle(
+              fontFamily: AppStrings.fontFamilyPrompt,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
+              fontSize: 12,
+            )),
         actions: [
           TextButton(
             onPressed: () async {
@@ -142,7 +142,7 @@ class LocationController extends GetxController {
     await Get.dialog(
       AlertDialog(
         title: const Center(
-          child: Text('Location Permission',
+          child: Text('We Need Your Location Access',
               style: TextStyle(
                 fontFamily: AppStrings.fontFamilyPrompt,
                 fontWeight: FontWeight.w600,
@@ -150,14 +150,14 @@ class LocationController extends GetxController {
                 fontSize: 18,
               )),
         ),
-        content:
-            const Text('Location permissions are required. Please grant them.',
-                style: TextStyle(
-                  fontFamily: AppStrings.fontFamilyPrompt,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.black,
-                  fontSize: 12,
-                )),
+        content: const Text(
+            'Location Permission Required This app requires location access to function properly, even when the app is not in use. This helps us track field visits and provide accurate data updates. Your location data will only be used for this purpose and will not be shared with third parties.',
+            style: TextStyle(
+              fontFamily: AppStrings.fontFamilyPrompt,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
+              fontSize: 12,
+            )),
         actions: [
           TextButton(
             onPressed: () async {

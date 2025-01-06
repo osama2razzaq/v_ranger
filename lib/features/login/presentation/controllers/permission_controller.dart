@@ -33,7 +33,8 @@ class PermissionController extends GetxController {
   void _showPermissionDeniedDialog() {
     Get.defaultDialog(
       title: "Permission Denied",
-      middleText: "Location permission is required to use this app.",
+      middleText:
+          "'Location Permission Required This app requires location access to function properly, even when the app is not in use. This helps us track field visits and provide accurate data updates. Your location data will only be used for this purpose and will not be shared with third parties.',",
       onConfirm: () => requestLocationPermission(),
       textConfirm: "Retry",
       onCancel: () => Get.back(),

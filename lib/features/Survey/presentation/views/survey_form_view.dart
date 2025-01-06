@@ -46,6 +46,13 @@ class SurveyFormPage extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            surveyFormController.clearForm();
+            Get.back();
+          },
+        ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         title: Text(
