@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:v_ranger/core/common_widgets/custom_text_field.dart';
+import 'package:v_ranger/core/common_widgets/form_loader.dart';
 import 'package:v_ranger/core/common_widgets/single_button.dart';
 import 'package:v_ranger/core/utils/snack_bar_helper.dart';
 import 'package:v_ranger/core/values/values.dart';
@@ -184,13 +185,19 @@ class LoginView extends StatelessWidget with SnackBarHelper {
   }
 
   Widget _buildLoginButton({required String buttonName}) {
-    return SingleButton(
-        bgColor: AppColors.primaryColor,
-        buttonName: buttonName,
-        onTap: () => {
-              controller.login()
-            } // controller.login, //{Get.offAllNamed(Routes.dashboard)},
-        );
+    return Obx(() {
+      return controller.isLoading.value
+          ? FormLoader()
+          : SingleButton(
+              bgColor: AppColors.primaryColor,
+              buttonName: buttonName,
+              onTap: () {
+                controller.login();
+                // If needed, add navigation logic after login success:
+                // Get.offAllNamed(Routes.dashboard);
+              },
+            );
+    });
   }
 
   Widget _buildForgotTextButton(VoidCallback onTap, String? buttonText) {

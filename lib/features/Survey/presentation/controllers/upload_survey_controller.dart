@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,9 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         if (imageFile != null) {
           // Load the image as bytes
           Uint8List imageBytes = await imageFile.readAsBytes();
+
+          // Print the original size of the image in bytes
+          print('Original Image Size: ${imageBytes.lengthInBytes / 1024} KB');
 
           // Decode the image to get its dimensions
           img.Image? originalImage = img.decodeImage(imageBytes);
@@ -111,41 +115,43 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
                 );
               }
             }
-            // Compress and resize the image to be under 2MB
-            int maxFileSize = 1 * 1024 * 1024; // 2 MB in bytes
-            int quality = 85; // Initial quality
-            Uint8List compressedImageBytes = Uint8List.fromList(
-                img.encodeJpg(originalImage, quality: quality));
 
-            while (compressedImageBytes.length > maxFileSize && quality > 10) {
-              quality -= 5; // Reduce quality by 5 each iteration
-              compressedImageBytes = Uint8List.fromList(
-                  img.encodeJpg(originalImage, quality: quality));
+            // Resize and compress the image using flutter_image_compress
+            Uint8List result = await FlutterImageCompress.compressWithList(
+              imageBytes,
+              minWidth: 800, // Resize width
+              minHeight: 600, // Resize height
+              quality: 85, // Set compression quality
+            );
+
+            // Print the size of the compressed image
+            print('Compressed Image Size: ${result.lengthInBytes / 1024} KB');
+
+            // Loop to compress further if the file size is greater than 1MB
+            while (result.length > 1024 * 1024) {
+              result = await FlutterImageCompress.compressWithList(
+                result,
+                quality: 85, // Further reduce quality for compression
+                minWidth: 600, // Further reduce dimensions for compression
+                minHeight: 400, // Further reduce dimensions for compression
+              );
             }
 
             // Save the compressed image back to a file
             final String compressedImagePath =
                 '${imageFile.path}_compressed.jpg';
             final File compressedImageFile = File(compressedImagePath);
-            await compressedImageFile.writeAsBytes(compressedImageBytes);
+            await compressedImageFile.writeAsBytes(result);
 
             // Add the compressed image to the list
             images.add(compressedImageFile);
-            // // Convert the image back to bytes
-            // Uint8List modifiedImageBytes =
-            //     Uint8List.fromList(img.encodeJpg(originalImage));
 
-            // // Save the modified image back to a file
-            // final String modifiedImagePath = '${imageFile.path}_modified.jpg';
-            // final File modifiedImageFile = File(modifiedImagePath);
-            // await modifiedImageFile.writeAsBytes(modifiedImageBytes);
-
-            // // Add the modified image to the list
-            // images.add(modifiedImageFile);
+            // Print final size after compression
+            print(
+                'Final Compressed Image Size: ${result.lengthInBytes / 1024} KB');
           }
         }
       } else {
-        // Limit reached, show a message
         showErrorSnackBar(
             'Limit reached, You can upload a maximum of 5 images');
       }

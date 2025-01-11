@@ -12,7 +12,7 @@ class LoginController extends GetxController with SnackBarHelper {
   // Observables for email and password
   var email = ''.obs;
   var password = ''.obs;
-
+  RxBool isLoading = false.obs;
   // TextEditingController for the input fields
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -49,6 +49,7 @@ class LoginController extends GetxController with SnackBarHelper {
   }
 
   void login() async {
+    isLoading.value = true;
     final email = emailController.text;
     final password = passwordController.text;
 
@@ -63,9 +64,11 @@ class LoginController extends GetxController with SnackBarHelper {
 
           await saveLoginData(responseData);
           Get.offAllNamed(Routes.dashboard);
+          isLoading.value = false;
           showNormalSnackBar("Login successful");
         } else {
           // Parse error response
+          isLoading.value = false;
           final responseData = jsonDecode(response.body);
           if (responseData['errors'] != null) {
             // Handle validation errors
@@ -89,7 +92,7 @@ class LoginController extends GetxController with SnackBarHelper {
       } catch (e) {
         // Handle any errors that occur during the API call
         showErrorSnackBar("An error occurred: $e");
-
+        isLoading.value = false;
         // Save error message and status code locally
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt(
