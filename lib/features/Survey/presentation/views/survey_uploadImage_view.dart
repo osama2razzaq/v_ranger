@@ -34,156 +34,164 @@ class SurveyUploadImagePage extends StatelessWidget {
       });
     }
     surveyFormController.isBulkUpdate = isBulkUpdate;
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white, //change your color here
-        ),
-        backgroundColor: AppColors.primaryColor,
-        centerTitle: true,
-        title: Text(
-          "Upload Photo",
-          style: PromptStyle.appBarTitleStyle,
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            surveyFormController.images.clear();
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        surveyFormController.images.clear();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          backgroundColor: AppColors.primaryColor,
+          centerTitle: true,
+          title: Text(
+            "Upload Photo",
+            style: PromptStyle.appBarTitleStyle,
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              surveyFormController.images.clear();
 
-            Get.back();
-          },
+              Get.back();
+            },
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: StepIndicator(
-                number1: 1,
-                number2: 2,
-                number3: 3,
-                isActive1: true,
-                isActive2: true,
-                isActive3: true,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: StepIndicator(
+                  number1: 1,
+                  number2: 2,
+                  number3: 3,
+                  isActive1: true,
+                  isActive2: true,
+                  isActive3: true,
+                ),
               ),
-            ),
-            Obx(() {
-              return Expanded(
-                  //   height: 600,
-                  child: surveyFormController.isPhotoLoading.value == false
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: surveyFormController.images.length +
-                              1, // Increment itemCount by 1
-                          itemBuilder: (context, index) {
-                            if (index == surveyFormController.images.length) {
-                              // Return the "Add Item" button as the last item
-                              return GestureDetector(
-                                onTap: () {
-                                  // Implement the logic to add a new item to the list
-                                  surveyFormController.pickImage(isEdit
-                                      ? controller
-                                          .data
-                                          .value!
-                                          .data!
-                                          .completedDetails![fileIndex]
-                                          .accountNo!
-                                      : controller
-                                          .data
-                                          .value!
-                                          .data!
-                                          .pendingDetails![fileIndex]
-                                          .accountNo!); // Replace with your actual method
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                                  child: CustomPaint(
-                                    foregroundPainter: DashedLinePainter(),
-                                    child: Container(
-                                      height: 190,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor
-                                            .withOpacity(0.2),
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      child: Center(
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            surveyFormController.pickImage(isEdit
-                                                ? controller
-                                                    .data
-                                                    .value!
-                                                    .data!
-                                                    .completedDetails![
-                                                        fileIndex]
-                                                    .accountNo!
-                                                : controller
-                                                    .data
-                                                    .value!
-                                                    .data!
-                                                    .pendingDetails![fileIndex]
-                                                    .accountNo!); // Replace with your actual method
-                                          },
-                                          child: Center(
-                                            child: Image.asset(
-                                              'assets/icons/add_Image.png',
-                                              width: 40.0,
-                                              height: 40.0,
-                                            ),
+              Obx(() {
+                return Expanded(
+                    //   height: 600,
+                    child: surveyFormController.isPhotoLoading.value == false
+                        ? ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: surveyFormController.images.length +
+                                1, // Increment itemCount by 1
+                            itemBuilder: (context, index) {
+                              if (index == surveyFormController.images.length) {
+                                // Return the "Add Item" button as the last item
+                                return GestureDetector(
+                                  onTap: () {
+                                    // Implement the logic to add a new item to the list
+                                    surveyFormController.pickImage(isEdit
+                                        ? controller
+                                            .data
+                                            .value!
+                                            .data!
+                                            .completedDetails![fileIndex]
+                                            .accountNo!
+                                        : controller
+                                            .data
+                                            .value!
+                                            .data!
+                                            .pendingDetails![fileIndex]
+                                            .accountNo!); // Replace with your actual method
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15, 0, 15, 15),
+                                    child: CustomPaint(
+                                      foregroundPainter: DashedLinePainter(),
+                                      child: Container(
+                                        height: 190,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primaryColor
+                                              .withOpacity(0.2),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        child: Center(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              surveyFormController.pickImage(isEdit
+                                                  ? controller
+                                                      .data
+                                                      .value!
+                                                      .data!
+                                                      .completedDetails![
+                                                          fileIndex]
+                                                      .accountNo!
+                                                  : controller
+                                                      .data
+                                                      .value!
+                                                      .data!
+                                                      .pendingDetails![
+                                                          fileIndex]
+                                                      .accountNo!); // Replace with your actual method
+                                            },
+                                            child: Center(
+                                              child: Image.asset(
+                                                'assets/icons/add_Image.png',
+                                                width: 40.0,
+                                                height: 40.0,
+                                              ),
 
-                                            //  Icon(
-                                            //   Icons.camera_alt,
-                                            //   color: Colors.grey,
-                                            //   size: 40,
-                                            // ),
+                                              //  Icon(
+                                              //   Icons.camera_alt,
+                                              //   color: Colors.grey,
+                                              //   size: 40,
+                                              // ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            } else {
-                              final image = surveyFormController.images[index];
-                              return Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 0, 15, 15),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          8.0), // Adjust the radius as needed
-                                      child: Image.file(
-                                        File(image.path),
-                                        fit: BoxFit.cover,
-                                        //  height: 190,
-                                        width: double.infinity,
+                                );
+                              } else {
+                                final image =
+                                    surveyFormController.images[index];
+                                return Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          15, 0, 15, 15),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            8.0), // Adjust the radius as needed
+                                        child: Image.file(
+                                          File(image.path),
+                                          fit: BoxFit.cover,
+                                          //  height: 190,
+                                          width: double.infinity,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Positioned(
-                                    right: 10,
-                                    top: 10,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.remove_circle,
-                                          color: Colors.red),
-                                      onPressed: () {
-                                        surveyFormController.removeImage(index);
-                                      },
+                                    Positioned(
+                                      right: 10,
+                                      top: 10,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.remove_circle,
+                                            color: Colors.red),
+                                        onPressed: () {
+                                          surveyFormController
+                                              .removeImage(index);
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        )
-                      : const Center(child: FormLoader()));
-            }),
-            _buildSubmitButton(context, buttonName: 'Submit')
-          ],
+                                  ],
+                                );
+                              }
+                            },
+                          )
+                        : const Center(child: FormLoader()));
+              }),
+              _buildSubmitButton(context, buttonName: 'Submit')
+            ],
+          ),
         ),
       ),
     );

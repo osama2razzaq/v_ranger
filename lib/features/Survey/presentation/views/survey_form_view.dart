@@ -41,70 +41,76 @@ class SurveyFormPage extends StatelessWidget {
         surveyFormController.populateFieldsFromApi(controller, index);
       });
     }
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.white, //change your color here
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            surveyFormController.clearForm();
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        surveyFormController.clearForm();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              surveyFormController.clearForm();
 
-            Get.back();
-          },
+              Get.back();
+            },
+          ),
+          backgroundColor: AppColors.primaryColor,
+          centerTitle: true,
+          title: Text(
+            "Survey Form",
+            style: PromptStyle.appBarTitleStyle,
+          ),
         ),
-        backgroundColor: AppColors.primaryColor,
-        centerTitle: true,
-        title: Text(
-          "Survey Form",
-          style: PromptStyle.appBarTitleStyle,
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: StepIndicator(
-                  number1: 1,
-                  number2: 2,
-                  number3: 3,
-                  isActive1: true,
-                  isActive2: true,
-                  isActive3: false,
-                  onTap: () {
-                    Get.to(() => SurveyUploadImagePage(
-                          controller: controller,
-                          fileIndex: index,
-                          isEdit: isEdit,
-                          isBulkUpdate: isBulkUpdate,
-                        ));
-                  },
-                ),
-              ),
-              Container(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: StepIndicator(
+                    number1: 1,
+                    number2: 2,
+                    number3: 3,
+                    isActive1: true,
+                    isActive2: true,
+                    isActive3: false,
+                    onTap: () {
+                      Get.to(() => SurveyUploadImagePage(
+                            controller: controller,
+                            fileIndex: index,
+                            isEdit: isEdit,
+                            isBulkUpdate: isBulkUpdate,
+                          ));
+                    },
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: surveyForm(context),
-                  )),
-              _buildNextButton(context, buttonName: 'Next')
-            ],
+                ),
+                Container(
+                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: surveyForm(context),
+                    )),
+                _buildNextButton(context, buttonName: 'Next')
+              ],
+            ),
           ),
         ),
       ),
