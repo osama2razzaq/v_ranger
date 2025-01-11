@@ -48,9 +48,6 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
           // Load the image as bytes
           Uint8List imageBytes = await imageFile.readAsBytes();
 
-          // Print the original size of the image in bytes
-          print('Original Image Size: ${imageBytes.lengthInBytes / 1024} KB');
-
           // Decode the image to get its dimensions
           img.Image? originalImage = img.decodeImage(imageBytes);
 
@@ -115,22 +112,16 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
                 );
               }
             }
+            // Compress and resize the image to be under 2MB
+            int maxFileSize = 1 * 1024 * 1024; // 2 MB in bytes
+            int quality = 85; // Initial quality
+            Uint8List compressedImageBytes = Uint8List.fromList(
+                img.encodeJpg(originalImage, quality: quality));
 
-            // Resize and compress the image using flutter_image_compress
-            Uint8List result = await FlutterImageCompress.compressWithList(
-              imageBytes,
-              minWidth: 800, // Resize width
-              minHeight: 600, // Resize height
-              quality: 85, // Set compression quality
-            );
-
-            // Print the size of the compressed image
-            print('Compressed Image Size: ${result.lengthInBytes / 1024} KB');
-
-            // Loop to compress further if the file size is greater than 1MB
-            while (result.length > 1024 * 1024) {
-              result = await FlutterImageCompress.compressWithList(
-                result,
+            while (compressedImageBytes.length > 1024 * 1024) {
+              compressedImageBytes =
+                  await FlutterImageCompress.compressWithList(
+                compressedImageBytes,
                 quality: 85, // Further reduce quality for compression
                 minWidth: 600, // Further reduce dimensions for compression
                 minHeight: 400, // Further reduce dimensions for compression
@@ -141,17 +132,16 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
             final String compressedImagePath =
                 '${imageFile.path}_compressed.jpg';
             final File compressedImageFile = File(compressedImagePath);
-            await compressedImageFile.writeAsBytes(result);
+            await compressedImageFile.writeAsBytes(compressedImageBytes);
+            print(
+                'Compressed Image Size: ${compressedImageBytes.lengthInBytes / 1024}');
 
             // Add the compressed image to the list
             images.add(compressedImageFile);
-
-            // Print final size after compression
-            print(
-                'Final Compressed Image Size: ${result.lengthInBytes / 1024} KB');
           }
         }
       } else {
+        // Limit reached, show a message
         showErrorSnackBar(
             'Limit reached, You can upload a maximum of 5 images');
       }
