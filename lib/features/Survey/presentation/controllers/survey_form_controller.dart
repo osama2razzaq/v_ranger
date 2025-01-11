@@ -150,6 +150,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
   void clearForm() {
     // Clear text fields
     print("clearForm");
+
     waterBillController.clear();
     waterMeterController.clear();
     correctAddressController.clear();

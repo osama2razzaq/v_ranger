@@ -45,6 +45,14 @@ class SurveyUploadImagePage extends StatelessWidget {
           "Upload Photo",
           style: PromptStyle.appBarTitleStyle,
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            surveyFormController.images.clear();
+
+            Get.back();
+          },
+        ),
       ),
       body: SafeArea(
         child: Column(

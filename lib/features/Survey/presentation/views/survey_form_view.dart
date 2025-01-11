@@ -50,6 +50,7 @@ class SurveyFormPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             surveyFormController.clearForm();
+
             Get.back();
           },
         ),
