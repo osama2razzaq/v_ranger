@@ -30,8 +30,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.vranger.v_ranger"
-    compileSdkVersion 34
-    ndkVersion "26.1.10909125"  // Add this line to specify the NDK version
+    compileSdkVersion = 34
+    ndkVersion = "27.0.12077973"  // Add this line to specify the NDK version
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

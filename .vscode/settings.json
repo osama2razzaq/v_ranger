@@ -1,4 +1,5 @@
 {
     "java.configuration.updateBuildConfiguration": "disabled",
-    "cmake.sourceDirectory": "/Users/esync/v_ranger/linux"
+    "cmake.sourceDirectory": "/Users/esync/v_ranger/linux",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
