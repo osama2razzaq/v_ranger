@@ -45,8 +45,8 @@ android {
         applicationId = "com.vranger.surveyapp"
         minSdkVersion 23  // Set the minSdkVersion explicitly
         targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 2
-        versionName "1.0.0"
+        versionCode 3
+        versionName "1.0.1"
     }
    
    signingConfigs { 
