@@ -114,6 +114,7 @@ class _MyAppState extends State<MyApp> with SnackBarHelper {
 
     return GetMaterialApp(
       title: '',
+
       debugShowCheckedModeBanner: false,
       locale: Get.deviceLocale,
       initialRoute: widget.initialRoute,

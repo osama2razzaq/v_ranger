@@ -222,10 +222,10 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     List<String> batchDetailIds,
   ) async {
     // Format the date and time
-    String formattedDate = DateFormat('dd/MM/yy').format(now);
-    String formattedTime = DateFormat('HH:mm').format(now);
+    String formattedDate = DateFormat('dd/MM/yy').format(DateTime.now());
+    String formattedTime = DateFormat('HH:mm').format(DateTime.now());
+    print("osama!! $formattedDate $formattedTime ");
 
-    print("batchDetailIdslisr $batchDetailIds");
     if (images.isEmpty) {
       showErrorSnackBar('You must upload at least 1 image');
     } else {
@@ -289,11 +289,12 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
 
   Future<void> saveSurveyLocally(
       String batchId, List<String> batchDetailIds) async {
-    String formattedDate = DateFormat('dd/MM/yy').format(now);
-    String formattedTime = DateFormat('HH:mm').format(now);
+    String formattedDate = DateFormat('dd/MM/yy').format(DateTime.now());
+    String formattedTime = DateFormat('HH:mm').format(DateTime.now());
     List<String> imagePaths = images.map((file) => file.path).toList();
 
     // Create a survey map
+
     Map<String, dynamic> surveyData = {
       'batchId': batchId,
       'batchDetailIds': batchDetailIds,

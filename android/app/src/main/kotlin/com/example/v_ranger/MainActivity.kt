@@ -1,4 +1,4 @@
-package com.vranger.v_ranger
+package com.vranger.surveyapp
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

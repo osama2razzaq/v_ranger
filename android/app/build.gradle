@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
-    namespace = "com.vranger.v_ranger"
+    namespace = "com.vranger.surveyapp"
     compileSdkVersion = 34
     ndkVersion = "27.0.12077973"  // Add this line to specify the NDK version
 
@@ -42,10 +42,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.vranger.v_ranger"
+        applicationId = "com.vranger.surveyapp"
         minSdkVersion 23  // Set the minSdkVersion explicitly
         targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 7
+        versionCode 2
         versionName "1.0.0"
     }
    
