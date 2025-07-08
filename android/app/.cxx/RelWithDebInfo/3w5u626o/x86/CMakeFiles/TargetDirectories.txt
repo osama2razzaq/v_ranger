@@ -1,0 +1,2 @@
+/Users/esync/v_ranger/android/app/.cxx/RelWithDebInfo/3w5u626o/x86/CMakeFiles/edit_cache.dir
+/Users/esync/v_ranger/android/app/.cxx/RelWithDebInfo/3w5u626o/x86/CMakeFiles/rebuild_cache.dir

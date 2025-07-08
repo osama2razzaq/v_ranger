@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.vranger.surveyapp"
-    compileSdkVersion = 34
+    compileSdkVersion = 35
     ndkVersion = "27.0.12077973"  // Add this line to specify the NDK version
 
     compileOptions {
@@ -45,8 +45,8 @@ android {
         applicationId = "com.vranger.surveyapp"
         minSdkVersion 23  // Set the minSdkVersion explicitly
         targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 3
-        versionName "1.0.1"
+        versionCode 1
+        versionName "1.0.2"
     }
    
    signingConfigs { 
