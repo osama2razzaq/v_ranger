@@ -27,7 +27,6 @@ class SurveyFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    surveyFormController.fetchDrDropdownList();
     // Trigger specific logic on page revisit
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print(Get.previousRoute);
@@ -36,7 +35,7 @@ class SurveyFormPage extends StatelessWidget {
       }
     });
     // Use Obx to call populateFieldsFromApi when needed
-    if (isEdit) {
+    if (isEdit && !surveyFormController.isFieldsPopulated.value) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         surveyFormController.populateFieldsFromApi(controller, index);
       });
@@ -148,6 +147,7 @@ class SurveyFormPage extends StatelessWidget {
                 isVisible: surveyFormController.isCorrectAddressVisible,
                 labelText: 'Enter Correct Address',
                 controller: surveyFormController.correctAddressController,
+
                 // focusNode: surveyFormController.correctAddressFocus,
                 // nextFocusNode: surveyFormController.occupierNameFocus,
                 onChanged: (value) =>
@@ -189,6 +189,7 @@ class SurveyFormPage extends StatelessWidget {
                 controller: surveyFormController.occupierPhoneNumberController,
                 // focusNode: surveyFormController.occupierPhoneNumberFocus,
                 // nextFocusNode: surveyFormController.occupierEmailFocus,
+                keyboardType: TextInputType.number,
                 onChanged: (value) =>
                     surveyFormController.inputOccupierPhoneNumber.value = value,
               ),
@@ -259,6 +260,7 @@ class SurveyFormPage extends StatelessWidget {
                 onChanged: (value) =>
                     surveyFormController.inputAddRemark.value = value,
                 isAddRmarks: true,
+                keyboardType: TextInputType.multiline,
               ),
             ],
           ),
@@ -393,6 +395,7 @@ class SurveyFormPage extends StatelessWidget {
       bool? isAddRmarks,
       required TextEditingController controller,
       Function(String)? onChanged,
+      TextInputType keyboardType = TextInputType.text,
       BuildContext? context}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -419,7 +422,7 @@ class SurveyFormPage extends StatelessWidget {
               maxLines: isAddRmarks == true
                   ? null
                   : 1, // Allows the TextField to grow vertically
-              keyboardType: TextInputType.multiline, // Ensures t
+              keyboardType: keyboardType, // Ensures t
               textAlign: TextAlign.start,
               cursorColor: AppColors.primaryColor,
               style: PromptStyle.dropDownInerText,

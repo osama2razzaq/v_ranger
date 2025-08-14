@@ -92,19 +92,34 @@ class SurveyFormController extends GetxController with SnackBarHelper {
 
   final RxBool isFieldsPopulated = false.obs;
   void populateFieldsFromApi(controller, int index) {
-    // if (!isFieldsPopulated.value) {
     final surveyDetail =
         controller.data.value!.data!.completedDetails![index].survey!;
 
     waterBillController.text = surveyDetail.waterBillNo ?? '';
-    waterMeterController.text = surveyDetail.waterMeterNo ?? '';
-    correctAddressController.text = surveyDetail.correctAddress ?? '';
-    occupierNameController.text = surveyDetail.contactPersonName ?? '';
-    occupierPhoneNumberController.text = surveyDetail.contactPersonName ?? '';
-    occupierEmailController.text = surveyDetail.email ?? '';
-    shopNameController.text = surveyDetail.shopName ?? '';
-    addRemarkController.text = surveyDetail.remark ?? '';
+    inputWaterBill.value = surveyDetail.waterBillNo ?? '';
 
+    waterMeterController.text = surveyDetail.waterMeterNo ?? '';
+    inputWaterMeter.value = surveyDetail.waterMeterNo ?? '';
+
+    correctAddressController.text = surveyDetail.correctAddress ?? '';
+    inputCorrectAddress.value = surveyDetail.correctAddress ?? '';
+
+    occupierNameController.text = surveyDetail.contactPersonName ?? '';
+    inputOccupierName.value = surveyDetail.contactPersonName ?? '';
+
+    occupierPhoneNumberController.text = surveyDetail.contactNumber ?? '';
+    inputOccupierPhoneNumber.value = surveyDetail.contactNumber ?? '';
+
+    occupierEmailController.text = surveyDetail.email ?? '';
+    inputOccupierEmail.value = surveyDetail.email ?? '';
+
+    shopNameController.text = surveyDetail.shopName ?? '';
+    inputShopName.value = surveyDetail.shopName ?? '';
+
+    addRemarkController.text = surveyDetail.remark ?? '';
+    inputAddRemark.value = surveyDetail.remark ?? '';
+
+    // Dropdowns
     selectedOwnership.value = surveyDetail.ownership;
     selectedOccupancyStatus.value = surveyDetail.occupancy;
     selectedNatureOfBusiness.value = surveyDetail.natureOfBusinessCode;
@@ -126,21 +141,47 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     // } else {
     //   print("object");
     //}
+
+    isFieldsPopulated.value = true;
   }
 
-  Future<void> fetchDrDropdownList() async {
-    try {
-      final result = await apiService.fetchStatusDropdownData();
-      dropDrStatusDownData.value = result;
-      // Assuming that result contains lists for the dropdowns
+  // void populateFieldsFromApi(controller, int index) {
+  //   // if (!isFieldsPopulated.value) {
+  //   final surveyDetail =
+  //       controller.data.value!.data!.completedDetails![index].survey!;
 
-      drCodeItems.value =
-          result?.drcode?.map((item) => "${item.statuscode!}").toList() ?? [];
-    } catch (e) {
-      showNormalSnackBar('Failed to load data: $e');
-      dropDownData.value = null; // Clear data on error
-    }
-  }
+  //   waterBillController.text = surveyDetail.waterBillNo ?? '';
+
+  //   waterMeterController.text = surveyDetail.waterMeterNo ?? '';
+  //   correctAddressController.text = surveyDetail.correctAddress ?? '';
+  //   occupierNameController.text = surveyDetail.contactPersonName ?? '';
+  //   occupierPhoneNumberController.text = surveyDetail.contactNumber ?? '';
+  //   occupierEmailController.text = surveyDetail.email ?? '';
+  //   shopNameController.text = surveyDetail.shopName ?? '';
+  //   addRemarkController.text = surveyDetail.remark ?? '';
+
+  //   selectedOwnership.value = surveyDetail.ownership;
+  //   selectedOccupancyStatus.value = surveyDetail.occupancy;
+  //   selectedNatureOfBusiness.value = surveyDetail.natureOfBusinessCode;
+  //   selectedDrCode.value = surveyDetail.drCode;
+  //   selectedPropertyType.value = surveyDetail.propertyCode;
+  //   selectedClassification.value = surveyDetail.classification;
+
+  //   // Set visibility flags if necessary
+  //   isWaterBillVisible.value = bool.parse(controller
+  //       .data.value!.data!.completedDetails![index].survey!.hasWaterBill
+  //       .toString());
+  //   isWaterMeterVisible.value = bool.parse(controller
+  //       .data.value!.data!.completedDetails![index].survey!.hasWaterMeter
+  //       .toString());
+  //   isCorrectAddressVisible.value = bool.parse(controller
+  //       .data.value!.data!.completedDetails![index].survey!.isCorrectAddress
+  //       .toString());
+  //   isFieldsPopulated.value = true;
+  //   // } else {
+  //   //   print("object");
+  //   //}
+  // }
 
   void performActionOnRevisit() {
     // Perform your specific action here, e.g., refresh data
@@ -206,6 +247,10 @@ class SurveyFormController extends GetxController with SnackBarHelper {
               .toList() ??
           [];
 
+      drCodeItems.value = result?.drCode
+              ?.map((item) => "${item.code!} - ${item.drCodeName!}")
+              .toList() ??
+          [];
       propertyTypeItems.value = result?.propertyType
               ?.map((item) => "${item.code!} - ${item.propertyTypeName!}")
               .toList() ??

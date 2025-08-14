@@ -187,18 +187,6 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     }
   }
 
-  // void startNetworkMonitoring() {
-  //   Connectivity()
-  //       .onConnectivityChanged
-  //       .listen((List<ConnectivityResult> results) {
-  //     if (results.isNotEmpty &&
-  //         results.any((result) => result != ConnectivityResult.none)) {
-  //       // Device is online, try to post any pending surveys
-  //       postPendingSurveys();
-  //     }
-  //   });
-  // }
-
   void populatePhotosFromApi(controller, int index) {
     // if (!isPhotoPopulated.value) {
     images.clear();

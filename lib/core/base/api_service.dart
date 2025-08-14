@@ -399,7 +399,7 @@ class ApiService {
 
     // Get the access token
     String? token = prefs.getString('access_token');
-
+    print("token:: $token");
     // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getdropdowns}');
@@ -773,15 +773,32 @@ class ApiService {
         request.files
             .add(await http.MultipartFile.fromPath('photo5', photo5.path));
       }
-
+      print("📦 JSON Fields: ${jsonEncode(request.fields)}");
       // Add Authorization header
       request.headers['Authorization'] = 'Bearer $token';
 
       final response = await request.send();
-      print(response);
+
       final responseBody = await http.Response.fromStream(response);
       print("request::::1 ${request.fields}");
       print("request::::1 ${request.files}");
+      // Debug log: Full request preview
+      print("📤 Sending POST request to: $url");
+      print("🔑 Authorization: Bearer $token");
+
+// 1️⃣ Print all fields
+      print("\n📝 Fields:");
+      request.fields.forEach((key, value) {
+        print("  $key: $value");
+      });
+
+// 2️⃣ Print all images (files)
+      print("\n📎 Images:");
+      for (var file in request.files) {
+        print("  Field: ${file.field}");
+        print("  File name: ${file.filename}");
+        print("  File size: ${file.length} bytes");
+      }
 
       if (response.statusCode == 200) {
         print(responseBody.body);
