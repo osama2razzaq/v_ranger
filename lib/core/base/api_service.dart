@@ -286,27 +286,20 @@ class ApiService {
 
   Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
       String driverLatitude, String driverLongitude) async {
-    // Retrieve SharedPreferences instance
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Get the access token and driver details
     String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
 
-    // Ensure detailsString is not null before proceeding
     if (detailsString == null) {
       print("Details string is null.");
       return null;
     }
 
     Map<String, dynamic> details = jsonDecode(detailsString);
-    String driverId = details['id'].toString(); // Extract driver_id
+    String driverId = details['id'].toString();
 
-    // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
-
-    // Prepare request body
     final body = {
       'driver_id': driverId,
       'batch_id': batchId,
@@ -316,20 +309,17 @@ class ApiService {
     };
     final bodyJson = jsonEncode(body);
 
-    // Check for internet connectivity
     final connectivityResult = await Connectivity().checkConnectivity();
 
-    // If there's no internet, return cached data
     if (connectivityResult.first == ConnectivityResult.none) {
-      String? cachedData = prefs.getString('batch_details_data'); // Cached data
+      String? cachedData = prefs.getString('batch_details_data');
       if (cachedData != null) {
+        // For offline search, we'll let the controller handle the filtering
         return batchDetailsListFromJson(cachedData);
-      } else {
-        return null;
       }
+      return null;
     }
 
-    // If connected to the internet, fetch from API
     try {
       final response = await http.post(
         url,
@@ -340,19 +330,88 @@ class ApiService {
         },
       );
 
-      // Handle the response
       if (response.statusCode == 200) {
-        prefs.setString('batch_details_data', response.body); // Cache the data
+        // Cache the complete dataset (not filtered) for offline use
+        prefs.setString('batch_details_data', response.body);
         return batchDetailsListFromJson(response.body);
       } else {
         print("Error: ${response.statusCode} - ${response.reasonPhrase}");
-        return null; // Handle other errors
+        return null;
       }
     } catch (e) {
       print("Exception occurred: $e");
-      return null; // Handle network or parsing errors
+      return null;
     }
   }
+  // Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
+  //     String driverLatitude, String driverLongitude) async {
+  //   // Retrieve SharedPreferences instance
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  //   // Get the access token and driver details
+  //   String? token = prefs.getString('access_token');
+  //   String? detailsString = prefs.getString('details');
+
+  //   // Ensure detailsString is not null before proceeding
+  //   if (detailsString == null) {
+  //     print("Details string is null.");
+  //     return null;
+  //   }
+
+  //   Map<String, dynamic> details = jsonDecode(detailsString);
+  //   String driverId = details['id'].toString(); // Extract driver_id
+
+  //   // Prepare the API endpoint
+  //   final url =
+  //       Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getbatchdetails}');
+
+  //   // Prepare request body
+  //   final body = {
+  //     'driver_id': driverId,
+  //     'batch_id': batchId,
+  //     'search': search,
+  //     'driver_latitude': driverLatitude,
+  //     'driver_longitude': driverLongitude,
+  //   };
+  //   final bodyJson = jsonEncode(body);
+
+  //   // Check for internet connectivity
+  //   final connectivityResult = await Connectivity().checkConnectivity();
+
+  //   // If there's no internet, return cached data
+  //   if (connectivityResult.first == ConnectivityResult.none) {
+  //     String? cachedData = prefs.getString('batch_details_data'); // Cached data
+  //     if (cachedData != null) {
+  //       return batchDetailsListFromJson(cachedData);
+  //     } else {
+  //       return null;
+  //     }
+  //   }
+
+  //   // If connected to the internet, fetch from API
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       body: bodyJson,
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token",
+  //       },
+  //     );
+
+  //     // Handle the response
+  //     if (response.statusCode == 200) {
+  //       prefs.setString('batch_details_data', response.body); // Cache the data
+  //       return batchDetailsListFromJson(response.body);
+  //     } else {
+  //       print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+  //       return null; // Handle other errors
+  //     }
+  //   } catch (e) {
+  //     print("Exception occurred: $e");
+  //     return null; // Handle network or parsing errors
+  //   }
+  // }
 
   // Future<BatchDetailsList?> fetchBatchDetailsList(String batchId, String search,
   //     String driverLatitude, String driverLongitude) async {

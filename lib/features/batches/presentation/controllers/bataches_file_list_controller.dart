@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v_ranger/core/base/api_service.dart';
@@ -60,17 +61,104 @@ class BatachesFileListController extends GetxController with SnackBarHelper {
   Future<void> fetchBatchDetailsList(String batchId, String search,
       String driverLatitude, String driverLongitude) async {
     try {
-      final result = await apiService.fetchBatchDetailsList(
-        batchId,
-        search,
-        driverLatitude,
-        driverLongitude,
-      );
-      data.value = result;
+      final connectivityResult = await Connectivity().checkConnectivity();
+
+      if (connectivityResult.first == ConnectivityResult.none) {
+        // Offline mode - search in cached data
+        await _searchInCachedData(batchId, search);
+      } else {
+        // Online mode - fetch from API
+        final result = await apiService.fetchBatchDetailsList(
+          batchId,
+          search,
+          driverLatitude,
+          driverLongitude,
+        );
+        data.value = result;
+      }
       updateCounts();
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
-      data.value = null; // Clear data on error
+      data.value = null;
+    }
+  }
+
+  BatchDetailsList _filterBatchDetails(
+      BatchDetailsList allData, String search) {
+    // Create a deep copy of the data to avoid modifying the original
+    BatchDetailsList filteredData = BatchDetailsList.fromJson(allData.toJson());
+
+    // Filter pending details
+    if (allData.data?.pendingDetails != null) {
+      filteredData.data?.pendingDetails = allData.data!.pendingDetails!
+          .where((detail) =>
+              detail.name?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              detail.accountNo?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              detail.fileid
+                      .toString()
+                      .toLowerCase()
+                      .contains(search.toLowerCase()) ==
+                  true ||
+              (detail.id?.toString().contains(search) == true))
+          .toList();
+    }
+
+    // Filter completed details (if needed)
+    if (allData.data?.completedDetails != null) {
+      filteredData.data?.completedDetails = allData.data!.completedDetails!
+          .where((detail) =>
+              detail.name?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              detail.fileid
+                      .toString()
+                      .toLowerCase()
+                      .contains(search.toLowerCase()) ==
+                  true ||
+              detail.accountNo?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              (detail.id?.toString().contains(search) == true))
+          .toList();
+    }
+
+    // Filter aborted details (if needed)
+    if (allData.data?.abortedDetails != null) {
+      filteredData.data?.abortedDetails = allData.data!.abortedDetails!
+          .where((detail) =>
+              detail.name?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              detail.fileid
+                      .toString()
+                      .toLowerCase()
+                      .contains(search.toLowerCase()) ==
+                  true ||
+              detail.accountNo?.toLowerCase().contains(search.toLowerCase()) ==
+                  true ||
+              (detail.id?.toString().contains(search) == true))
+          .toList();
+    }
+
+    return filteredData;
+  }
+
+  Future<void> _searchInCachedData(String batchId, String search) async {
+    final prefs = await SharedPreferences.getInstance();
+    String? cachedData = prefs.getString('batch_details_data');
+
+    if (cachedData != null) {
+      BatchDetailsList allData = batchDetailsListFromJson(cachedData);
+
+      if (search.isEmpty) {
+        data.value = allData;
+      } else {
+        // Filter the data based on search text
+        BatchDetailsList filteredData = _filterBatchDetails(allData, search);
+        data.value = filteredData;
+      }
+    } else {
+      showNormalSnackBar('No cached data available for offline search');
+      data.value = null;
     }
   }
 

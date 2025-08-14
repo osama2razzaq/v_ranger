@@ -86,6 +86,10 @@ class Data {
             ? []
             : List<dynamic>.from(abortedDetails!.map((x) => x.toJson())),
       };
+
+  copyWith(
+      {required List<PendingDetail> pendingDetails,
+      required int pendingCount}) {}
 }
 
 class PendingDetail {
