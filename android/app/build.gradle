@@ -14,7 +14,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
 if (flutterVersionCode == null) {
-    flutterVersionCode = "3"
+    flutterVersionCode = "6"
 }
 
 def flutterVersionName = localProperties.getProperty("flutter.versionName")
@@ -45,8 +45,8 @@ android {
         applicationId = "com.vranger.surveyapp"
         minSdkVersion 23  // Set the minSdkVersion explicitly
         targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 1
-        versionName "1.0.2"
+        versionCode 6
+        versionName "1.0.3"
     }
    
    signingConfigs { 
