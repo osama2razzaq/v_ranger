@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_watermark/image_watermark.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class UploadSurveyController extends GetxController with SnackBarHelper {
   final ApiService apiService = ApiService();
@@ -31,6 +32,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   var imageUrls = <String, String>{}.obs;
   final RxBool isPhotoPopulated = false.obs;
   DateTime now = DateTime.now();
+  final uuid = Uuid();
   @override
   void onInit() {
     super.onInit();
@@ -40,114 +42,104 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
   Future<void> pickImage(String? accountId) async {
     isLoading.value = true; // Show loader
     try {
-      if (images.length < 5) {
-        final XFile? imageFile =
-            await _picker.pickImage(source: ImageSource.camera);
-
-        if (imageFile != null) {
-          // Load the image as bytes
-          Uint8List imageBytes = await imageFile.readAsBytes();
-
-          // Decode the image to get its dimensions
-          img.Image? originalImage = img.decodeImage(imageBytes);
-
-          if (originalImage != null) {
-            // Get the current timestamp
-            String timestamp =
-                DateFormat('dd/MM/yy HH:mm a').format(DateTime.now());
-
-            // Set rectangle and text position
-            int paddingFromBottom = 50; // Padding from the bottom
-            int rectHeight = 100; // Height of the rectangle box
-
-            int rectY1 = originalImage.height - rectHeight - paddingFromBottom;
-
-            final assetFont =
-                await rootBundle.load('assets/fonts/Prompt-Bold.ttf.zip');
-            final font = assetFont.buffer
-                .asUint8List(assetFont.offsetInBytes, assetFont.lengthInBytes);
-            final bitMapFont = ImageFont.readOtherFontZip(font);
-
-            int lineY = originalImage.height - paddingFromBottom;
-            img.drawLine(originalImage,
-                x1: 0,
-                y1: lineY,
-                x2: originalImage.width,
-                y2: lineY,
-                thickness: 130,
-                color: img.ColorFloat16.rgb(0, 0, 0));
-
-            // Calculate the positions for the timestamp (left) and accountId (right)
-            int textHeight = 20; // Approximate height based on font size
-            int timestampX = 20; // 20 pixels from the left edge
-            int textY = rectY1 +
-                (rectHeight - textHeight) ~/ 2 +
-                textHeight; // Centered vertically
-
-            // Position for accountId on the right
-            int accountIdWidth = accountId != null ? accountId.length * 20 : 0;
-            int accountIdX = originalImage.width -
-                accountIdWidth -
-                100; // 20 pixels from the right edge
-
-            // Draw the timestamp text on the left (white text)
-            img.drawString(
-              originalImage,
-              font: bitMapFont,
-              x: timestampX,
-              y: textY,
-              timestamp,
-            );
-
-            // Draw the accountId text on the right (white text)
-            if (isBulkUpdate == true) {
-            } else {
-              if (accountId != null) {
-                img.drawString(
-                  originalImage,
-                  font: bitMapFont,
-                  x: accountIdX,
-                  y: textY,
-                  accountId,
-                );
-              }
-            }
-            // Compress and resize the image to be under 2MB
-
-            int quality = 85; // Initial quality
-            Uint8List compressedImageBytes = Uint8List.fromList(
-                img.encodeJpg(originalImage, quality: quality));
-
-            while (compressedImageBytes.length > 1024 * 1024) {
-              compressedImageBytes =
-                  await FlutterImageCompress.compressWithList(
-                compressedImageBytes,
-                quality: 85, // Further reduce quality for compression
-                minWidth: 600, // Further reduce dimensions for compression
-                minHeight: 400, // Further reduce dimensions for compression
-              );
-            }
-
-            // Save the compressed image back to a file
-            final String compressedImagePath =
-                '${imageFile.path}_compressed.jpg';
-            final File compressedImageFile = File(compressedImagePath);
-            await compressedImageFile.writeAsBytes(compressedImageBytes);
-            print(
-                'Compressed Image Size: ${compressedImageBytes.lengthInBytes / 1024}');
-
-            // Add the compressed image to the list
-            images.add(compressedImageFile);
-          }
-        }
-      } else {
-        // Limit reached, show a message
+      if (images.length >= 5) {
         showErrorSnackBar(
             'Limit reached, You can upload a maximum of 5 images');
+        return;
+      }
+
+      final XFile? imageFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80, // compresses before decoding
+      );
+
+      if (imageFile != null) {
+        // Step 1: Copy image to temp folder immediately to free camera buffer
+        final tempDir = await getTemporaryDirectory();
+        final copiedPath =
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final copiedFile = await File(imageFile.path).copy(copiedPath);
+
+        // Step 2: Process image in background (watermark, compress)
+        await _processImageWithWatermark(copiedFile, accountId);
       }
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> _processImageWithWatermark(File file, String? accountId) async {
+    // Load the image as bytes
+    Uint8List imageBytes = await file.readAsBytes();
+
+    // Decode the image
+    img.Image? originalImage = img.decodeImage(imageBytes);
+
+    if (originalImage == null) return;
+
+    // Get timestamp
+    String timestamp = DateFormat('dd/MM/yy HH:mm a').format(DateTime.now());
+
+    // Watermark background line
+    int paddingFromBottom = 50;
+    int rectHeight = 100;
+    int rectY1 = originalImage.height - rectHeight - paddingFromBottom;
+
+    final assetFont = await rootBundle.load('assets/fonts/Prompt-Bold.ttf.zip');
+    final font = assetFont.buffer
+        .asUint8List(assetFont.offsetInBytes, assetFont.lengthInBytes);
+    final bitMapFont = ImageFont.readOtherFontZip(font);
+
+    int lineY = originalImage.height - paddingFromBottom;
+    img.drawLine(
+      originalImage,
+      x1: 0,
+      y1: lineY,
+      x2: originalImage.width,
+      y2: lineY,
+      thickness: 130,
+      color: img.ColorFloat16.rgb(0, 0, 0),
+    );
+
+    // Draw timestamp (left)
+    int textHeight = 20;
+    int timestampX = 20;
+    int textY = rectY1 + (rectHeight - textHeight) ~/ 2 + textHeight;
+    img.drawString(
+        originalImage, font: bitMapFont, x: timestampX, y: textY, timestamp);
+
+    // Draw accountId (right)
+    if (isBulkUpdate != true && accountId != null) {
+      int accountIdWidth = accountId.length * 20;
+      int accountIdX = originalImage.width - accountIdWidth - 100;
+      img.drawString(
+          originalImage, font: bitMapFont, x: accountIdX, y: textY, accountId);
+    }
+
+    // Compress under 2MB
+    int quality = 85;
+    Uint8List compressedImageBytes =
+        Uint8List.fromList(img.encodeJpg(originalImage, quality: quality));
+
+    while (compressedImageBytes.length > 1024 * 1024) {
+      compressedImageBytes = await FlutterImageCompress.compressWithList(
+        compressedImageBytes,
+        quality: 85,
+        minWidth: 600,
+        minHeight: 400,
+      );
+    }
+
+    // Save compressed image
+    final compressedImagePath = '${file.path}_compressed.jpg';
+    final compressedImageFile = File(compressedImagePath);
+    await compressedImageFile.writeAsBytes(compressedImageBytes);
+
+    print(
+        'Compressed Image Size: ${compressedImageBytes.lengthInBytes / 1024} KB');
+
+    // Add to list
+    images.add(compressedImageFile);
   }
 
   void removeImage(int index) {
@@ -174,17 +166,37 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
     }
   }
 
+  Future<File> saveWithUniqueName(File file) async {
+    final dir = await getTemporaryDirectory(); // or app-specific directory
+    final uniqueName = '${uuid.v4()}.jpg'; // random unique file name
+    final newPath = '${dir.path}/$uniqueName';
+    return file.copy(newPath);
+  }
+
   Future<void> convertUrlToFile(String? photo1, String? photo2, String? photo3,
       String? photo4, String? photo5) async {
     List<String?> photos = [photo1, photo2, photo3, photo4, photo5];
     isPhotoLoading.value = true;
+
     for (String? photo in photos) {
       if (photo != null && photo.isNotEmpty) {
-        File imageFile = await urlToFile(photo);
-        images.add(imageFile); // Adding to your observable list
-        isPhotoLoading.value = false;
+        try {
+          File imageFile = await urlToFile(photo);
+
+          // Save with a unique name to prevent cache duplicates
+          File uniqueFile = await saveWithUniqueName(imageFile);
+
+          // Prevent duplicates in memory
+          bool alreadyExists = images.any((f) => f.path == uniqueFile.path);
+          if (!alreadyExists) {
+            images.add(uniqueFile);
+          }
+        } catch (e) {
+          print("Error loading photo: $e");
+        }
       }
     }
+    isPhotoLoading.value = false;
   }
 
   void populatePhotosFromApi(controller, int index) {
@@ -197,7 +209,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         surveyDetail.photo3, surveyDetail.photo4, surveyDetail.photo5);
     // Exit the loop once the first non-null photo is found and processed
 
-    //  isPhotoPopulated.value = true;
+    isPhotoPopulated.value = true;
     // }
   }
 
@@ -264,6 +276,7 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
         if (response?.statusCode == 201) {
           showNormalSnackBar('Survey submitted successfully');
           images.clear();
+          isPhotoPopulated.value = false;
           surveyFormController.clearForm(); // Clear form data
           Get.offAllNamed(Routes.dashboard);
         }

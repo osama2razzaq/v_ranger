@@ -16,6 +16,7 @@ class SurveyUploadImagePage extends StatelessWidget {
   final bool isEdit;
   final bool isBulkUpdate;
   final int fileIndex;
+
   SurveyUploadImagePage(
       {super.key,
       required this.controller,
@@ -28,7 +29,8 @@ class SurveyUploadImagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isEdit) {
+    // ignore: unrelated_type_equality_checks
+    if (isEdit && surveyFormController.isPhotoPopulated == false) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         surveyFormController.populatePhotosFromApi(controller, fileIndex);
       });
@@ -37,6 +39,7 @@ class SurveyUploadImagePage extends StatelessWidget {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         surveyFormController.images.clear();
+        surveyFormController.isPhotoPopulated.value = false;
       },
       child: Scaffold(
         appBar: AppBar(
