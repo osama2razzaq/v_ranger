@@ -108,6 +108,10 @@ class PendingDetail {
   String? batchfileLatitude;
   String? status;
   String? batchfileLongitude;
+  String? building;
+  String? buildingId;
+  String? mailName;
+  String? mailAdd;
   dynamic pinnedAt;
   dynamic distance;
 
@@ -127,6 +131,10 @@ class PendingDetail {
     this.batchfileLatitude,
     this.status,
     this.batchfileLongitude,
+    this.building,
+    this.buildingId,
+    this.mailName,
+    this.mailAdd,
     this.pinnedAt,
     this.distance,
   });
@@ -147,6 +155,10 @@ class PendingDetail {
         batchfileLatitude: json["batchfile_latitude"],
         status: json["status"],
         batchfileLongitude: json["batchfile_longitude"],
+        building: json["building"],
+        buildingId: json["building_id"],
+        mailName: json["mail_name"],
+        mailAdd: json["mail_add"],
         pinnedAt: json["pinned_at"],
         distance: json["distance"],
       );
@@ -188,6 +200,10 @@ class CompletedDetail {
   String? batchfileLatitude;
   String? status;
   String? batchfileLongitude;
+  String? building;
+  String? buildingId;
+  String? mailName;
+  String? mailAdd;
   dynamic pinnedAt;
   dynamic distance;
   Survey? survey; // Add the survey field here
@@ -208,6 +224,10 @@ class CompletedDetail {
     this.batchfileLatitude,
     this.status,
     this.batchfileLongitude,
+    this.building,
+    this.buildingId,
+    this.mailName,
+    this.mailAdd,
     this.pinnedAt,
     this.distance,
     this.survey, // Include in constructor
@@ -232,6 +252,10 @@ class CompletedDetail {
         batchfileLongitude: json["batchfile_longitude"],
         pinnedAt: json["pinned_at"],
         distance: json["distance"],
+        building: json["building"],
+        buildingId: json["building_id"],
+        mailName: json["mail_name"],
+        mailAdd: json["mail_add"],
         survey: json["survey"] == null
             ? null
             : Survey.fromJson(json["survey"]), // Parsing survey

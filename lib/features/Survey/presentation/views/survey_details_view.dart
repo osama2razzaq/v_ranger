@@ -211,6 +211,32 @@ class SurveyDetailsPage extends StatelessWidget {
                       ? pendingDetails?.batchfileLongitude?.toString() ?? 'N/A'
                       : completedDetails?.batchfileLongitude?.toString() ??
                           'N/A'),
+              _detailItem(
+                  'Bill Number',
+                  !isEdit
+                      ? pendingDetails?.billNo?.toString() ?? 'N/A'
+                      : completedDetails?.billNo?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Building Name',
+                  !isEdit
+                      ? pendingDetails?.building?.toString() ?? 'N/A'
+                      : completedDetails?.building?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Building ID',
+                  !isEdit
+                      ? pendingDetails?.buildingId?.toString() ?? 'N/A'
+                      : completedDetails?.buildingId?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Mail Name',
+                  !isEdit
+                      ? pendingDetails?.mailName?.toString() ?? 'N/A'
+                      : completedDetails?.mailName?.toString() ?? 'N/A'),
+              _detailItem(
+                  'Mail Add',
+                  !isEdit
+                      ? pendingDetails?.mailAdd?.toString() ?? 'N/A'
+                      : completedDetails?.mailAdd?.toString() ?? 'N/A'),
+
               // FutureBuilder<double>(
               //   future: getDistance(
               //       "${(!isEdit ? pendingDetails?.address : completedDetails?.address) ?? ''} ${(!isEdit ? pendingDetails?.districtLa : completedDetails?.districtLa) ?? ''} ${(!isEdit ? pendingDetails?.tamanMmid : completedDetails?.tamanMmid) ?? ''}"),
