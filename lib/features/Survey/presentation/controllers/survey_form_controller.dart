@@ -7,6 +7,7 @@ import 'package:v_ranger/features/Survey/data/Model/drop_down_mode.dart';
 
 class SurveyFormController extends GetxController with SnackBarHelper {
   final Rx<DropdownModel?> dropDownData = Rx<DropdownModel?>(null);
+  final Rx<Statusdropdown?> statusdropdown = Rx<Statusdropdown?>(null);
   final Rx<Statusdropdown?> dropDrStatusDownData = Rx<Statusdropdown?>(null);
 
   // lists for FocusNode for go to next TextField
@@ -69,6 +70,7 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     super.onInit();
   }
 
+  @override
   void onClose() {
     // Dispose all controllers when the controller is disposed
 
@@ -247,10 +249,6 @@ class SurveyFormController extends GetxController with SnackBarHelper {
               .toList() ??
           [];
 
-      drCodeItems.value = result?.drCode
-              ?.map((item) => "${item.code!} - ${item.drCodeName!}")
-              .toList() ??
-          [];
       propertyTypeItems.value = result?.propertyType
               ?.map((item) => "${item.code!} - ${item.propertyTypeName!}")
               .toList() ??
@@ -262,6 +260,30 @@ class SurveyFormController extends GetxController with SnackBarHelper {
     } catch (e) {
       showNormalSnackBar('Failed to load data: $e');
       dropDownData.value = null; // Clear data on error
+    }
+  }
+
+  Future<void> fetchDropdownStatus(String batchId) async {
+    try {
+      final result = await apiService.fetchStatusDropdownData(batchId);
+
+      if (result != null) {
+        // Assign full response to your observable
+        statusdropdown.value = result;
+
+        // Extract drCode list safely
+        drCodeItems.value = result.drcode != null
+            ? result.drcode!.map((item) => "${item.statuscode}").toList()
+            : [];
+      } else {
+        // In case result is null
+        statusdropdown.value = null;
+        drCodeItems.value = [];
+      }
+    } catch (e) {
+      showNormalSnackBar('Failed to load data: $e');
+      statusdropdown.value = null; // Clear on error
+      drCodeItems.value = []; // Also clear dropdown list
     }
   }
 }

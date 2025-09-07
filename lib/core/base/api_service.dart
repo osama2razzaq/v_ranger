@@ -458,7 +458,7 @@ class ApiService {
 
     // Get the access token
     String? token = prefs.getString('access_token');
-    print("token:: $token");
+
     // Prepare the API endpoint
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getdropdowns}');
@@ -500,7 +500,7 @@ class ApiService {
     }
   }
 
-  Future<Statusdropdown?> fetchStatusDropdownData() async {
+  Future<Statusdropdown?> fetchStatusDropdownData(String batchId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token =
         prefs.getString('access_token'); // Adjust the key as necessary
@@ -512,6 +512,7 @@ class ApiService {
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.statusdropdown}');
     final body = {
       'driver_id': driverId,
+      'batch_id': batchId,
     };
 
     final bodyJson = jsonEncode(body);

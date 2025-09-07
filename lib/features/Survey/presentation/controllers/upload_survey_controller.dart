@@ -279,6 +279,19 @@ class UploadSurveyController extends GetxController with SnackBarHelper {
           isPhotoPopulated.value = false;
           surveyFormController.clearForm(); // Clear form data
           Get.offAllNamed(Routes.dashboard);
+        } else if (response?.statusCode == 422) {
+          // Parse validation errors
+          final errorData = json.decode(response!.body);
+          String errorMessage = errorData['message'] ?? 'Validation error';
+
+          if (errorData['errors'] != null) {
+            errorData['errors'].forEach((field, messages) {
+              if (messages is List && messages.isNotEmpty) {
+                errorMessage += "\n$field: ${messages.first}";
+              }
+            });
+          }
+          showErrorSnackBar(errorMessage); // 👈 Shows API error in snackbar
         }
       } catch (e) {
         showErrorSnackBar('Failed to load data: $e');

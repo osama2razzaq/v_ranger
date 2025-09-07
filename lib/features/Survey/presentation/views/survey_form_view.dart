@@ -40,6 +40,11 @@ class SurveyFormPage extends StatelessWidget {
         surveyFormController.populateFieldsFromApi(controller, index);
       });
     }
+    // 👇 Call your API here using batchId from controller
+    final batchId =
+        controller.data.value?.data?.completedDetails?[index].batchId;
+    surveyFormController.fetchDropdownStatus(batchId.toString());
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
