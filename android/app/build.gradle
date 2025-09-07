@@ -44,8 +44,8 @@ android {
     defaultConfig {
         applicationId = "com.vranger.surveyapp"
         minSdkVersion 23  // Set the minSdkVersion explicitly
-        targetSdkVersion 34  // Set the targetSdkVersion explicitly
-        versionCode 7
+        targetSdkVersion 35  // Set the targetSdkVersion explicitly
+        versionCode 8
         versionName "1.0.4"
     }
    
