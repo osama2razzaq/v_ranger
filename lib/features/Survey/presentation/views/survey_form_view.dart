@@ -41,8 +41,15 @@ class SurveyFormPage extends StatelessWidget {
       });
     }
     // 👇 Call your API here using batchId from controller
-    final batchId =
-        controller.data.value?.data?.completedDetails?[index].batchId;
+
+    // 👇 Pick batchId based on edit mode
+    final batchId = (isEdit == true)
+        ? controller.data.value?.data?.completedDetails![index].batchId
+        : controller.data.value?.data?.pendingDetails![index].batchId;
+
+    surveyFormController.fetchDropdownStatus(batchId.toString());
+
+// 👇 Always fetch with the correct one
     surveyFormController.fetchDropdownStatus(batchId.toString());
 
     return PopScope(

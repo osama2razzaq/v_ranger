@@ -226,7 +226,7 @@ class ApiService {
     // Get the access token and driver details
     String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
-
+    print("token::: $token");
     // Ensure detailsString is not null before proceeding
     if (detailsString == null) {
       print("Details string is null.");
