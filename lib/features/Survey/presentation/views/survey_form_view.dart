@@ -9,49 +9,65 @@ import 'package:v_ranger/features/Survey/presentation/controllers/survey_form_co
 import 'package:v_ranger/features/Survey/presentation/views/survey_uploadImage_view.dart';
 import 'package:v_ranger/features/batches/presentation/controllers/bataches_file_list_Controller.dart';
 
-class SurveyFormPage extends StatelessWidget {
+class SurveyFormPage extends StatefulWidget {
   final BatachesFileListController controller;
   final bool isEdit;
   final bool isBulkUpdate;
-
   final int index;
-  SurveyFormPage(
-      {Key? key,
-      required this.controller,
-      required this.isEdit,
-      required this.isBulkUpdate,
-      required this.index})
-      : super(key: key);
+
+  const SurveyFormPage({
+    Key? key,
+    required this.controller,
+    required this.isEdit,
+    required this.isBulkUpdate,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  State<SurveyFormPage> createState() => _SurveyFormPageState();
+}
+
+class _SurveyFormPageState extends State<SurveyFormPage> {
   final SurveyFormController surveyFormController =
       Get.put(SurveyFormController());
 
   @override
-  Widget build(BuildContext context) {
-    // Trigger specific logic on page revisit
+  void initState() {
+    super.initState();
+
+    // Run when page first loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print(Get.previousRoute);
       if (Get.previousRoute == "/SurveyDetailsPage") {
         surveyFormController.performActionOnRevisit();
       }
     });
-    // Use Obx to call populateFieldsFromApi when needed
-    if (isEdit && !surveyFormController.isFieldsPopulated.value) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        surveyFormController.populateFieldsFromApi(controller, index);
-      });
+
+    // Pick correct batchId
+    final batchId = (widget.isEdit == true)
+        ? widget.controller.data.value?.data?.completedDetails![widget.index]
+            .batchId
+        : widget
+            .controller.data.value?.data?.pendingDetails![widget.index].batchId;
+
+    // ✅ Call dropdown API once
+    surveyFormController.fetchDropdownStatus(batchId.toString());
+
+    // ✅ Populate fields only once if edit mode
+    if (widget.isEdit && !surveyFormController.isFieldsPopulated.value) {
+      surveyFormController.populateFieldsFromApi(
+          widget.controller, widget.index);
     }
-    // 👇 Call your API here using batchId from controller
+  }
 
-    // 👇 Pick batchId based on edit mode
-    final batchId = (isEdit == true)
-        ? controller.data.value?.data?.completedDetails![index].batchId
-        : controller.data.value?.data?.pendingDetails![index].batchId;
+  @override
+  void dispose() {
+    // optional: clear form when leaving page
+    surveyFormController.clearForm();
+    super.dispose();
+  }
 
-    surveyFormController.fetchDropdownStatus(batchId.toString());
-
-// 👇 Always fetch with the correct one
-    surveyFormController.fetchDropdownStatus(batchId.toString());
-
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
@@ -92,10 +108,10 @@ class SurveyFormPage extends StatelessWidget {
                     isActive3: false,
                     onTap: () {
                       Get.to(() => SurveyUploadImagePage(
-                            controller: controller,
-                            fileIndex: index,
-                            isEdit: isEdit,
-                            isBulkUpdate: isBulkUpdate,
+                            controller: widget.controller,
+                            fileIndex: widget.index,
+                            isEdit: widget.isEdit,
+                            isBulkUpdate: widget.isBulkUpdate,
                           ));
                     },
                   ),
@@ -531,10 +547,10 @@ class SurveyFormPage extends StatelessWidget {
           buttonName: buttonName,
           onTap: () => {
             Get.to(() => SurveyUploadImagePage(
-                  controller: controller,
-                  fileIndex: index,
-                  isBulkUpdate: isBulkUpdate,
-                  isEdit: isEdit,
+                  controller: widget.controller,
+                  fileIndex: widget.index,
+                  isBulkUpdate: widget.isBulkUpdate,
+                  isEdit: widget.isEdit,
                 ))
           },
         ),
