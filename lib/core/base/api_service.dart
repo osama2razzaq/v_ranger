@@ -467,7 +467,7 @@ class ApiService {
     final connectivityResult = await Connectivity().checkConnectivity();
 
     // If there's no internet, return cached data
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResult.first == ConnectivityResult.none) {
       String? cachedData = prefs.getString('dropdown_data'); // Cached data
       if (cachedData != null) {
         return dropdownModelFromJson(cachedData);
@@ -502,11 +502,10 @@ class ApiService {
 
   Future<Statusdropdown?> fetchStatusDropdownData(String batchId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token =
-        prefs.getString('access_token'); // Adjust the key as necessary
+    String? token = prefs.getString('access_token');
     String? detailsString = prefs.getString('details');
     Map<String, dynamic> details = jsonDecode(detailsString!);
-    String driverId = details['id'].toString(); // Extract driver_id
+    String driverId = details['id'].toString();
 
     final url =
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.statusdropdown}');
@@ -514,26 +513,43 @@ class ApiService {
       'driver_id': driverId,
       'batch_id': batchId,
     };
-
     final bodyJson = jsonEncode(body);
 
+    // Check connectivity
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    // If offline, return cached data if available
+    if (connectivityResult.first == ConnectivityResult.none) {
+      String? cachedData =
+          prefs.getString('status_dropdown_$batchId'); // unique key per batch
+      if (cachedData != null) {
+        return statusdropdownFromJson(cachedData);
+      } else {
+        return null;
+      }
+    }
+
+    // If online, fetch from API
     try {
       final response = await http.post(
         url,
         body: bodyJson,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": 'Bearer $token'
+          "Authorization": 'Bearer $token',
         },
       );
 
       if (response.statusCode == 200) {
-        print("updated statusCode ${response.body}");
+        // Cache the data for offline use
+        prefs.setString('status_dropdown_$batchId', response.body);
         return statusdropdownFromJson(response.body);
       } else {
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
         return null;
       }
     } catch (e) {
+      print("Exception occurred: $e");
       return null;
     }
   }
